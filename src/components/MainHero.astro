@@ -1,0 +1,390 @@
+---
+import LogoBlanco from "../assets/images/brux-logo-blanco-una-tinta.svg";
+import Button from "./ui/Button.astro";
+import CtaButton from "./ui/CtaButton.astro";
+---
+
+<!--
+  Telón de entrada: solo la primera vez que alguien ve la portada en la sesión.
+  Este script corre antes de que se pinte el hero, así el telón tapa la página desde el primer fotograma.
+  Con prefers-reduced-motion no hay telón. Si el JS de la animación falla, el telón se quita solo a los 9 s.
+-->
+<script is:inline>
+  (function () {
+    var seen = false;
+    try { seen = sessionStorage.getItem("brux-curtain") === "1"; } catch (e) {}
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!seen && !reduce) {
+      document.documentElement.dataset.curtain = "on";
+      // Bloquea el scroll sin quitar la barra de desplazamiento (quitarla hace saltar el ancho de la página)
+      var keys = { " ": 1, PageDown: 1, PageUp: 1, ArrowDown: 1, ArrowUp: 1, Home: 1, End: 1 };
+      var block = function (e) { if (e.type !== "keydown" || keys[e.key]) e.preventDefault(); };
+      window.__bruxUnlock = function () {
+        removeEventListener("wheel", block);
+        removeEventListener("touchmove", block);
+        removeEventListener("keydown", block);
+      };
+      addEventListener("wheel", block, { passive: false });
+      addEventListener("touchmove", block, { passive: false });
+      addEventListener("keydown", block);
+      window.__bruxCurtainFailsafe = setTimeout(function () {
+        delete document.documentElement.dataset.curtain;
+        window.__bruxUnlock();
+      }, 9000);
+    }
+  })();
+</script>
+
+<div class="curtain" data-curtain-layer aria-hidden="true">
+  <video
+    class="curtain__video stage-frame"
+    data-curtain-video
+    muted
+    playsinline
+    preload="auto"
+    poster="/videos/brux-curtain-poster.webp"
+  >
+    <source src="/videos/brux-curtain-reveal.webm" type="video/webm" />
+    <source src="/videos/brux-curtain-reveal.mp4" type="video/mp4" />
+  </video>
+  <div class="curtain__logo" data-curtain-logo>
+    <LogoBlanco />
+  </div>
+</div>
+
+<section id="hero" class="hero relative isolate flex min-h-svh md:min-h-screen flex-col justify-end overflow-hidden bg-ink" aria-labelledby="hero-title">
+  <video
+    class="stage-frame hero__stage absolute top-0 left-0 -z-20 w-full object-cover"
+    data-stage-loop
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="/videos/brux-stage-poster.webp"
+    aria-hidden="true"
+  >
+    <source src="/videos/brux-stage-loop.webm" type="video/webm" />
+    <source src="/videos/brux-stage-loop.mp4" type="video/mp4" />
+  </video>
+
+  <!-- Sombra para leer el texto sobre el vídeo: desde abajo en móvil, desde la izquierda en escritorio -->
+  <div class="hero__shade absolute inset-x-0 top-0 -z-10" aria-hidden="true"></div>
+
+  <div class="hero__content mx-auto w-full max-w-7xl px-4 pb-14 sm:px-8 sm:pb-16 lg:px-12 lg:pb-24">
+    <div class="max-w-[38rem]">
+      <h1
+        id="hero-title"
+        data-hero-in
+        class="text-[min(clamp(2.5rem,1.75rem+3.2vw,4.5rem),11svh)] font-extrabold leading-[1.02] tracking-[-0.02em] text-balance text-paper"
+      >
+        Get booked for the keynotes you want
+      </h1>
+
+      <p
+        data-hero-in
+        class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper/90"
+      >
+        Speaker booking for keynote speakers: every month we pitch you to the organizers in your niche, and grow
+        your LinkedIn so they know your name when they look you up.
+      </p>
+
+      <!-- Una acción principal (rojo, con flecha) y una secundaria como enlace de texto, para que no compitan -->
+      <div data-hero-in class="mt-9 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-7">
+        <CtaButton href="/contact/">Book a strategy call</CtaButton>
+        <Button href="/pricing/" variant="link" class="justify-center sm:justify-start">Compare plans</Button>
+      </div>
+
+      <p data-hero-in class="mt-6 text-sm text-muted-on-ink">
+         No commission on your speaking fees.
+      </p>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    data-loop-toggle
+    aria-pressed="false"
+    aria-label="Pause background video"
+    class="absolute right-4 bottom-4 grid size-11 place-items-center rounded-full text-paper/70 ring-1 ring-paper/25 ring-inset transition-colors duration-150 hover:text-paper hover:ring-paper/60 sm:right-8 sm:bottom-8"
+  >
+    <span data-icon-pause class="contents">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
+        <rect x="3.5" y="2.5" width="3" height="11" rx="0.5" />
+        <rect x="9.5" y="2.5" width="3" height="11" rx="0.5" />
+      </svg>
+    </span>
+    <span data-icon-play class="contents" hidden>
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
+        <path d="M4.5 2.8v10.4a.5.5 0 0 0 .77.42l8.1-5.2a.5.5 0 0 0 0-.84l-8.1-5.2a.5.5 0 0 0-.77.42Z" />
+      </svg>
+    </span>
+  </button>
+</section>
+
+<style>
+  /* El telón solo existe mientras <html data-curtain="on"> */
+  .curtain {
+    display: none;
+  }
+  :global(html[data-curtain="on"]) .curtain {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--color-ink) url("/videos/brux-curtain-poster.webp") center / cover no-repeat;
+  }
+  .curtain__video {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /*
+    Dos composiciones:
+    - Vertical (móvil y tablet en vertical): el escenario ocupa la mitad superior de la pantalla y el texto va debajo.
+    - Ancha (desde 1024 px, o cualquier pantalla apaisada desde 640 px, como un móvil en horizontal):
+      el escenario ocupa todo el fondo, agrandado para que el podio quede a la derecha (~64 %) y el texto a la izquierda.
+    El vídeo del telón lleva el mismo encuadre para que el fundido al bucle no salte.
+  */
+  .hero__stage {
+    height: 50svh;
+  }
+  .hero__content {
+    padding-top: calc(50svh - 3rem);
+  }
+  @media (min-width: 1024px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
+    .stage-frame {
+      width: 128%;
+      max-width: none;
+    }
+    .hero__stage {
+      height: 100%;
+    }
+    .hero__content {
+      padding-top: min(8rem, 12svh);
+    }
+    /* El texto nunca pasa del 54 % del ancho: a la derecha está el podio */
+    .hero__content > div {
+      max-width: min(38rem, 54vw);
+    }
+  }
+  .curtain__logo {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding-inline: 16px;
+  }
+  .curtain__logo :global(svg) {
+    width: min(56vw, 360px);
+    height: auto;
+  }
+
+  /* Vertical: el borde de abajo del escenario se funde con el negro del texto */
+  .hero__shade {
+    height: 50svh;
+    background: linear-gradient(to top, var(--color-ink) 0%, rgb(10 10 10 / 0.75) 14%, rgb(10 10 10 / 0) 42%);
+  }
+  @media (min-width: 1024px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
+    .hero__shade {
+      height: 100%;
+      background:
+        linear-gradient(to right, rgb(10 10 10 / 0.88) 0%, rgb(10 10 10 / 0.55) 34%, rgb(10 10 10 / 0) 58%),
+        linear-gradient(to top, var(--color-ink) 0%, rgb(10 10 10 / 0) 34%);
+    }
+  }
+
+  /* Hasta que GSAP toma el control, el texto entra oculto solo si hay animación */
+  :global(html[data-curtain="on"]) [data-hero-in] {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-loop-toggle] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  let ctx: gsap.Context | null = null;
+  let cleanups: Array<() => void> = [];
+
+  function initHero() {
+    const hero = document.getElementById("hero");
+    if (!hero) return;
+
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const loop = hero.querySelector<HTMLVideoElement>("[data-stage-loop]");
+    const toggle = hero.querySelector<HTMLButtonElement>("[data-loop-toggle]");
+    const items = hero.querySelectorAll<HTMLElement>("[data-hero-in]");
+    const curtainLayer = document.querySelector<HTMLElement>("[data-curtain-layer]");
+    const curtainVideo = document.querySelector<HTMLVideoElement>("[data-curtain-video]");
+    const curtainLogo = document.querySelector<HTMLElement>("[data-curtain-logo]");
+    const curtainOn = root.dataset.curtain === "on";
+
+    // Botón de pausa del vídeo de fondo
+    if (loop && toggle) {
+      const iconPause = toggle.querySelector<HTMLElement>("[data-icon-pause]");
+      const iconPlay = toggle.querySelector<HTMLElement>("[data-icon-play]");
+      const sync = () => {
+        const paused = loop.paused;
+        toggle.setAttribute("aria-pressed", String(paused));
+        toggle.setAttribute("aria-label", paused ? "Play background video" : "Pause background video");
+        iconPause?.toggleAttribute("hidden", paused);
+        iconPlay?.toggleAttribute("hidden", !paused);
+      };
+      const onClick = () => {
+        if (loop.paused) loop.play().catch(() => {});
+        else loop.pause();
+      };
+      toggle.addEventListener("click", onClick);
+      loop.addEventListener("play", sync);
+      loop.addEventListener("pause", sync);
+      cleanups.push(() => {
+        toggle.removeEventListener("click", onClick);
+        loop.removeEventListener("play", sync);
+        loop.removeEventListener("pause", sync);
+      });
+    }
+
+    // Movimiento reducido: imagen fija del escenario y texto visible, sin animación
+    if (reduceMotion) {
+      loop?.pause();
+      return;
+    }
+
+    const playLoop = () => loop?.play().catch(() => {});
+
+    ctx = gsap.context(() => {
+      const heroIntro = () =>
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 1.1,
+            ease: "power3.out",
+            stagger: 0.12,
+            clearProps: "transform",
+          },
+        );
+
+      // Navegación interna o visita repetida: sin telón, solo la entrada del texto
+      if (!curtainOn || !curtainLayer || !curtainVideo) {
+        playLoop();
+        heroIntro();
+        return;
+      }
+
+      clearTimeout((window as any).__bruxCurtainFailsafe);
+      const unlock = () => {
+        (window as any).__bruxUnlock?.();
+        window.scrollTo(0, 0);
+      };
+      gsap.set(items, { autoAlpha: 0, y: 28 });
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        unlock();
+        const stageH = loop?.offsetHeight || curtainVideo.offsetHeight;
+        const shrink = stageH < curtainVideo.offsetHeight - 1;
+        playLoop();
+        gsap
+          .timeline({
+            onComplete: () => {
+              delete root.dataset.curtain;
+              curtainVideo.pause();
+              try {
+                sessionStorage.setItem("brux-curtain", "1");
+              } catch {}
+            },
+          })
+          .set(curtainLayer, { backgroundImage: "none" })
+          // En móvil y tablet el escenario del hero ocupa la mitad superior:
+          // primero el vídeo del telón se encoge hasta ahí y solo después se funde, así nunca se ven dos podios
+          .to(curtainVideo, { height: stageH, duration: shrink ? 0.9 : 0, ease: "power3.inOut" })
+          .to(curtainLayer, { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" })
+          .add(heroIntro(), "<0.15");
+      };
+
+      // Si el vídeo no puede reproducirse, el telón sube igual con GSAP
+      const raiseWithGsap = () => {
+        if (finished) return;
+        gsap
+          .timeline()
+          .to(curtainLogo, { autoAlpha: 0, y: -16, duration: 0.5, ease: "power2.in" })
+          .to(curtainLayer, { yPercent: -100, duration: 1.4, ease: "power3.inOut" })
+          .add(() => {
+            finished = true;
+            unlock();
+            playLoop();
+            delete root.dataset.curtain;
+            try {
+              sessionStorage.setItem("brux-curtain", "1");
+            } catch {}
+          })
+          .add(heroIntro(), "-=0.6");
+      };
+
+      const onTime = () => {
+        const d = curtainVideo.duration;
+        if (d && curtainVideo.currentTime >= d - 0.75) finish();
+      };
+      curtainVideo.addEventListener("timeupdate", onTime);
+      curtainVideo.addEventListener("ended", finish);
+      cleanups.push(() => {
+        curtainVideo.removeEventListener("timeupdate", onTime);
+        curtainVideo.removeEventListener("ended", finish);
+      });
+
+      const start = () => {
+        gsap
+          .timeline()
+          .to(curtainLogo, { autoAlpha: 0, y: -16, duration: 0.6, ease: "power2.in", delay: 0.5 })
+          .add(() => {
+            curtainVideo.play().catch(raiseWithGsap);
+          });
+        // Red de seguridad: si el vídeo se atasca, no dejamos a nadie delante del telón
+        gsap.delayedCall(7, () => {
+          if (!finished) finish();
+        });
+      };
+
+      // Arranca cuando el vídeo del telón puede reproducirse, o a los 2,5 s como máximo
+      let started = false;
+      const go = () => {
+        if (started) return;
+        started = true;
+        start();
+      };
+      if (curtainVideo.readyState >= 3) go();
+      else {
+        curtainVideo.addEventListener("canplay", go, { once: true });
+        curtainVideo.addEventListener("error", raiseWithGsap, { once: true });
+        gsap.delayedCall(2.5, go);
+      }
+    });
+  }
+
+  function destroyHero() {
+    ctx?.revert();
+    ctx = null;
+    cleanups.forEach((fn) => fn());
+    cleanups = [];
+    document.querySelector<HTMLVideoElement>("[data-stage-loop]")?.pause();
+    delete document.documentElement.dataset.curtain;
+    (window as any).__bruxUnlock?.();
+  }
+
+  // ClientRouter: astro:page-load corre en la primera carga y en cada navegación
+  document.addEventListener("astro:page-load", initHero);
+  document.addEventListener("astro:before-swap", destroyHero);
+</script>

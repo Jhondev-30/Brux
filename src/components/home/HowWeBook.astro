@@ -1,0 +1,625 @@
+---
+import { Image } from "astro:assets";
+import Button from "../ui/Button.astro";
+// IMÁGENES PROVISIONALES: fotogramas del vídeo del escenario. Sustituir por las reales (ver comentario de cada paso).
+// La tarjeta es ancha: las imágenes reales deben ser horizontales (2400 × 1200 px aprox., lo importante en el centro).
+import step1 from "../../assets/how/step-1.webp";
+import step2 from "../../assets/how/step-2.webp";
+import step3 from "../../assets/how/step-3.webp";
+import step4 from "../../assets/how/step-4.webp";
+
+// Contenido del PDF de planes del 1 de noviembre de 2026
+const steps = [
+  {
+    title: "We define your niche",
+    text: "We agree on your topics and the events that fit them, then position your LinkedIn so it backs up every pitch.",
+    image: step1, // Real: un perfil de LinkedIn de un cliente optimizado por vosotros, o una foto del speaker
+    alt: "A speaker's stage, ready before the talk",
+  },
+  {
+    title: "We build your press kit and demo reel",
+    text: "Organizers want to see how you sound on stage. Every pitch carries your press kit and your best moments.",
+    image: step2, // Real: páginas de un press kit o un fotograma de un demo reel hecho por vosotros
+    alt: "The podium under the spotlight",
+  },
+  {
+    title: "We pitch the organizers who book speakers",
+    text: "From 60 to 160+ direct pitches a month, depending on your plan. Only events in your niche.",
+    image: step3, // Real: un pitch enviado a un organizador (datos tapados) o un speaker en un evento conseguido
+    alt: "A stage with the audience waiting",
+  },
+  {
+    title: "We follow up and keep your calendar",
+    text: "You see every organizer we contact in our CRM, plus post-event follow-up and a monthly report.",
+    image: step4, // Real: captura del CRM o del informe mensual (datos tapados)
+    alt: "The stage after the talk",
+  },
+];
+
+// Cada palabra va en su propia ventana para que pueda subir desde abajo (receta de tasteskill.dev)
+const words = (s: string) => s.split(" ");
+---
+
+<section id="how-it-works" class="how bg-paper text-ink-raised" aria-labelledby="how-title" data-how>
+  <header class="how__head mx-auto max-w-[56rem] px-4 pt-24 text-center sm:px-8 sm:pt-28 lg:pt-32">
+    <h2
+      id="how-title"
+      class="text-[clamp(2.125rem,1.5rem+2.6vw,3.75rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-ink"
+    >
+      {words("How we get you booked for paid keynotes").map((w, j, a) => (
+        <>
+          <span class="how__mask"><span class="how__word" data-head-word>{w}</span></span>
+          {j < a.length - 1 && " "}
+        </>
+      ))}
+    </h2>
+    <p class="mx-auto mt-5 max-w-[38rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.3125rem)] leading-normal text-pretty" data-head-lead>
+      Every month we pitch you directly to the organizers who book speakers in your niche.
+    </p>
+  </header>
+
+  <!-- Este bloque se queda fijo: tarjeta a lo ancho, la línea que avanza y un paso a la vez -->
+  <div class="how__stage mx-auto max-w-7xl px-4 sm:px-8 lg:px-12" data-how-stage>
+    <div class="how__media" data-how-media>
+      <div
+        id="how-card"
+        class="how__card relative size-full overflow-hidden rounded-3xl bg-ink shadow-[0_30px_70px_-30px_rgb(10_10_10/0.6)]"
+        aria-roledescription="carousel"
+        aria-label="How Brux works, step by step"
+        data-how-card
+      >
+        {steps.map((s, i) => (
+          <div class="how__slide absolute inset-0" data-how-slide data-index={i} aria-hidden={i === 0 ? "false" : "true"}>
+            <Image
+              src={s.image}
+              alt={s.alt}
+              widths={[640, 1080, 1600, 2400]}
+              sizes="(min-width: 1280px) 1184px, 92vw"
+              class="size-full object-cover"
+            />
+          </div>
+        ))}
+        <button type="button" class="how__nav left-3 sm:left-5" aria-controls="how-card" aria-label="Previous step" data-how-prev disabled>
+          <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+            <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button type="button" class="how__nav right-3 sm:right-5" aria-controls="how-card" aria-label="Next step" data-how-next>
+          <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+            <path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- La línea: una onda regular a lo ancho; la pista gris muestra el recorrido y el trazo negro avanza con el scroll -->
+    <svg class="how__line" aria-hidden="true" data-how-line>
+      <path data-how-trackline class="how__trackline" fill="none"></path>
+      <path data-how-curve class="how__curve" fill="none"></path>
+    </svg>
+
+    <ol class="how__steps" data-how-steps>
+      {steps.map((s) => (
+        <li class="how__step" data-how-step>
+          <h3 class="how__title" data-how-title>
+            {words(s.title).map((w, j, a) => (
+              <>
+                <span class="how__mask"><span class="how__word" data-how-word>{w}</span></span>
+                {j < a.length - 1 && " "}
+              </>
+            ))}
+          </h3>
+          <p class="how__text">
+            {words(s.text).map((w, j, a) => (
+              <>
+                <span class="how__mask"><span class="how__word" data-how-word>{w}</span></span>
+                {j < a.length - 1 && " "}
+              </>
+            ))}
+          </p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="how__cta" data-how-cta>
+      <Button href="/contact/">Book a call</Button>
+      <Button href="/services/booking/" variant="link" class="text-ink!">How booking works</Button>
+    </div>
+  </div>
+  <p class="sr-only" aria-live="polite" data-how-status></p>
+</section>
+
+<style>
+  /* ---------- Sin JS o con movimiento reducido: todo seguido y visible ---------- */
+  .how {
+    padding-bottom: 4rem;
+  }
+  .how__stage {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2.5rem;
+  }
+  .how__media {
+    flex: none;
+    height: min(44svh, 26rem);
+    perspective: 1600px;
+  }
+  .how__line {
+    display: block;
+    flex: none;
+    width: 100%;
+    height: 3.5rem;
+    margin-top: 2rem;
+    overflow: visible;
+  }
+  .how__trackline,
+  .how__curve {
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    shape-rendering: geometricPrecision;
+    vector-effect: non-scaling-stroke;
+  }
+  .how__trackline {
+    stroke: rgb(10 10 10 / 0.1);
+  }
+  .how__curve {
+    stroke: var(--color-ink);
+  }
+  .how__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 1rem;
+    text-align: center;
+  }
+  .how__title {
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    color: var(--color-ink-raised);
+  }
+  .how__text {
+    margin: 0.75rem auto 0;
+    max-width: 30rem;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+    color: var(--color-ink-raised);
+  }
+  .how__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ---------- Con la animación: el bloque ocupa la pantalla y los pasos se relevan en el mismo sitio ---------- */
+  .how.is-live .how__stage {
+    height: 100svh;
+    margin-top: 0;
+    padding-top: 1rem; /* mientras está fijo, el nav sube y deja este espacio libre */
+    padding-bottom: 1.25rem;
+  }
+  .how.is-live .how__steps {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin-top: 0.5rem;
+  }
+  .how.is-live .how__step {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .how.is-live .how__cta {
+    margin-top: 0.5rem;
+  }
+
+  /* ---------- Escritorio: la misma composición, más grande ---------- */
+  @media (min-width: 1024px) {
+    .how__media {
+      height: min(52svh, 40rem);
+    }
+    .how.is-live .how__stage {
+      padding-top: clamp(1.5rem, 4svh, 2.5rem);
+      padding-bottom: clamp(1.25rem, 3svh, 2rem);
+    }
+    .how__line {
+      height: 4rem;
+      margin-top: clamp(1.75rem, 4.5svh, 3rem);
+    }
+    .how__trackline,
+    .how__curve {
+      stroke-width: 7;
+    }
+    .how__title {
+      font-size: min(clamp(2rem, 1.2rem + 1.6vw, 3rem), 5.4svh);
+      line-height: 1.04;
+    }
+    .how__text {
+      margin-top: 0.85rem;
+      max-width: 40rem;
+      font-size: max(1rem, min(1.25rem, 2.5svh));
+      line-height: 1.5;
+    }
+  }
+
+  /* ---------- Tarjeta ---------- */
+  .how__card {
+    transform-origin: 50% 60%;
+    backface-visibility: hidden;
+  }
+  .how__slide:not([data-index="0"]) {
+    visibility: hidden;
+  }
+  .how__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    translate: 0 -50%;
+    border-radius: 9999px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    box-shadow: 0 10px 24px -10px rgb(10 10 10 / 0.5);
+    transition: background-color 150ms ease-out, color 150ms ease-out, opacity 150ms ease-out, scale 150ms ease-out;
+  }
+  .how__nav:hover:not(:disabled) {
+    background: var(--color-stage);
+    color: var(--color-paper);
+  }
+  .how__nav:active:not(:disabled) {
+    scale: 0.94;
+  }
+  .how__nav:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* ---------- Palabras: cada una en su ventana (receta de tasteskill.dev) ---------- */
+  .how__mask {
+    display: inline-block;
+    overflow: clip;
+    vertical-align: top;
+    padding: 0.1em 0.06em 0.18em;
+    margin: -0.1em -0.06em -0.18em;
+  }
+  .how__word {
+    display: inline-block;
+    transform-origin: 0% 100%;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+
+  // La curva de tasteskill.dev: cubic-bezier(.16, 1, .3, 1). "expo.out" es casi idéntica.
+  const EASE = "expo.out";
+  const DRAW = 0.88; // la línea se dibuja en el 88 % del anclaje; el resto es una pausa antes de soltar
+
+  let mm: gsap.MatchMedia | null = null;
+  let controller: AbortController | null = null;
+
+  const setNavHidden = (hidden: boolean) => {
+    const root = document.documentElement;
+    if (hidden) root.setAttribute("data-nav-hidden", "");
+    else root.removeAttribute("data-nav-hidden");
+  };
+
+  function initHow() {
+    const section = document.querySelector<HTMLElement>("[data-how]");
+    if (!section) return;
+    controller = new AbortController();
+    const { signal } = controller;
+
+    const stage = section.querySelector<HTMLElement>("[data-how-stage]")!;
+    const card = section.querySelector<HTMLElement>("[data-how-card]")!;
+    const slides = [...section.querySelectorAll<HTMLElement>("[data-how-slide]")];
+    const stepsEls = [...section.querySelectorAll<HTMLElement>("[data-how-step]")];
+    const svg = section.querySelector<SVGSVGElement>("[data-how-line]")!;
+    const trackLine = svg.querySelector<SVGPathElement>("[data-how-trackline]")!;
+    const curve = svg.querySelector<SVGPathElement>("[data-how-curve]")!;
+    const headWords = section.querySelectorAll<HTMLElement>("[data-head-word]");
+    const headLead = section.querySelector<HTMLElement>("[data-head-lead]")!;
+    const prev = section.querySelector<HTMLButtonElement>("[data-how-prev]")!;
+    const next = section.querySelector<HTMLButtonElement>("[data-how-next]")!;
+    const status = section.querySelector<HTMLElement>("[data-how-status]")!;
+    const n = stepsEls.length;
+
+    let current = 0;
+    // Punto de la línea (0–1) en el que empieza el tramo de cada paso: las medias ondas son iguales
+    const stepStart = (i: number) => i / n;
+
+    // ---------- La línea: una onda regular (senoide) a lo ancho, con un paso en cada cresta ----------
+    // Se dibuja a escala 1:1 con su caja (viewBox = tamaño en píxeles) para que el trazo salga nítido.
+    const layoutCurve = () => {
+      const box = svg.getBoundingClientRect();
+      const w = Math.max(1, Math.round(box.width));
+      const h = Math.max(1, Math.round(box.height));
+      svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      svg.setAttribute("width", String(w));
+      svg.setAttribute("height", String(h));
+
+      const pad = 8;
+      const mid = h / 2;
+      const amp = h * 0.3;
+      const half = (w - pad * 2) / n; // una media onda por paso
+      const q = (half / 2) * 0.3642; // brazo de control que aproxima un cuarto de seno con una cúbica
+      let d = `M ${pad} ${mid}`;
+      for (let i = 0; i < n; i++) {
+        const x0 = pad + half * i;
+        const x1 = x0 + half;
+        const xm = x0 + half / 2;
+        const dir = i % 2 === 0 ? -1 : 1;
+        const peakY = mid + dir * amp;
+        d += ` C ${x0 + q} ${mid + dir * amp * 0.57}, ${xm - q} ${peakY}, ${xm} ${peakY}`;
+        d += ` C ${xm + q} ${peakY}, ${x1 - q} ${mid + dir * amp * 0.57}, ${x1} ${mid}`;
+      }
+      trackLine.setAttribute("d", d);
+      curve.setAttribute("d", d);
+    };
+
+    // ---------- Texto: cada paso tiene su animación por tiempo; el scroll solo decide cuándo empieza ----------
+    const stepTweens = stepsEls.map((li) =>
+      gsap
+        .timeline({ paused: true })
+        .fromTo(
+          li.querySelectorAll<HTMLElement>("[data-how-word]"),
+          { yPercent: 112, rotate: 7 },
+          { yPercent: 0, rotate: 0, duration: 1.05, ease: EASE, stagger: 0.035 },
+        ),
+    );
+    // Un paso nunca se monta sobre otro: el anterior sale primero (hacia arriba al avanzar, hacia abajo al
+    // retroceder) y solo cuando ha salido entra el siguiente.
+    const wordsOf = (i: number) => stepsEls[i].querySelectorAll<HTMLElement>("[data-how-word]");
+    let shown = -1;
+    let exitTween: gsap.core.Tween | null = null;
+    const showStep = (k: number) => {
+      if (k === shown) return;
+      const from = shown;
+      shown = k;
+      exitTween?.kill();
+      exitTween = null;
+      // Todo lo que no sea el paso que sale queda escondido bajo su ventana
+      stepTweens.forEach((tl, i) => {
+        if (i !== from) tl.pause(0);
+      });
+      const enter = () => {
+        if (k >= 0) stepTweens[k].timeScale(1).restart();
+      };
+      if (from >= 0 && stepTweens[from].progress() > 0) {
+        stepTweens[from].pause();
+        exitTween = gsap.to(wordsOf(from), {
+          yPercent: k > from ? -112 : 112,
+          rotate: 0,
+          duration: 0.45,
+          ease: "power2.in",
+          stagger: 0.008,
+          onComplete: () => {
+            stepTweens[from].pause(0);
+            exitTween = null;
+            enter();
+          },
+        });
+      } else {
+        if (from >= 0) stepTweens[from].pause(0);
+        enter();
+      }
+    };
+
+    // ---------- Imagen: la nueva aparece encima con un fundido y se asienta; la anterior queda debajo ----------
+    const showSlide = (k: number, animate: boolean) => {
+      if (k === current) return;
+      const incoming = slides[k];
+      const outgoing = slides[current];
+      const inImg = incoming.querySelector("img");
+      gsap.killTweensOf([incoming, inImg]);
+      slides.forEach((s, i) => {
+        s.setAttribute("aria-hidden", i === k ? "false" : "true");
+        if (i !== k && i !== current) gsap.set(s, { autoAlpha: 0, zIndex: 0 });
+      });
+      gsap.set(outgoing, { zIndex: 1, autoAlpha: 1 });
+      gsap.set(incoming, { zIndex: 2 });
+      if (!animate) {
+        gsap.set(incoming, { autoAlpha: 1 });
+        gsap.set(inImg, { scale: 1 });
+        gsap.set(outgoing, { autoAlpha: 0 });
+      } else {
+        gsap.fromTo(
+          incoming,
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 1,
+            duration: 0.9,
+            ease: "power2.inOut",
+            onComplete: () => {
+              if (current === k) gsap.set(outgoing, { autoAlpha: 0 });
+            },
+          },
+        );
+        gsap.fromTo(inImg, { scale: 1.08 }, { scale: 1, duration: 1.5, ease: EASE });
+      }
+      current = k;
+    };
+
+    // Cada paso que aparece se queda al menos MIN_DWELL ms, aunque el scroll vaya más rápido.
+    // Si mientras tanto el scroll pide otro paso, se aplica el último pedido cuando se cumple ese tiempo.
+    const MIN_DWELL = 1600;
+    let lockUntil = 0;
+    let wanted = -1;
+    let pendingCall: gsap.core.Tween | null = null;
+    const applyStep = (k: number) => {
+      pendingCall = null;
+      if (k === shown) return;
+      showStep(k);
+      setActive(Math.max(0, k));
+      lockUntil = performance.now() + MIN_DWELL;
+    };
+    const requestStep = (k: number) => {
+      wanted = k;
+      if (k === shown) {
+        pendingCall?.kill();
+        pendingCall = null;
+        return;
+      }
+      const wait = lockUntil - performance.now();
+      if (wait <= 0) applyStep(k);
+      else if (!pendingCall) pendingCall = gsap.delayedCall(wait / 1000, () => applyStep(wanted));
+    };
+
+    const setActive = (k: number, animate = true) => {
+      k = Math.max(0, Math.min(n - 1, k));
+      prev.disabled = k === 0;
+      next.disabled = k === n - 1;
+      if (k !== current) {
+        const title = stepsEls[k].querySelector("[data-how-title]")?.textContent?.replace(/\s+/g, " ").trim();
+        status.textContent = `Step ${k + 1} of ${n}: ${title}`;
+      }
+      showSlide(k, animate);
+    };
+
+    // ---------- Botones: llevan el scroll al punto de ese paso ----------
+    let pinTrigger: ScrollTrigger | null = null;
+    const goTo = (k: number) => {
+      k = Math.max(0, Math.min(n - 1, k));
+      if (pinTrigger) {
+        const len = pinTrigger.end - pinTrigger.start;
+        const p = Math.min(0.99, stepStart(k) * DRAW + 0.02);
+        window.scrollTo({ top: Math.round(pinTrigger.start + len * p), behavior: "smooth" });
+      } else {
+        setActive(k, false);
+      }
+    };
+    prev.addEventListener("click", () => goTo(current - 1), { signal });
+    next.addEventListener("click", () => goTo(current + 1), { signal });
+
+    mm = gsap.matchMedia();
+    mm.add(
+      {
+        motion: "(prefers-reduced-motion: no-preference)",
+        reduce: "(prefers-reduced-motion: reduce)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { motion: boolean; reduce: boolean };
+
+        if (reduce) {
+          // Todo visible y quieto: línea completa, todos los pasos, las flechas cambian la imagen sin animación
+          section.classList.remove("is-live");
+          layoutCurve();
+          stepTweens.forEach((tl) => tl.progress(1));
+          pinTrigger = null;
+          return;
+        }
+
+        section.classList.add("is-live");
+        layoutCurve();
+
+        // Cabecera: las palabras suben al entrar (una vez por pasada)
+        const headTl = gsap
+          .timeline({ paused: true })
+          .fromTo(headWords, { yPercent: 112, rotate: 7 }, { yPercent: 0, rotate: 0, duration: 1.1, ease: EASE, stagger: 0.06 })
+          .fromTo(headLead, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE }, 0.35);
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 78%",
+          onEnter: () => headTl.play(),
+          onLeaveBack: () => headTl.reverse(),
+        });
+
+        // Todos los pasos empiezan escondidos bajo su ventana
+        stepTweens.forEach((tl) => tl.progress(0).pause());
+        shown = -1;
+        wanted = -1;
+        lockUntil = 0;
+
+        // La tarjeta entra acostada (girada sobre su eje horizontal) y se pone de pie al llegar arriba
+        gsap.fromTo(
+          card,
+          { rotateX: 58, yPercent: 12, scale: 0.92, transformOrigin: "50% 60%" },
+          {
+            rotateX: 0,
+            yPercent: 0,
+            scale: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: stage,
+              start: "top bottom",
+              end: "top top",
+              scrub: 0.9,
+              invalidateOnRefresh: true,
+              refreshPriority: 2,
+            },
+          },
+        );
+
+        // Anclaje: la línea avanza con el scroll; al llegar a cada cresta, su paso se despliega y cambia la imagen.
+        // Cada paso tiene 1,6 pantallas de scroll y, además, un tiempo mínimo en pantalla (MIN_DWELL).
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: () => "+=" + window.innerHeight * 1.6 * n,
+            pin: stage,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            refreshPriority: 1,
+            onToggle: (self) => setNavHidden(self.isActive),
+            onUpdate: (self) => {
+              // El nav vuelve si se sube; se va otra vez al bajar
+              if (self.isActive) setNavHidden(self.direction === 1);
+              const drawn = Math.min(1, self.progress / DRAW);
+              let k = self.progress > 0.002 ? 0 : -1;
+              // Cada paso aparece cuando la línea entra en su tramo (no al llegar a la cresta),
+              // así el último sale bastante antes del final y hay tiempo para leerlo
+              for (let i = 1; i < n; i++) if (drawn >= stepStart(i)) k = i;
+              requestStep(k);
+            },
+          },
+        });
+        tl.fromTo(curve, { drawSVG: "0%" }, { drawSVG: "100%", duration: DRAW }).to({}, { duration: 1 - DRAW });
+        pinTrigger = tl.scrollTrigger ?? null;
+
+        // Al cambiar el tamaño de la ventana, la línea se recoloca
+        const onRefreshInit = () => layoutCurve();
+        ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
+        return () => {
+          ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
+          pendingCall?.kill();
+          pendingCall = null;
+          exitTween?.kill();
+          stepTweens.forEach((t) => t.progress(1).pause());
+          section.classList.remove("is-live");
+          setNavHidden(false);
+          pinTrigger = null;
+        };
+      },
+    );
+    ScrollTrigger.sort();
+  }
+
+  function destroyHow() {
+    mm?.revert();
+    mm = null;
+    controller?.abort();
+    controller = null;
+    setNavHidden(false);
+  }
+
+  document.addEventListener("astro:page-load", initHow);
+  document.addEventListener("astro:before-swap", destroyHow);
+</script>

@@ -1,0 +1,427 @@
+---
+/**
+ * Nav flotante: una barra negra translúcida con esquinas redondeadas, separada del borde,
+ * que se queda arriba al hacer scroll. Logo a la izquierda y las rutas centradas.
+ * Sin botón de CTA: la acción principal vive en el hero y en el cierre de cada página.
+ *
+ * Services abre un panel blanco con texto negro: cuatro servicios en dos columnas, cada uno con su icono,
+ * su nombre y una línea corta. Los textos largos de cada servicio viven en su página, no aquí.
+ *
+ * Iconos: morphicons (trazos propios en formato `d`). La flecha de Services se convierte en la contraria
+ * al abrir, y en móvil el icono de menú se convierte en una X.
+ */
+import MorphIcon from "morphicons/astro";
+import Logo from "../assets/images/brux-logo-sobre-negro.svg";
+import { services, navLinks } from "../data/site";
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== "/" && path.startsWith(href));
+const links = [...navLinks, { href: "/contact/", label: "Contact" }];
+
+/* Trazos de los iconos (rejilla de 24, estilo de línea). Los usa también el script de abajo. */
+const icons = {
+  menu: "M4 8h16M4 16h16",
+  close: "M6 6l12 12M18 6L6 18",
+  chevronDown: "M6 9l6 6 6-6",
+  arrow: "M5 12h14M13 6l6 6-6 6",
+};
+const serviceIcons: Record<string, string> = {
+  // Micrófono
+  "/services/booking/": "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3",
+  // Personas conectadas
+  "/services/linkedin/":
+    "M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.15a3.5 3.5 0 0 1 0 6.7",
+  // Cámara de vídeo
+  "/services/content/": "M4 7h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zM16 10.5l6-3.5v10l-6-3.5",
+  // Navegador
+  "/services/web-design/": "M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM2 9h20M6 6.5h.01M9 6.5h.01",
+};
+/* Una línea corta por servicio para el desplegable */
+const shortText: Record<string, string> = {
+  "/services/booking/": "Pitches to event organizers",
+  "/services/linkedin/": "A profile organizers trust",
+  "/services/content/": "Reel, press kit and clips",
+  "/services/web-design/": "One link for every organizer",
+};
+
+const linkBase = "nav-link rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium";
+---
+
+<!-- data-nav-theme: «light» (barra clara) sobre fondos oscuros, «dark» sobre fondos claros. Lo decide el script según lo que hay debajo -->
+<header class="fixed inset-x-0 top-3 z-40 px-4 sm:top-4 sm:px-8 lg:px-12" data-nav data-nav-theme="light">
+  <nav
+    class="nav-bar mx-auto grid h-14 max-w-3xl grid-cols-[1fr_auto] items-center rounded-[14px] pr-1.5 pl-5 lg:grid-cols-[1fr_auto_1fr]"
+    aria-label="Main"
+  >
+    <a href="/" class="-m-2 justify-self-start rounded-lg p-2" aria-label="Brux, home">
+      <Logo class="nav-logo h-5 w-auto sm:h-[1.375rem]" aria-hidden="true" />
+    </a>
+
+    <!-- Escritorio: rutas centradas -->
+    <ul class="hidden items-center gap-1 lg:flex">
+      <li class="relative" data-dropdown>
+        <button
+          type="button"
+          class:list={[linkBase, "flex items-center gap-1", isCurrent("/services/") && "is-current"]}
+          aria-expanded="false"
+          aria-controls="nav-services"
+          data-dropdown-button
+        >
+          Services
+          <MorphIcon icon={icons.chevronDown} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" data-chevron />
+        </button>
+
+        <div
+          id="nav-services"
+          class="nav-dropdown absolute top-[calc(100%+1.125rem)] left-1/2 hidden w-[34rem] -translate-x-1/2 p-2"
+          data-dropdown-panel
+        >
+          <ul class="grid grid-cols-2 gap-1">
+            {
+              services.map((s) => (
+                <li>
+                  <a
+                    href={s.href}
+                    class="group/item flex items-center gap-3.5 rounded-[10px] p-3 transition-colors duration-150 hover:bg-mist"
+                    aria-current={isCurrent(s.href) ? "page" : undefined}
+                  >
+                    <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-mist text-ink transition-colors duration-150 group-hover/item:bg-stage group-hover/item:text-paper">
+                      <MorphIcon icon={serviceIcons[s.href] ?? icons.arrow} size={20} strokeWidth={1.75} />
+                    </span>
+                    <span class="min-w-0">
+                      <span class="block text-[0.9375rem] font-semibold text-ink">{s.name}</span>
+                      <span class="mt-0.5 block truncate text-[0.8125rem] text-muted">{shortText[s.href] ?? s.text}</span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <a
+            href="/services/"
+            class="group/all mt-1 flex items-center justify-between rounded-[10px] bg-mist px-4 py-3 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-[#e8e8e8]"
+          >
+            See all services
+            <span class="text-stage-text transition-transform duration-150 group-hover/all:translate-x-0.5">
+              <MorphIcon icon={icons.arrow} size={16} strokeWidth={2} />
+            </span>
+          </a>
+        </div>
+      </li>
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class:list={[linkBase, "block", isCurrent(l.href) && "is-current"]}
+              aria-current={isCurrent(l.href) ? "page" : undefined}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Móvil: botón del menú a la derecha. El icono se transforma en X al abrir -->
+    <button
+      type="button"
+      class="nav-link grid size-11 place-items-center justify-self-end rounded-[10px] lg:hidden"
+      aria-expanded="false"
+      aria-controls="nav-mobile"
+      aria-label="Open menu"
+      data-menu-button
+    >
+      <MorphIcon icon={icons.menu} size={22} strokeWidth={2} spring="snappy" reducedMotion="user" data-menu-icon />
+    </button>
+  </nav>
+
+  <!-- Móvil: panel blanco, igual que el desplegable de escritorio -->
+  <div
+    id="nav-mobile"
+    class="nav-dropdown fixed inset-x-4 top-[4.75rem] hidden max-h-[calc(100svh-5.75rem)] overflow-y-auto p-2 sm:inset-x-8 sm:top-20 lg:hidden"
+    data-menu-panel
+  >
+    <p class="px-3 pt-2 pb-1 text-[0.8125rem] font-medium text-muted">Services</p>
+    <ul>
+      {
+        services.map((s) => (
+          <li>
+            <a href={s.href} class="flex items-center gap-3.5 rounded-[10px] p-3 active:bg-mist">
+              <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-mist text-ink">
+                <MorphIcon icon={serviceIcons[s.href] ?? icons.arrow} size={20} strokeWidth={1.75} />
+              </span>
+              <span class="text-base font-semibold text-ink">{s.name}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="mt-2 border-t border-ink/10 pt-2">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} class="flex items-center justify-between rounded-[10px] px-3 py-3.5 text-base font-semibold text-ink active:bg-mist">
+              {l.label}
+              <span class="text-muted">
+                <MorphIcon icon={icons.arrow} size={16} strokeWidth={2} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<style>
+  /* Barra clara (sobre fondos oscuros): el estado inicial, sobre el hero */
+  [data-nav-theme="light"] {
+    /* Vidrio esmerilado: blanco luminoso arriba que se abre un poco abajo, para que el color de detrás se asome */
+    --nav-bg: linear-gradient(180deg, rgb(255 255 255 / 0.9) 0%, rgb(255 255 255 / 0.74) 100%);
+    --nav-filter: blur(24px) saturate(200%) brightness(1.25);
+    --nav-ring: rgb(255 255 255 / 0.55);
+    --nav-highlight: rgb(255 255 255 / 0.9);
+    --nav-shadow: rgb(0 0 0 / 0.5);
+    --nav-fg: rgb(10 10 10 / 0.82);
+    --nav-fg-strong: var(--color-ink);
+    --nav-hover: rgb(10 10 10 / 0.07);
+  }
+  /* Barra oscura (sobre fondos claros) */
+  [data-nav-theme="dark"] {
+    --nav-bg: linear-gradient(rgb(14 14 14 / 0.62), rgb(14 14 14 / 0.62));
+    --nav-filter: blur(20px) saturate(180%);
+    --nav-ring: rgb(255 255 255 / 0.08);
+    --nav-highlight: rgb(255 255 255 / 0.06);
+    --nav-shadow: rgb(0 0 0 / 0.45);
+    --nav-fg: rgb(255 255 255 / 0.75);
+    --nav-fg-strong: var(--color-paper);
+    --nav-hover: rgb(255 255 255 / 0.08);
+  }
+  .nav-bar {
+    background: var(--nav-bg);
+    -webkit-backdrop-filter: var(--nav-filter);
+    backdrop-filter: var(--nav-filter);
+    /* Borde fino + brillo en el canto superior, como un cristal */
+    box-shadow:
+      inset 0 0 0 1px var(--nav-ring),
+      inset 0 1px 0 var(--nav-highlight),
+      0 18px 40px -18px var(--nav-shadow);
+    transition: box-shadow 300ms ease;
+  }
+  /*
+    Ocultar el nav: cualquier sección puede poner <html data-nav-hidden> (p. ej. HowWeBook mientras está fija)
+    y la barra sube fuera de la vista; al quitarlo, vuelve.
+  */
+  [data-nav] {
+    transition:
+      translate 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 400ms ease;
+  }
+  :global(html[data-nav-hidden]) [data-nav] {
+    translate: 0 calc(-100% - 1.5rem);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav] {
+      transition: opacity 200ms ease;
+    }
+  }
+  .nav-link {
+    color: var(--nav-fg);
+    transition:
+      color 300ms ease,
+      background-color 150ms ease;
+  }
+  .nav-link:hover,
+  .nav-link:focus-visible,
+  .nav-link[aria-expanded="true"] {
+    color: var(--nav-fg-strong);
+    background: var(--nav-hover);
+  }
+  .nav-link.is-current {
+    color: var(--nav-fg-strong);
+  }
+  /* Las letras del logo siguen el color del texto; la X roja se queda roja */
+  .nav-logo {
+    color: var(--nav-fg-strong);
+    transition: color 300ms ease;
+  }
+  .nav-logo :global(path[fill="#FFFFFF"]) {
+    fill: currentColor;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-bar,
+    .nav-link,
+    .nav-logo {
+      transition: none;
+    }
+  }
+  /* Los paneles son blancos y opacos: texto negro con contraste sobre cualquier fondo */
+  .nav-dropdown {
+    background: var(--color-paper);
+    border-radius: 14px;
+    box-shadow:
+      0 0 0 1px rgb(10 10 10 / 0.06),
+      0 24px 48px -16px rgb(0 0 0 / 0.55);
+  }
+  .nav-dropdown:not(.hidden) {
+    animation: nav-panel-in 180ms ease-out;
+  }
+  /* Usa transform; el centrado del desplegable va por la propiedad translate de Tailwind, así no chocan */
+  @keyframes nav-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-dropdown:not(.hidden) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type MorphEl = HTMLElement & { morphTo: (icon: string) => void };
+
+  // Los mismos trazos que en el frontmatter
+  const MENU = "M4 8h16M4 16h16";
+  const CLOSE = "M6 6l12 12M18 6L6 18";
+  const CHEVRON_DOWN = "M6 9l6 6 6-6";
+  const CHEVRON_UP = "M6 15l6-6 6 6";
+
+  let controller: AbortController | null = null;
+
+  function initNav() {
+    controller?.abort();
+    controller = new AbortController();
+    const { signal } = controller;
+
+    // Desplegable de Services (escritorio)
+    const dropdown = document.querySelector<HTMLElement>("[data-dropdown]");
+    const ddButton = dropdown?.querySelector<HTMLButtonElement>("[data-dropdown-button]");
+    const ddPanel = dropdown?.querySelector<HTMLElement>("[data-dropdown-panel]");
+    const chevron = dropdown?.querySelector<MorphEl>("[data-chevron]");
+    const setDropdown = (open: boolean) => {
+      if (!ddButton || !ddPanel) return;
+      const wasOpen = ddButton.getAttribute("aria-expanded") === "true";
+      ddButton.setAttribute("aria-expanded", String(open));
+      ddPanel.classList.toggle("hidden", !open);
+      if (wasOpen !== open) chevron?.morphTo?.(open ? CHEVRON_UP : CHEVRON_DOWN);
+    };
+    ddButton?.addEventListener("click", () => setDropdown(ddButton.getAttribute("aria-expanded") !== "true"), { signal });
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (dropdown && !dropdown.contains(e.target as Node)) setDropdown(false);
+      },
+      { signal },
+    );
+
+    // Menú móvil: el icono de dos líneas se transforma en X
+    const menuButton = document.querySelector<HTMLButtonElement>("[data-menu-button]");
+    const menuPanel = document.querySelector<HTMLElement>("[data-menu-panel]");
+    const menuIcon = menuButton?.querySelector<MorphEl>("[data-menu-icon]");
+    const setMenu = (open: boolean) => {
+      if (!menuButton || !menuPanel) return;
+      const wasOpen = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      if (wasOpen !== open) menuIcon?.morphTo?.(open ? CLOSE : MENU);
+      menuPanel.classList.toggle("hidden", !open);
+      document.documentElement.classList.toggle("overflow-hidden", open);
+    };
+    menuButton?.addEventListener("click", () => setMenu(menuButton.getAttribute("aria-expanded") !== "true"), { signal });
+
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key !== "Escape") return;
+        if (ddButton?.getAttribute("aria-expanded") === "true") {
+          setDropdown(false);
+          ddButton.focus();
+        }
+        if (menuButton?.getAttribute("aria-expanded") === "true") {
+          setMenu(false);
+          menuButton.focus();
+        }
+      },
+      { signal },
+    );
+
+    // Al cambiar de página con ClientRouter, todo se cierra
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        setMenu(false);
+        setDropdown(false);
+      },
+      { signal, once: true },
+    );
+  }
+
+  /*
+    Tono de la barra según el fondo que tiene debajo: busca, en el centro de la barra, el primer elemento
+    de la página (fuera del nav) con fondo opaco, o un vídeo o imagen (los nuestros son oscuros),
+    y mide su luminosidad. Oscuro → barra clara; claro → barra oscura.
+  */
+  function luminance(color: string) {
+    // rgb()/rgba() en 0–255, o color(srgb …) en 0–1 (lo que devuelven los colores con opacidad de Tailwind 4)
+    const m = color.match(/rgba?\(([^)]+)\)/) ?? color.match(/color\(srgb ([^)]+)\)/);
+    if (!m) return null;
+    const scale = color.startsWith("color(") ? 255 : 1;
+    const parts = m[1].split(/[ ,/]+/).filter(Boolean).map(Number);
+    const [r, g, b] = parts.map((v, i) => (i < 3 ? v * scale : v));
+    const a = parts[3] ?? 1;
+    if (a < 0.5) return null;
+    const lin = (c: number) => ((c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  }
+
+  function initNavTheme(signal: AbortSignal) {
+    const header = document.querySelector<HTMLElement>("[data-nav]");
+    const bar = header?.querySelector<HTMLElement>("nav");
+    if (!header || !bar) return;
+
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const r = bar.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      let lum = 0;
+      for (const el of document.elementsFromPoint(x, y)) {
+        if (header.contains(el)) continue;
+        if (el instanceof HTMLVideoElement || el instanceof HTMLImageElement || el instanceof HTMLCanvasElement) {
+          lum = 0;
+          break;
+        }
+        const l = luminance(getComputedStyle(el).backgroundColor);
+        if (l !== null) {
+          lum = l;
+          break;
+        }
+      }
+      const theme = lum > 0.4 ? "dark" : "light";
+      if (header.dataset.navTheme !== theme) header.dataset.navTheme = theme;
+    };
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+    addEventListener("scroll", queue, { passive: true, signal });
+    addEventListener("resize", queue, { signal });
+    update();
+    // Los fondos animados (el pin de la frase) cambian sin que cambie el scroll; un repaso lento lo cubre
+    const timer = setInterval(queue, 400);
+    signal.addEventListener("abort", () => clearInterval(timer));
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    initNav();
+    if (controller) initNavTheme(controller.signal);
+  });
+</script>

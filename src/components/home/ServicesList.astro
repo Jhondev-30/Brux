@@ -1,0 +1,42 @@
+---
+import { services } from "../../data/site";
+---
+
+<section id="services" class="bg-ink-raised py-24 sm:py-32" aria-labelledby="services-title">
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <h2
+        id="services-title"
+        class="max-w-[32rem] text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance text-paper"
+      >
+        What we do for speakers
+      </h2>
+      <a href="/services/" class="group inline-flex items-center gap-2 font-semibold text-stage-glow">
+        All services
+        <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+
+    <ul class="mt-14 border-t border-paper/10">
+      {services.map((s) => (
+        <li class="border-b border-paper/10">
+          <a
+            href={s.href}
+            class="group grid gap-2 py-8 sm:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] sm:items-baseline sm:gap-8 sm:py-10"
+          >
+            <h3 class="text-[clamp(1.375rem,1.15rem+1vw,2rem)] leading-tight font-extrabold tracking-[-0.02em] text-paper transition-colors duration-150 group-hover:text-stage-glow">
+              {s.name}
+            </h3>
+            <p class="max-w-[34rem] leading-relaxed text-muted-on-ink">{s.text}</p>
+            <span
+              aria-hidden="true"
+              class="hidden text-2xl text-paper/50 transition-[transform,color] duration-150 group-hover:translate-x-1 group-hover:text-paper sm:block"
+            >
+              →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,6 +1,7 @@
 ---
 const {title, description} = Astro.props;
 import {Font} from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 
 ---
 <head>
@@ -12,6 +13,7 @@ import {Font} from 'astro:assets';
 	<meta name="generator" content={Astro.generator} />
 	<Font cssVariable='--font-brux' preload/>
 	<title>{title}</title>
+	<ClientRouter />
 	{description && <meta name="description" content={description} />}
 
 

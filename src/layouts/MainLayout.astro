@@ -1,25 +1,32 @@
 ---
 import MainHead from '../components/MainHead.astro';
+import Nav from '../components/Nav.astro';
+import MainFooter from '../components/MainFooter.astro';
 import '../styles/global.css';
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-// ScrollSmoother requires ScrollTrigger
-import { ScrollSmoother } from "gsap/ScrollSmoother";
-import { SplitText } from "gsap/SplitText";
-import { TextPlugin } from "gsap/TextPlugin";
 
-gsap.registerPlugin(ScrollTrigger,ScrollSmoother,SplitText,TextPlugin);
 
 const { title, description } = Astro.props;
 ---
 
 <html lang="en">
 	<MainHead title={title} description={description} />
-	<body class=" min-h-screen flex flex-col  justify-center">
-        <main class="flex flex-col flex-1">
+	<body class="min-h-screen flex flex-col bg-ink overflow-x-clip">
+        <a href="#main" class="sr-only z-50 rounded-[3px] bg-paper px-4 py-3 font-semibold text-ink focus:not-sr-only focus:fixed focus:top-4 focus:left-4">Skip to content</a>
+        <Nav />
+        <main id="main" class="flex flex-col flex-1">
             <slot />
         </main>
+        <MainFooter />
 
-		
+	<script>
+        import { gsap } from "gsap";
+        import { ScrollTrigger } from "gsap/ScrollTrigger";
+         // ScrollSmoother requires ScrollTrigger
+        import { ScrollSmoother } from "gsap/ScrollSmoother";
+        import { SplitText } from "gsap/SplitText";
+        import { TextPlugin } from "gsap/TextPlugin";
+    
+        gsap.registerPlugin(ScrollTrigger,ScrollSmoother,SplitText,TextPlugin);
+    </script> 
 	</body>
 </html>

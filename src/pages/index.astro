@@ -1,9 +1,44 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import HeroMain from "../components/HeroMain.astro"
+import MainHero from "../components/MainHero.astro";
+import HowWeBook from "../components/home/HowWeBook.astro";
+import ServicesList from "../components/home/ServicesList.astro";
+import Testimonials from "../components/home/Testimonials.astro";
+import PricingTeaser from "../components/home/PricingTeaser.astro";
+import Faq from "../components/home/Faq.astro";
+import StatementScene from "../components/home/StatementScene.astro";
+import FinalCta from "../components/home/FinalCta.astro";
 ---
 
-<MainLayout  > 
-	<HeroMain />
-	
+<MainLayout
+	title="Speaker Booking & LinkedIn for Keynote Speakers | Brux"
+	description="We pitch you every month to the organizers who book speakers in your niche and grow your LinkedIn. Plans from $500 a month, no commission on your fees."
+>
+	<!-- 1. La respuesta corta: qué hacemos y para quién (h1) -->
+	<MainHero />
+
+	<!-- 2. La pregunta con la que llegan: cómo conseguimos eventos -->
+	<HowWeBook />
+
+	<!-- 3. Los cuatro servicios, con enlace a cada página -->
+	<ServicesList />
+
+	<!-- 4. Testimonios en carrusel con flechas. Se muestra solo cuando haya archivos en src/content/testimonials/ -->
+	<Testimonials />
+
+	<!-- 5. PENDIENTE: casos de éxito («Our work»), cuando estén los datos. Cada caso, con su página en /work/nombre/ -->
+
+	<!-- 6. Planes y precio: la sección clara del formato Backstage -->
+	<PricingTeaser />
+
+	<!-- 7. PENDIENTE: quiénes somos (Jhon y Everth), con enlace a /about/ -->
+
+	<!-- 8. Preguntas frecuentes, con JSON-LD -->
+	<Faq />
+
+	<!-- 9. La frase: el foco rojo inunda el escenario con el scroll y termina en el rojo de FinalCta -->
+	<StatementScene />
+
+	<!-- 10. Última llamada a la acción -->
+	<FinalCta />
 </MainLayout>

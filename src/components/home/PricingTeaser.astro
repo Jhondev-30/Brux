@@ -1,0 +1,60 @@
+---
+import Button from "../ui/Button.astro";
+import { plans } from "../../data/site";
+---
+
+<!-- La sección clara del formato Backstage -->
+<section id="plans" class="bg-paper py-24 text-ink sm:py-32" aria-labelledby="plans-title">
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+      <div>
+        <h2
+          id="plans-title"
+          class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance"
+        >
+          Plans from $500 a month. No commission on your fees.
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-ink/80">
+          Every plan combines booking and LinkedIn. The Founder plan keeps the $500 rate until we book your first
+          paid stage, then moves to Foundation.
+        </p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+          <Button href="/pricing/">Compare plans</Button>
+          <Button href="/contact/" variant="secondary-light">Book a call</Button>
+        </div>
+      </div>
+
+      <div>
+        <table class="w-full text-left tabular-nums">
+          <caption class="sr-only">Brux plans: monthly price and pitches to event organizers per month</caption>
+          <thead>
+            <tr class="border-b-2 border-ink text-sm text-muted">
+              <th scope="col" class="py-3 pr-4 font-semibold">Plan</th>
+              <th scope="col" class="py-3 pr-4 font-semibold">Price</th>
+              <th scope="col" class="py-3 font-semibold">Pitches / month</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plans.map((p) => (
+              <tr class="border-b border-ink/15">
+                <th scope="row" class="py-5 pr-3 text-base font-extrabold tracking-[-0.01em] sm:text-lg">
+                  {p.name}
+                  {p.name === "Growth" && (
+                    <span class="mt-1 block w-fit rounded-full sm:mt-0 sm:ml-2 sm:inline-block bg-stage px-2.5 py-0.5 align-middle text-xs font-semibold text-paper">
+                      Recommended
+                    </span>
+                  )}
+                </th>
+                <td class="py-5 pr-3 text-base whitespace-nowrap sm:text-lg">
+                  <span class="font-semibold">{p.price}</span>
+                  <span class="text-muted"> /mo</span>
+                </td>
+                <td class="py-5 text-base sm:text-lg">{p.pitches}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

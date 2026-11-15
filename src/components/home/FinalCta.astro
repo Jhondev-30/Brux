@@ -1,0 +1,24 @@
+---
+import Button from "../ui/Button.astro";
+---
+
+<section id="book" class="bg-stage py-24 sm:py-32" aria-labelledby="book-title">
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <h2
+      id="book-title"
+      class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+2.8vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-paper"
+    >
+      Ready for your next stage?
+    </h2>
+    <p class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-paper">
+      Tell us your topic and your recent talks, and we'll recommend the plan that fits.
+    </p>
+    <!-- Sobre rojo, el botón principal pasa a negro para que se vea -->
+    <a
+      href="/contact/"
+      class="mt-9 inline-flex min-h-12 items-center justify-center rounded-[3px] bg-ink px-6 text-base font-semibold text-paper transition-[background-color,transform] duration-150 ease-out hover:bg-ink-raised active:translate-y-px"
+    >
+      Book a call
+    </a>
+  </div>
+</section>
