@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# estado local de las skills de diseño (perfil de Chrome, historial del gate, caché)
+.taste-skill/
+.impeccable/hook.cache.json

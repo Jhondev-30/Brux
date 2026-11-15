@@ -1,0 +1,71 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/MainHero.astro"
+        ],
+        "createdAt": "2026-11-15T01:40:22.706Z",
+        "reason": "Claude: falso positivo, el hero es a sangre completa y el texto tiene su padding en el contenedor interior (px-4 a px-12)"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/home/ServicesList.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:13.025Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/home/PricingTeaser.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:13.570Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/home/Faq.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:14.073Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/home/FinalCta.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:14.525Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/home/HowWeBook.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:15.022Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "src/components/MainFooter.astro"
+        ],
+        "createdAt": "2026-11-15T03:12:15.522Z",
+        "reason": "Claude: falso positivo, secciones a sangre completa con padding en el contenedor interior y listas separadas por líneas finas con padding vertical"
+      }
+    ]
+  }
+}
