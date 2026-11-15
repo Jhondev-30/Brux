@@ -1,0 +1,23 @@
+---
+import MainHead from '../components/MainHead.astro';
+import '../styles/global.css';
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+// ScrollSmoother requires ScrollTrigger
+import { ScrollSmoother } from "gsap/ScrollSmoother";
+import { SplitText } from "gsap/SplitText";
+import { TextPlugin } from "gsap/TextPlugin";
+
+gsap.registerPlugin(ScrollTrigger,ScrollSmoother,SplitText,TextPlugin);
+---
+
+<html lang="en">
+	<MainHead  />
+	<body class=" min-h-screen flex flex-col  justify-center">
+        <main class="flex flex-col flex-1">
+            <slot />
+        </main>
+
+		
+	</body>
+</html>
