@@ -1,0 +1,52 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+// Datos del PDF de planes del 1 de noviembre de 2026
+const posts = [
+  { plan: "Founder", value: "2" },
+  { plan: "Foundation", value: "2" },
+  { plan: "Growth", value: "4" },
+  { plan: "Complete", value: "8" },
+];
+---
+
+<MainLayout
+  title="LinkedIn Management for Speakers | Brux"
+  description="Positioning, profile optimization, posts and active network growth with the organizers who book speakers. A monthly report on every result."
+>
+  <section>
+    <h1>LinkedIn management for speakers</h1>
+    <p>
+      Before organizers book you, they check your LinkedIn. We make sure what they find backs up
+      every pitch, and grow your network with the people who book speakers.
+    </p>
+    <a href="/contact/">Book a call</a>
+  </section>
+
+  <section>
+    <h2>Included in every plan</h2>
+    <ul>
+      <li>Positioning and profile optimization</li>
+      <li>Active network expansion with organizers in your niche</li>
+      <li>A monthly report</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Posts on your profile every month</h2>
+    <ul>
+      {posts.map((p) => (
+        <li><strong>{p.value}</strong> posts a month on the {p.plan} plan</li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>On the Complete plan</h2>
+    <ul>
+      <li>Comments on relevant posts and accounts</li>
+      <li>Direct outreach to organizers in your name</li>
+    </ul>
+    <a href="/pricing/">See plans</a>
+  </section>
+</MainLayout>

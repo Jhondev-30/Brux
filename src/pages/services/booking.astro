@@ -1,0 +1,51 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+// Datos del PDF de planes del 1 de noviembre de 2026
+const pitches = [
+  { plan: "Founder", value: "60" },
+  { plan: "Foundation", value: "60" },
+  { plan: "Growth", value: "110" },
+  { plan: "Complete", value: "160+" },
+];
+---
+
+<MainLayout
+  title="Speaker Booking Service: Pitches to Event Organizers | Brux"
+  description="We pitch you every month to the organizers of events in your niche, with press kit, CRM access and post-event follow-up. No commission on your fees."
+>
+  <section>
+    <h1>Speaker booking that goes after paid stages</h1>
+    <p>
+      We pitch you directly to the organizers who book speakers in your niche. No generic listings:
+      every pitch goes to an event that fits your topics.
+    </p>
+    <a href="/contact/">Book a call</a>
+  </section>
+
+  <section>
+    <h2>Pitches to event organizers every month</h2>
+    <ul>
+      {pitches.map((p) => (
+        <li><strong>{p.value}</strong> pitches a month on the {p.plan} plan</li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Included in every plan</h2>
+    <ul>
+      <li>Pitches to event organizers in your niche</li>
+      <li>Press kit and demo reel to back every pitch</li>
+      <li>Access to our CRM, with a record of every organizer we contact</li>
+      <li>Post-event follow-up and an organized calendar</li>
+      <li>A monthly report</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Your fee is yours</h2>
+    <p>We take no commission on your speaking fees.</p>
+    <a href="/pricing/">See plans</a>
+  </section>
+</MainLayout>

@@ -9,10 +9,12 @@ import { SplitText } from "gsap/SplitText";
 import { TextPlugin } from "gsap/TextPlugin";
 
 gsap.registerPlugin(ScrollTrigger,ScrollSmoother,SplitText,TextPlugin);
+
+const { title, description } = Astro.props;
 ---
 
 <html lang="en">
-	<MainHead  />
+	<MainHead title={title} description={description} />
 	<body class=" min-h-screen flex flex-col  justify-center">
         <main class="flex flex-col flex-1">
             <slot />

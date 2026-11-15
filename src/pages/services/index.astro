@@ -1,0 +1,60 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+const services = [
+  {
+    href: "/services/booking/",
+    name: "Speaker booking",
+    text: "We pitch you every month to the organizers of events in your niche. No commission on your fees.",
+  },
+  {
+    href: "/services/linkedin/",
+    name: "LinkedIn management",
+    text: "Positioning, an optimized profile and a growing network of the people who book speakers.",
+  },
+  {
+    href: "/services/content/",
+    name: "Speaker content",
+    text: "Demo reel, press kit, LinkedIn posts and edited clips from your talks.",
+  },
+  {
+    href: "/services/web-design/",
+    name: "Speaker websites",
+    text: "One link that answers an organizer's questions: bio, topics, reel and a way to book you.",
+  },
+];
+---
+
+<MainLayout
+  title="Services for Professional Speakers | Brux"
+  description="Speaker booking, LinkedIn management, content and speaker websites. Plans from $500 a month, with no commission on your fees."
+>
+  <section>
+    <h1>Services for professional speakers</h1>
+    <p>
+      We go after the paid stages that fit your niche, and make sure your LinkedIn backs up every pitch.
+    </p>
+  </section>
+
+  <section>
+    <h2>What we do</h2>
+    <ul>
+      {services.map((s) => (
+        <li>
+          <h3><a href={s.href}>{s.name}</a></h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>One plan, booking and LinkedIn together</h2>
+    <p>
+      Every plan combines booking and LinkedIn, because organizers check your profile before they book you.
+      Plans go from $500 to $2,500 a month.
+    </p>
+    <a href="/pricing/">See plans</a>
+    <a href="/contact/">Book a call</a>
+  </section>
+</MainLayout>

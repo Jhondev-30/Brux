@@ -1,8 +1,5 @@
 @import "tailwindcss";
-@font-face {
-    font-family: 'brux-tittle';
-    src: url();
-}
+
 @theme { 
   --color-ink: #0A0A0A;            /* fondo principal y texto sobre claro */
   --color-ink-raised: #161616;     /* tarjetas y secciones sobre el negro */
@@ -13,4 +10,5 @@
   --color-stage-text: #C20A18;     /* texto rojo sobre blanco */
   --color-muted: #5C5C5C;          /* texto secundario sobre claro, 5,97 */
   --color-muted-on-ink: #A8A8A8;   /* texto secundario sobre negro, 8,33 */
+  --font-sans:var(--font-brux) ;
 }
