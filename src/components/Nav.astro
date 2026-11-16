@@ -363,9 +363,11 @@ const linkBase = "nav-link rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium";
   }
 
   /*
-    Tono de la barra según el fondo que tiene debajo: busca, en el centro de la barra, el primer elemento
-    de la página (fuera del nav) con fondo opaco, o un vídeo o imagen (los nuestros son oscuros),
-    y mide su luminosidad. Oscuro → barra clara; claro → barra oscura.
+    Tono de la barra según la SECCIÓN que tiene debajo, no según cada elemento: así cambia una sola vez al pasar
+    de una sección a otra, aunque dentro haya tarjetas, fotos o vídeos de otros colores.
+    Las secciones son los bloques de primer nivel de <main> y lo que hay fuera de él (el footer).
+    El tono de cada sección se calcula una vez con su color de fondo: oscuro → barra clara; claro → barra oscura.
+    Una sección puede fijarlo a mano con data-nav-theme="light" | "dark".
   */
   function luminance(color: string) {
     // rgb()/rgba() en 0–255, o color(srgb …) en 0–1 (lo que devuelven los colores con opacidad de Tailwind 4)
@@ -385,26 +387,51 @@ const linkBase = "nav-link rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium";
     const bar = header?.querySelector<HTMLElement>("nav");
     if (!header || !bar) return;
 
+    // Bloques de primer nivel: hijos de <main> y del <body> (el nav no cuenta)
+    const blocks = () => {
+      const main = document.querySelector("main");
+      const list: HTMLElement[] = [];
+      for (const el of document.body.children) {
+        if (!(el instanceof HTMLElement) || el.contains(header) || el.tagName === "SCRIPT") continue;
+        if (el === main) list.push(...([...main.children].filter((c) => c instanceof HTMLElement) as HTMLElement[]));
+        else list.push(el);
+      }
+      return list;
+    };
+    // Tono de una sección: el primer fondo opaco de la propia sección (o de su primer hijo, si es un envoltorio
+    // como el que crea un pin). Se calcula una vez y se guarda.
+    const themes = new WeakMap<HTMLElement, "light" | "dark">();
+    const themeOf = (block: HTMLElement): "light" | "dark" => {
+      const cached = themes.get(block);
+      if (cached) return cached;
+      let theme: "light" | "dark" = "light";
+      const forced = block.dataset.navTheme ?? block.querySelector<HTMLElement>(":scope > [data-nav-theme]")?.dataset.navTheme;
+      if (forced === "light" || forced === "dark") theme = forced;
+      else {
+        let el: Element | null = block;
+        for (let depth = 0; el && depth < 4; depth++, el = el.firstElementChild) {
+          const l = luminance(getComputedStyle(el).backgroundColor);
+          if (l !== null) {
+            theme = l > 0.4 ? "dark" : "light";
+            break;
+          }
+        }
+      }
+      themes.set(block, theme);
+      return theme;
+    };
+
     let queued = false;
     const update = () => {
       queued = false;
       const r = bar.getBoundingClientRect();
-      const x = r.left + r.width / 2;
       const y = r.top + r.height / 2;
-      let lum = 0;
-      for (const el of document.elementsFromPoint(x, y)) {
-        if (header.contains(el)) continue;
-        if (el instanceof HTMLVideoElement || el instanceof HTMLImageElement || el instanceof HTMLCanvasElement) {
-          lum = 0;
-          break;
-        }
-        const l = luminance(getComputedStyle(el).backgroundColor);
-        if (l !== null) {
-          lum = l;
-          break;
-        }
-      }
-      const theme = lum > 0.4 ? "dark" : "light";
+      const block = blocks().find((el) => {
+        const b = el.getBoundingClientRect();
+        return b.height > 0 && b.top <= y && b.bottom > y;
+      });
+      if (!block) return;
+      const theme = themeOf(block);
       if (header.dataset.navTheme !== theme) header.dataset.navTheme = theme;
     };
     const queue = () => {
@@ -415,9 +442,6 @@ const linkBase = "nav-link rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium";
     addEventListener("scroll", queue, { passive: true, signal });
     addEventListener("resize", queue, { signal });
     update();
-    // Los fondos animados (el pin de la frase) cambian sin que cambie el scroll; un repaso lento lo cubre
-    const timer = setInterval(queue, 400);
-    signal.addEventListener("abort", () => clearInterval(timer));
   }
 
   document.addEventListener("astro:page-load", () => {

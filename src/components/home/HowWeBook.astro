@@ -1,47 +1,48 @@
 ---
-import { Image } from "astro:assets";
 import Button from "../ui/Button.astro";
-// IMÁGENES PROVISIONALES: fotogramas del vídeo del escenario. Sustituir por las reales (ver comentario de cada paso).
-// La tarjeta es ancha: las imágenes reales deben ser horizontales (2400 × 1200 px aprox., lo importante en el centro).
-import step1 from "../../assets/how/step-1.webp";
-import step2 from "../../assets/how/step-2.webp";
-import step3 from "../../assets/how/step-3.webp";
-import step4 from "../../assets/how/step-4.webp";
+import { bookingUrl } from "../../data/site";
 
-// Contenido del PDF de planes del 1 de noviembre de 2026
+// Contenido del PDF de planes del 1 de noviembre de 2026.
+// Vídeos: motion graphics hechos con HyperFrames (proyecto en «Brux algo/brux-motion»), sin sonido.
+// Están en /public/videos/how/. duration = segundos del vídeo.
 const steps = [
   {
     title: "We define your niche",
     text: "We agree on your topics and the events that fit them, then position your LinkedIn so it backs up every pitch.",
-    image: step1, // Real: un perfil de LinkedIn de un cliente optimizado por vosotros, o una foto del speaker
-    alt: "A speaker's stage, ready before the talk",
+    video: "/videos/how/step-1",
+    duration: 11.6,
+    label: "Animation: a speaker's niche connects only to matching events, and the speaker approves which ones to pitch.",
   },
   {
     title: "We build your press kit and demo reel",
     text: "Organizers want to see how you sound on stage. Every pitch carries your press kit and your best moments.",
-    image: step2, // Real: páginas de un press kit o un fotograma de un demo reel hecho por vosotros
-    alt: "The podium under the spotlight",
+    video: "/videos/how/step-2",
+    duration: 13.6,
+    label: "Animation: a press kit opens and Philip Chan's demo reel plays, then lands as an attachment in an email.",
   },
   {
     title: "We pitch the organizers who book speakers",
     text: "From 60 to 160+ direct pitches a month, depending on your plan. Only events in your niche.",
-    image: step3, // Real: un pitch enviado a un organizador (datos tapados) o un speaker en un evento conseguido
-    alt: "A stage with the audience waiting",
+    video: "/videos/how/step-3",
+    duration: 13,
+    label: "Animation: a personal note to an event organizer is sent, alongside 160+ pitches by direct message and email.",
   },
   {
     title: "We follow up and keep your calendar",
     text: "You see every organizer we contact in our CRM, plus post-event follow-up and a monthly report.",
-    image: step4, // Real: captura del CRM o del informe mensual (datos tapados)
-    alt: "The stage after the talk",
+    video: "/videos/how/step-4",
+    duration: 14,
+    label: "Animation: organizers move through the CRM until three keynotes land on the calendar, followed by the monthly report.",
   },
 ];
 
 // Cada palabra va en su propia ventana para que pueda subir desde abajo (receta de tasteskill.dev)
 const words = (s: string) => s.split(" ");
+const pad = (i: number) => String(i + 1).padStart(2, "0");
 ---
 
 <section id="how-it-works" class="how bg-paper text-ink-raised" aria-labelledby="how-title" data-how>
-  <header class="how__head mx-auto max-w-[56rem] px-4 pt-24 text-center sm:px-8 sm:pt-28 lg:pt-32">
+  <header class="how__head mx-auto max-w-[56rem] px-4 pt-24 pb-6 text-center sm:px-8 sm:pt-28 lg:pt-32">
     <h2
       id="how-title"
       class="text-[clamp(2.125rem,1.5rem+2.6vw,3.75rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-ink"
@@ -58,46 +59,79 @@ const words = (s: string) => s.split(" ");
     </p>
   </header>
 
-  <!-- Este bloque se queda fijo: tarjeta a lo ancho, la línea que avanza y un paso a la vez -->
+  <!--
+    El escenario: ocupa justo la pantalla. Al llegar arriba frena y se queda quieto; cada vídeo pasa solo al
+    siguiente al terminar. El scroll también avanza (un toque si el vídeo terminó; si no, seguir haciendo scroll un rato).
+  -->
   <div class="how__stage mx-auto max-w-7xl px-4 sm:px-8 lg:px-12" data-how-stage>
     <div class="how__media" data-how-media>
       <div
         id="how-card"
-        class="how__card relative size-full overflow-hidden rounded-3xl bg-ink shadow-[0_30px_70px_-30px_rgb(10_10_10/0.6)]"
+        class="how__card relative size-full overflow-hidden rounded-3xl bg-ink"
         aria-roledescription="carousel"
         aria-label="How Brux works, step by step"
         data-how-card
       >
         {steps.map((s, i) => (
-          <div class="how__slide absolute inset-0" data-how-slide data-index={i} aria-hidden={i === 0 ? "false" : "true"}>
-            <Image
-              src={s.image}
-              alt={s.alt}
-              widths={[640, 1080, 1600, 2400]}
-              sizes="(min-width: 1280px) 1184px, 92vw"
-              class="size-full object-cover"
-            />
+          <div
+            class="how__slide absolute inset-0"
+            data-how-slide
+            data-index={i}
+            data-duration={s.duration}
+            aria-roledescription="slide"
+            aria-label={`Step ${i + 1} of ${steps.length}`}
+            aria-hidden={i === 0 ? "false" : "true"}
+          >
+            <video
+              class="how__video"
+              muted
+              playsinline
+              disablepictureinpicture
+              preload={i === 0 ? "auto" : "metadata"}
+              poster={`${s.video}-poster.webp`}
+              aria-label={s.label}
+            >
+              <source src={`${s.video}.webm`} type="video/webm" />
+              <source src={`${s.video}.mp4`} type="video/mp4" />
+            </video>
           </div>
         ))}
-        <button type="button" class="how__nav left-3 sm:left-5" aria-controls="how-card" aria-label="Previous step" data-how-prev disabled>
+
+        <button type="button" class="how__nav left-2 sm:left-5" aria-controls="how-card" aria-label="Previous step" data-how-prev disabled>
           <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
             <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </button>
-        <button type="button" class="how__nav right-3 sm:right-5" aria-controls="how-card" aria-label="Next step" data-how-next>
+        <button type="button" class="how__nav right-2 sm:right-5" aria-controls="how-card" aria-label="Next step" data-how-next>
           <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
             <path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </button>
+
+        <!-- Barra inferior: un segmento por paso (se llena con su vídeo) y pausa -->
+        <div class="how__bar">
+          <div class="how__segs" role="group" aria-label="Steps">
+            {steps.map((s, i) => (
+              <button type="button" class="how__seg" aria-label={`Go to step ${i + 1}: ${s.title}`} data-how-seg={i}>
+                <i data-how-seg-track><span class="how__seg-fill" data-how-seg-fill></span></i>
+              </button>
+            ))}
+          </div>
+          <button type="button" class="how__ctl" aria-label="Pause" aria-pressed="false" data-how-pause>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon-pause><path d="M4.5 3h2.2v10H4.5zM9.3 3h2.2v10H9.3z" fill="currentColor" /></svg>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon-play hidden><path d="M4.5 2.8v10.4L13 8z" fill="currentColor" /></svg>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- La línea: una onda regular a lo ancho; la pista gris muestra el recorrido y el trazo negro avanza con el scroll -->
+    <!-- La línea: una onda regular a lo ancho; el trazo negro avanza con el vídeo de cada paso -->
     <svg class="how__line" aria-hidden="true" data-how-line>
       <path data-how-trackline class="how__trackline" fill="none"></path>
       <path data-how-curve class="how__curve" fill="none"></path>
     </svg>
 
+    <!-- Los pasos se apilan en la misma celda: el bloque mide lo que mide el paso más largo -->
     <ol class="how__steps" data-how-steps>
       {steps.map((s) => (
         <li class="how__step" data-how-step>
@@ -121,35 +155,152 @@ const words = (s: string) => s.split(" ");
       ))}
     </ol>
 
-    <div class="how__cta" data-how-cta>
-      <Button href="/contact/">Book a call</Button>
-      <Button href="/services/booking/" variant="link" class="text-ink!">How booking works</Button>
+    <div class="how__cta">
+      <Button href={bookingUrl}>Book a call</Button>
+      <div class="how__views" role="group" aria-label="How to view the four steps">
+        <button type="button" class="how__view" aria-pressed="true" data-how-view="watch">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor" /></svg>
+          Watch
+        </button>
+        <button type="button" class="how__view" aria-pressed="false" data-how-view="list">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+          See all steps
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Los cuatro pasos de un vistazo, en formato tabla. Es la vista sin JS, con movimiento reducido o al elegir «See all steps» -->
+  <div id="how-all" class="how__all" data-how-all tabindex="-1" aria-labelledby="how-all-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+      <div class="how__all-head">
+        <h3 id="how-all-title" class="how__all-title">The four steps at a glance</h3>
+        <div class="how__all-actions">
+          <div class="how__views" role="group" aria-label="How to view the four steps">
+            <button type="button" class="how__view" aria-pressed="true" data-how-view="watch">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor" /></svg>
+              Watch
+            </button>
+            <button type="button" class="how__view" aria-pressed="false" data-how-view="list">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+              See all steps
+            </button>
+          </div>
+          <Button href="/services/booking/" variant="link" class="text-ink!">How booking works</Button>
+        </div>
+      </div>
+      <div class="how__thead" aria-hidden="true">
+        <span>Step</span><span>Preview</span><span>What we do</span><span>Details</span>
+      </div>
+      <ol class="how__rows">
+        {steps.map((s, i) => (
+          <li class="how__row">
+            <span class="how__num" aria-hidden="true">{pad(i)}</span>
+            <div class="how__thumb">
+              <video muted loop playsinline preload="none" poster={`${s.video}-poster.webp`} aria-label={s.label} data-how-thumb>
+                <source src={`${s.video}.webm`} type="video/webm" />
+                <source src={`${s.video}.mp4`} type="video/mp4" />
+              </video>
+            </div>
+            <h4 class="how__row-title"><span class="sr-only">Step {i + 1}: </span>{s.title}</h4>
+            <p class="how__row-text">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="how__all-cta">
+        <Button href={bookingUrl}>Book a call</Button>
+      </div>
     </div>
   </div>
   <p class="sr-only" aria-live="polite" data-how-status></p>
 </section>
 
 <style>
-  /* ---------- Sin JS o con movimiento reducido: todo seguido y visible ---------- */
+  /* ---------- Base (sin JS o con movimiento reducido): solo la tabla ---------- */
   .how {
     padding-bottom: 4rem;
   }
+  .how:not(.is-live) .how__stage,
+  .how:not(.is-live) .how__views {
+    display: none;
+  }
+  .how.is-live .how__all {
+    display: none;
+  }
+  .how.is-live.show-all .how__all {
+    display: block;
+  }
+  .how.is-live.show-all .how__stage {
+    display: none;
+  }
+
+  /* ---------- Selector de vista: «Watch» o «See all steps» ---------- */
+  .how__views {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    background: var(--color-mist);
+  }
+  .how__view {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    white-space: nowrap;
+    transition: background-color 150ms ease-out, color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .how__view:hover {
+    color: var(--color-ink);
+  }
+  .how__view[aria-pressed="true"] {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    box-shadow: 0 4px 14px -6px rgb(10 10 10 / 0.35);
+  }
+
+  /* ---------- Escenario: todo cabe en una pantalla; la tarjeta toma el alto que sobra ---------- */
   .how__stage {
     display: flex;
     flex-direction: column;
-    margin-top: 2.5rem;
+    justify-content: center;
+    height: 100svh;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   .how__media {
+    position: relative;
     flex: none;
-    height: min(44svh, 26rem);
+    width: min(100%, calc(40svh * 16 / 9));
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
     perspective: 1600px;
+  }
+  .how__card {
+    transform-origin: 50% 60%;
+    backface-visibility: hidden;
+    box-shadow: 0 30px 60px -36px rgb(10 10 10 / 0.55);
+  }
+  .how__video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--color-ink);
+  }
+  .how__slide:not([data-index="0"]) {
+    visibility: hidden;
   }
   .how__line {
     display: block;
     flex: none;
     width: 100%;
-    height: 3.5rem;
-    margin-top: 2rem;
+    height: 2.75rem;
+    margin-top: 1rem;
     overflow: visible;
   }
   .how__trackline,
@@ -167,14 +318,19 @@ const words = (s: string) => s.split(" ");
     stroke: var(--color-ink);
   }
   .how__steps {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-    margin-top: 1rem;
+    flex: none;
+    display: grid;
+    margin-top: 0.75rem;
     text-align: center;
   }
+  .how__step {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
   .how__title {
-    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2rem);
+    font-size: clamp(1.375rem, 1.1rem + 1.4vw, 2rem);
     font-weight: 800;
     line-height: 1.08;
     letter-spacing: -0.02em;
@@ -182,91 +338,71 @@ const words = (s: string) => s.split(" ");
     color: var(--color-ink-raised);
   }
   .how__text {
-    margin: 0.75rem auto 0;
+    margin: 0.6rem auto 0;
     max-width: 30rem;
-    font-size: 1.0625rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: 1.5;
     text-wrap: pretty;
     color: var(--color-ink-raised);
   }
   .how__cta {
+    flex: none;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem 1.5rem;
-    margin-top: 1.5rem;
+    gap: 0.75rem 1rem;
+    margin-top: 1.25rem;
   }
 
-  /* ---------- Con la animación: el bloque ocupa la pantalla y los pasos se relevan en el mismo sitio ---------- */
-  .how.is-live .how__stage {
-    height: 100svh;
-    margin-top: 0;
-    padding-top: 1rem; /* mientras está fijo, el nav sube y deja este espacio libre */
-    padding-bottom: 1.25rem;
-  }
-  .how.is-live .how__steps {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    margin-top: 0.5rem;
-  }
-  .how.is-live .how__step {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .how.is-live .how__cta {
-    margin-top: 0.5rem;
-  }
-
-  /* ---------- Escritorio: la misma composición, más grande ---------- */
+  /* ---------- Escritorio: tarjeta ancha que ocupa el alto libre ---------- */
   @media (min-width: 1024px) {
-    .how__media {
-      height: min(52svh, 40rem);
-    }
-    .how.is-live .how__stage {
-      padding-top: clamp(1.5rem, 4svh, 2.5rem);
+    .how__stage {
+      justify-content: flex-start;
+      padding-top: clamp(1.25rem, 3.5svh, 2.5rem);
       padding-bottom: clamp(1.25rem, 3svh, 2rem);
     }
+    .how__media {
+      flex: 1 1 0;
+      width: 100%;
+      min-height: 12rem;
+      max-height: 40rem;
+      aspect-ratio: auto;
+    }
     .how__line {
-      height: 4rem;
-      margin-top: clamp(1.75rem, 4.5svh, 3rem);
+      height: 3.5rem;
+      margin-top: clamp(1rem, 3svh, 2rem);
     }
     .how__trackline,
     .how__curve {
       stroke-width: 7;
     }
+    .how__steps {
+      margin-top: clamp(0.5rem, 1.5svh, 1rem);
+    }
     .how__title {
-      font-size: min(clamp(2rem, 1.2rem + 1.6vw, 3rem), 5.4svh);
+      font-size: min(clamp(2rem, 1.2rem + 1.6vw, 3rem), 5svh);
       line-height: 1.04;
     }
     .how__text {
-      margin-top: 0.85rem;
+      margin-top: 0.75rem;
       max-width: 40rem;
-      font-size: max(1rem, min(1.25rem, 2.5svh));
-      line-height: 1.5;
+      font-size: max(1rem, min(1.2rem, 2.3svh));
+    }
+    .how__cta {
+      margin-top: clamp(1rem, 3svh, 2rem);
     }
   }
 
-  /* ---------- Tarjeta ---------- */
-  .how__card {
-    transform-origin: 50% 60%;
-    backface-visibility: hidden;
-  }
-  .how__slide:not([data-index="0"]) {
-    visibility: hidden;
-  }
+  /* ---------- Controles sobre el vídeo ---------- */
   .how__nav {
     position: absolute;
     top: 50%;
     z-index: 3;
     display: grid;
     place-items: center;
-    width: 3rem;
-    height: 3rem;
+    width: 2.25rem;
+    height: 2.25rem;
     translate: 0 -50%;
     border-radius: 9999px;
     background: var(--color-paper);
@@ -274,16 +410,239 @@ const words = (s: string) => s.split(" ");
     box-shadow: 0 10px 24px -10px rgb(10 10 10 / 0.5);
     transition: background-color 150ms ease-out, color 150ms ease-out, opacity 150ms ease-out, scale 150ms ease-out;
   }
-  .how__nav:hover:not(:disabled) {
+  .how__ctl {
+    z-index: 3;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.92);
+    color: var(--color-ink);
+    box-shadow: 0 10px 24px -10px rgb(10 10 10 / 0.5);
+    transition: background-color 150ms ease-out, color 150ms ease-out, scale 150ms ease-out;
+  }
+  .how__nav:hover:not(:disabled),
+  .how__ctl:hover {
     background: var(--color-stage);
     color: var(--color-paper);
   }
-  .how__nav:active:not(:disabled) {
+  .how__nav:active:not(:disabled),
+  .how__ctl:active {
     scale: 0.94;
   }
   .how__nav:disabled {
     opacity: 0.4;
     cursor: default;
+  }
+  .how__bar {
+    position: absolute;
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.5rem;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .how__segs {
+    flex: 1;
+    display: flex;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+  .how__seg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    padding: 0;
+  }
+  .how__seg i {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 4px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.28);
+    transition: height 150ms ease-out;
+  }
+  .how__seg:hover i {
+    height: 6px;
+  }
+  .how__seg-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-paper);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .how__seg.is-current .how__seg-fill {
+    background: var(--color-stage-glow);
+  }
+  @media (min-width: 640px) {
+    .how__nav {
+      width: 3rem;
+      height: 3rem;
+    }
+    .how__bar {
+      left: 1.25rem;
+      right: 1.25rem;
+      bottom: 1rem;
+      gap: 0.75rem;
+    }
+    .how__ctl {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    .how__segs {
+      gap: 0.45rem;
+    }
+  }
+  .how__nav:focus-visible,
+  .how__ctl:focus-visible,
+  .how__seg:focus-visible,
+  .how__view:focus-visible {
+    outline: 2px solid var(--color-stage);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Tabla de los cuatro pasos ---------- */
+  .how__all {
+    padding-top: 2.5rem;
+    scroll-margin-top: 5.5rem;
+  }
+  .how__all:focus {
+    outline: none;
+  }
+  .how__all-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+  }
+  .how__all-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+  }
+  .how__all-title {
+    font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .how__thead {
+    display: none;
+  }
+  .how__rows {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgb(10 10 10 / 0.12);
+  }
+  .how__row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem 1rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgb(10 10 10 / 0.12);
+    align-items: start;
+  }
+  .how__num {
+    grid-row: span 3;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--color-stage-text);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.15rem;
+  }
+  .how__thumb {
+    overflow: hidden;
+    border-radius: 1rem;
+    background: var(--color-ink);
+    aspect-ratio: 16 / 9;
+  }
+  .how__thumb video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .how__row-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .how__row-text {
+    line-height: 1.55;
+    color: var(--color-ink-raised);
+    text-wrap: pretty;
+  }
+  .how__all-cta {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  @media (min-width: 768px) {
+    .how__row {
+      grid-template-columns: 3rem minmax(0, 18rem) minmax(0, 1fr);
+      gap: 0.5rem 2rem;
+      align-items: center;
+    }
+    .how__num,
+    .how__thumb {
+      grid-row: span 2;
+    }
+    .how__row-title,
+    .how__row-text {
+      grid-column: 3;
+    }
+    .how__row-title {
+      align-self: end;
+    }
+    .how__row-text {
+      align-self: start;
+    }
+  }
+  @media (min-width: 1024px) {
+    .how__thead {
+      display: grid;
+      grid-template-columns: 3rem 20rem minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 2rem;
+      margin-top: 2rem;
+      padding-bottom: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--color-muted);
+    }
+    .how__rows {
+      margin-top: 0;
+    }
+    .how__row {
+      grid-template-columns: 3rem 20rem minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 2rem;
+      padding: 1.75rem 0;
+    }
+    .how__num,
+    .how__thumb {
+      grid-row: auto;
+    }
+    .how__row-title {
+      grid-column: 3;
+      align-self: center;
+      font-size: 1.5rem;
+    }
+    .how__row-text {
+      grid-column: 4;
+      align-self: center;
+      font-size: 1.0625rem;
+    }
   }
 
   /* ---------- Palabras: cada una en su ventana (receta de tasteskill.dev) ---------- */
@@ -307,12 +666,22 @@ const words = (s: string) => s.split(" ");
 
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
 
-  // La curva de tasteskill.dev: cubic-bezier(.16, 1, .3, 1). "expo.out" es casi idéntica.
-  const EASE = "expo.out";
-  const DRAW = 0.88; // la línea se dibuja en el 88 % del anclaje; el resto es una pausa antes de soltar
+  /*
+    Cómo se mueve la sección (sin bloquear nunca el scroll del navegador):
+    - El escenario se fija arriba (pin) durante un tramo de scroll; cada paso ocupa STEP_VH de pantalla.
+    - Al dejar de hacer scroll, la página se acomoda en un paso (snap). Basta un empujón corto para pasar al
+      siguiente o volver al anterior; con un scroll largo se pueden saltar varios.
+    - Funciona igual con rueda, trackpad, teclado, barra de scroll, pantalla táctil y móvil.
+    - Cada vídeo, al terminar, lleva solo al siguiente paso. Al final se sigue bajando con normalidad.
+  */
+  const EASE = "expo.out"; // ≈ cubic-bezier(.16, 1, .3, 1), la curva de tasteskill.dev
+  const STEP_VH = 0.8; // scroll de cada paso, en altos de pantalla
+  const NUDGE = 0.05; // fracción de paso que ya cuenta como «quiero pasar al siguiente» (una flecha del teclado)
+  const LEAD = 2; // px: los puntos de parada quedan un poco dentro del tramo fijo, nunca justo en su borde
+  const TAIL = 0.5; // pasos de scroll extra tras el último: un empujón más allí suelta la sección
+  const SETTLE_MS = 700; // tras mostrar un paso, un empujón no lo cambia hasta pasado este tiempo
 
-  let mm: gsap.MatchMedia | null = null;
-  let controller: AbortController | null = null;
+  let teardown: (() => void) | null = null;
 
   const setNavHidden = (hidden: boolean) => {
     const root = document.documentElement;
@@ -323,301 +692,477 @@ const words = (s: string) => s.split(" ");
   function initHow() {
     const section = document.querySelector<HTMLElement>("[data-how]");
     if (!section) return;
-    controller = new AbortController();
-    const { signal } = controller;
 
-    const stage = section.querySelector<HTMLElement>("[data-how-stage]")!;
-    const card = section.querySelector<HTMLElement>("[data-how-card]")!;
-    const slides = [...section.querySelectorAll<HTMLElement>("[data-how-slide]")];
-    const stepsEls = [...section.querySelectorAll<HTMLElement>("[data-how-step]")];
-    const svg = section.querySelector<SVGSVGElement>("[data-how-line]")!;
+    const $ = <T extends Element>(sel: string) => section.querySelector<T>(sel)!;
+    const $$ = <T extends Element>(sel: string) => [...section.querySelectorAll<T>(sel)];
+    const stage = $<HTMLElement>("[data-how-stage]");
+    const card = $<HTMLElement>("[data-how-card]");
+    const slides = $$<HTMLElement>("[data-how-slide]");
+    const videos = slides.map((s) => s.querySelector("video")!);
+    const durations = slides.map((s) => Number(s.dataset.duration) || 12);
+    const stepsEls = $$<HTMLElement>("[data-how-step]");
+    const svg = $<SVGSVGElement>("[data-how-line]");
     const trackLine = svg.querySelector<SVGPathElement>("[data-how-trackline]")!;
     const curve = svg.querySelector<SVGPathElement>("[data-how-curve]")!;
-    const headWords = section.querySelectorAll<HTMLElement>("[data-head-word]");
-    const headLead = section.querySelector<HTMLElement>("[data-head-lead]")!;
-    const prev = section.querySelector<HTMLButtonElement>("[data-how-prev]")!;
-    const next = section.querySelector<HTMLButtonElement>("[data-how-next]")!;
-    const status = section.querySelector<HTMLElement>("[data-how-status]")!;
+    const headWords = $$<HTMLElement>("[data-head-word]");
+    const headLead = $$<HTMLElement>("[data-head-lead]");
+    const prev = $<HTMLButtonElement>("[data-how-prev]");
+    const next = $<HTMLButtonElement>("[data-how-next]");
+    const viewBtns = $$<HTMLButtonElement>("[data-how-view]");
+    const allBox = $<HTMLElement>("[data-how-all]");
+    const thumbs = $$<HTMLVideoElement>("[data-how-thumb]");
+    const segs = $$<HTMLButtonElement>("[data-how-seg]");
+    const segFills = $$<HTMLElement>("[data-how-seg-fill]");
+    const pauseBtn = $<HTMLButtonElement>("[data-how-pause]");
+    const status = $<HTMLElement>("[data-how-status]");
     const n = stepsEls.length;
+    const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
 
-    let current = 0;
-    // Punto de la línea (0–1) en el que empieza el tramo de cada paso: las medias ondas son iguales
-    const stepStart = (i: number) => i / n;
-
-    // ---------- La línea: una onda regular (senoide) a lo ancho, con un paso en cada cresta ----------
-    // Se dibuja a escala 1:1 con su caja (viewBox = tamaño en píxeles) para que el trazo salga nítido.
-    const layoutCurve = () => {
-      const box = svg.getBoundingClientRect();
-      const w = Math.max(1, Math.round(box.width));
-      const h = Math.max(1, Math.round(box.height));
-      svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-      svg.setAttribute("width", String(w));
-      svg.setAttribute("height", String(h));
-
-      const pad = 8;
-      const mid = h / 2;
-      const amp = h * 0.3;
-      const half = (w - pad * 2) / n; // una media onda por paso
-      const q = (half / 2) * 0.3642; // brazo de control que aproxima un cuarto de seno con una cúbica
-      let d = `M ${pad} ${mid}`;
-      for (let i = 0; i < n; i++) {
-        const x0 = pad + half * i;
-        const x1 = x0 + half;
-        const xm = x0 + half / 2;
-        const dir = i % 2 === 0 ? -1 : 1;
-        const peakY = mid + dir * amp;
-        d += ` C ${x0 + q} ${mid + dir * amp * 0.57}, ${xm - q} ${peakY}, ${xm} ${peakY}`;
-        d += ` C ${xm + q} ${peakY}, ${x1 - q} ${mid + dir * amp * 0.57}, ${x1} ${mid}`;
-      }
-      trackLine.setAttribute("d", d);
-      curve.setAttribute("d", d);
-    };
-
-    // ---------- Texto: cada paso tiene su animación por tiempo; el scroll solo decide cuándo empieza ----------
-    const stepTweens = stepsEls.map((li) =>
-      gsap
-        .timeline({ paused: true })
-        .fromTo(
-          li.querySelectorAll<HTMLElement>("[data-how-word]"),
-          { yPercent: 112, rotate: 7 },
-          { yPercent: 0, rotate: 0, duration: 1.05, ease: EASE, stagger: 0.035 },
-        ),
-    );
-    // Un paso nunca se monta sobre otro: el anterior sale primero (hacia arriba al avanzar, hacia abajo al
-    // retroceder) y solo cuando ha salido entra el siguiente.
-    const wordsOf = (i: number) => stepsEls[i].querySelectorAll<HTMLElement>("[data-how-word]");
-    let shown = -1;
-    let exitTween: gsap.core.Tween | null = null;
-    const showStep = (k: number) => {
-      if (k === shown) return;
-      const from = shown;
-      shown = k;
-      exitTween?.kill();
-      exitTween = null;
-      // Todo lo que no sea el paso que sale queda escondido bajo su ventana
-      stepTweens.forEach((tl, i) => {
-        if (i !== from) tl.pause(0);
-      });
-      const enter = () => {
-        if (k >= 0) stepTweens[k].timeScale(1).restart();
-      };
-      if (from >= 0 && stepTweens[from].progress() > 0) {
-        stepTweens[from].pause();
-        exitTween = gsap.to(wordsOf(from), {
-          yPercent: k > from ? -112 : 112,
-          rotate: 0,
-          duration: 0.45,
-          ease: "power2.in",
-          stagger: 0.008,
-          onComplete: () => {
-            stepTweens[from].pause(0);
-            exitTween = null;
-            enter();
-          },
-        });
-      } else {
-        if (from >= 0) stepTweens[from].pause(0);
-        enter();
-      }
-    };
-
-    // ---------- Imagen: la nueva aparece encima con un fundido y se asienta; la anterior queda debajo ----------
-    const showSlide = (k: number, animate: boolean) => {
-      if (k === current) return;
-      const incoming = slides[k];
-      const outgoing = slides[current];
-      const inImg = incoming.querySelector("img");
-      gsap.killTweensOf([incoming, inImg]);
-      slides.forEach((s, i) => {
-        s.setAttribute("aria-hidden", i === k ? "false" : "true");
-        if (i !== k && i !== current) gsap.set(s, { autoAlpha: 0, zIndex: 0 });
-      });
-      gsap.set(outgoing, { zIndex: 1, autoAlpha: 1 });
-      gsap.set(incoming, { zIndex: 2 });
-      if (!animate) {
-        gsap.set(incoming, { autoAlpha: 1 });
-        gsap.set(inImg, { scale: 1 });
-        gsap.set(outgoing, { autoAlpha: 0 });
-      } else {
-        gsap.fromTo(
-          incoming,
-          { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            duration: 0.9,
-            ease: "power2.inOut",
-            onComplete: () => {
-              if (current === k) gsap.set(outgoing, { autoAlpha: 0 });
-            },
-          },
-        );
-        gsap.fromTo(inImg, { scale: 1.08 }, { scale: 1, duration: 1.5, ease: EASE });
-      }
-      current = k;
-    };
-
-    // Cada paso que aparece se queda al menos MIN_DWELL ms, aunque el scroll vaya más rápido.
-    // Si mientras tanto el scroll pide otro paso, se aplica el último pedido cuando se cumple ese tiempo.
-    const MIN_DWELL = 1600;
-    let lockUntil = 0;
-    let wanted = -1;
-    let pendingCall: gsap.core.Tween | null = null;
-    const applyStep = (k: number) => {
-      pendingCall = null;
-      if (k === shown) return;
-      showStep(k);
-      setActive(Math.max(0, k));
-      lockUntil = performance.now() + MIN_DWELL;
-    };
-    const requestStep = (k: number) => {
-      wanted = k;
-      if (k === shown) {
-        pendingCall?.kill();
-        pendingCall = null;
-        return;
-      }
-      const wait = lockUntil - performance.now();
-      if (wait <= 0) applyStep(k);
-      else if (!pendingCall) pendingCall = gsap.delayedCall(wait / 1000, () => applyStep(wanted));
-    };
-
-    const setActive = (k: number, animate = true) => {
-      k = Math.max(0, Math.min(n - 1, k));
-      prev.disabled = k === 0;
-      next.disabled = k === n - 1;
-      if (k !== current) {
-        const title = stepsEls[k].querySelector("[data-how-title]")?.textContent?.replace(/\s+/g, " ").trim();
-        status.textContent = `Step ${k + 1} of ${n}: ${title}`;
-      }
-      showSlide(k, animate);
-    };
-
-    // ---------- Botones: llevan el scroll al punto de ese paso ----------
-    let pinTrigger: ScrollTrigger | null = null;
-    const goTo = (k: number) => {
-      k = Math.max(0, Math.min(n - 1, k));
-      if (pinTrigger) {
-        const len = pinTrigger.end - pinTrigger.start;
-        const p = Math.min(0.99, stepStart(k) * DRAW + 0.02);
-        window.scrollTo({ top: Math.round(pinTrigger.start + len * p), behavior: "smooth" });
-      } else {
-        setActive(k, false);
-      }
-    };
-    prev.addEventListener("click", () => goTo(current - 1), { signal });
-    next.addEventListener("click", () => goTo(current + 1), { signal });
-
-    mm = gsap.matchMedia();
-    mm.add(
-      {
-        motion: "(prefers-reduced-motion: no-preference)",
-        reduce: "(prefers-reduced-motion: reduce)",
+    // ---------- Tabla: sus vídeos solo se reproducen mientras se ven ----------
+    const thumbIO = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting && !reduceQuery.matches) v.play().catch(() => {});
+          else v.pause();
+        }
       },
+      { threshold: 0.4 },
+    );
+    thumbs.forEach((v) => {
+      thumbIO.observe(v);
+      if (reduceQuery.matches) v.controls = true;
+    });
+
+    let mm: gsap.MatchMedia | null = gsap.matchMedia();
+    mm.add(
+      { motion: "(prefers-reduced-motion: no-preference)", reduce: "(prefers-reduced-motion: reduce)" },
       (context) => {
         const { reduce } = context.conditions as { motion: boolean; reduce: boolean };
-
         if (reduce) {
-          // Todo visible y quieto: línea completa, todos los pasos, las flechas cambian la imagen sin animación
           section.classList.remove("is-live");
-          layoutCurve();
-          stepTweens.forEach((tl) => tl.progress(1));
-          pinTrigger = null;
           return;
         }
-
         section.classList.add("is-live");
-        layoutCurve();
-
-        // Cabecera: las palabras suben al entrar (una vez por pasada)
-        const headTl = gsap
-          .timeline({ paused: true })
-          .fromTo(headWords, { yPercent: 112, rotate: 7 }, { yPercent: 0, rotate: 0, duration: 1.1, ease: EASE, stagger: 0.06 })
-          .fromTo(headLead, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE }, 0.35);
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 78%",
-          onEnter: () => headTl.play(),
-          onLeaveBack: () => headTl.reverse(),
-        });
-
-        // Todos los pasos empiezan escondidos bajo su ventana
-        stepTweens.forEach((tl) => tl.progress(0).pause());
-        shown = -1;
-        wanted = -1;
-        lockUntil = 0;
-
-        // La tarjeta entra acostada (girada sobre su eje horizontal) y se pone de pie al llegar arriba
-        gsap.fromTo(
-          card,
-          { rotateX: 58, yPercent: 12, scale: 0.92, transformOrigin: "50% 60%" },
-          {
-            rotateX: 0,
-            yPercent: 0,
-            scale: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: stage,
-              start: "top bottom",
-              end: "top top",
-              scrub: 0.9,
-              invalidateOnRefresh: true,
-              refreshPriority: 2,
-            },
-          },
-        );
-
-        // Anclaje: la línea avanza con el scroll; al llegar a cada cresta, su paso se despliega y cambia la imagen.
-        // Cada paso tiene 1,6 pantallas de scroll y, además, un tiempo mínimo en pantalla (MIN_DWELL).
-        const tl = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: stage,
-            start: "top top",
-            end: () => "+=" + window.innerHeight * 1.6 * n,
-            pin: stage,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-            refreshPriority: 1,
-            onToggle: (self) => setNavHidden(self.isActive),
-            onUpdate: (self) => {
-              // El nav vuelve si se sube; se va otra vez al bajar
-              if (self.isActive) setNavHidden(self.direction === 1);
-              const drawn = Math.min(1, self.progress / DRAW);
-              let k = self.progress > 0.002 ? 0 : -1;
-              // Cada paso aparece cuando la línea entra en su tramo (no al llegar a la cresta),
-              // así el último sale bastante antes del final y hay tiempo para leerlo
-              for (let i = 1; i < n; i++) if (drawn >= stepStart(i)) k = i;
-              requestStep(k);
-            },
-          },
-        });
-        tl.fromTo(curve, { drawSVG: "0%" }, { drawSVG: "100%", duration: DRAW }).to({}, { duration: 1 - DRAW });
-        pinTrigger = tl.scrollTrigger ?? null;
-
-        // Al cambiar el tamaño de la ventana, la línea se recoloca
-        const onRefreshInit = () => layoutCurve();
-        ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
+        const stop = startLive();
         return () => {
-          ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
-          pendingCall?.kill();
-          pendingCall = null;
-          exitTween?.kill();
-          stepTweens.forEach((t) => t.progress(1).pause());
-          section.classList.remove("is-live");
-          setNavHidden(false);
-          pinTrigger = null;
+          stop();
+          section.classList.remove("is-live", "show-all");
         };
       },
     );
-    ScrollTrigger.sort();
+
+    function startLive() {
+      const live = new AbortController();
+      const ls = live.signal;
+
+      let mode: "watch" | "list" = "watch";
+      let current = -1; // paso visible (texto y vídeo)
+      let shown = -1; // paso cuyo texto está desplegado
+      let anchor = 0; // paso en el que la página está asentada (punto de partida del próximo empujón)
+      let active = false; // el escenario está fijo en pantalla
+      let paused = false;
+      let stepShownAt = 0;
+      let stepStartedAt = performance.now();
+      let lastPlayTry = 0;
+      let autoTween: gsap.core.Tween | null = null; // scroll que hace el script (avance automático, botones)
+      const done = new Array(n).fill(false);
+
+      // ---------- La línea: una onda regular (senoide) a lo ancho, con un paso en cada cresta ----------
+      const layoutCurve = () => {
+        const box = svg.getBoundingClientRect();
+        const w = Math.max(1, Math.round(box.width));
+        const h = Math.max(1, Math.round(box.height));
+        svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+        svg.setAttribute("width", String(w));
+        svg.setAttribute("height", String(h));
+        const padX = 8;
+        const mid = h / 2;
+        const amp = h * 0.3;
+        const half = (w - padX * 2) / n;
+        const q = (half / 2) * 0.3642;
+        let d = `M ${padX} ${mid}`;
+        for (let i = 0; i < n; i++) {
+          const x0 = padX + half * i;
+          const x1 = x0 + half;
+          const xm = x0 + half / 2;
+          const dir = i % 2 === 0 ? -1 : 1;
+          const peakY = mid + dir * amp;
+          d += ` C ${x0 + q} ${mid + dir * amp * 0.57}, ${xm - q} ${peakY}, ${xm} ${peakY}`;
+          d += ` C ${xm + q} ${peakY}, ${x1 - q} ${mid + dir * amp * 0.57}, ${x1} ${mid}`;
+        }
+        trackLine.setAttribute("d", d);
+        curve.setAttribute("d", d);
+      };
+      layoutCurve();
+      gsap.set(curve, { drawSVG: "0%" });
+
+      // ---------- Texto: un paso nunca se monta sobre otro ----------
+      const stepTweens = stepsEls.map((li) =>
+        gsap
+          .timeline({ paused: true })
+          .fromTo(
+            li.querySelectorAll<HTMLElement>("[data-how-word]"),
+            { yPercent: 112, rotate: 7 },
+            { yPercent: 0, rotate: 0, duration: 1.05, ease: EASE, stagger: 0.035 },
+          ),
+      );
+      stepTweens.forEach((tl) => tl.progress(0).pause());
+      const wordsOf = (i: number) => stepsEls[i].querySelectorAll<HTMLElement>("[data-how-word]");
+      let exitTween: gsap.core.Tween | null = null;
+      const showStep = (k: number) => {
+        if (k === shown) return;
+        const from = shown;
+        shown = k;
+        exitTween?.kill();
+        exitTween = null;
+        stepTweens.forEach((tl, i) => {
+          if (i !== from) tl.pause(0);
+        });
+        const enter = () => stepTweens[k].restart();
+        if (from >= 0 && stepTweens[from].progress() > 0) {
+          stepTweens[from].pause();
+          exitTween = gsap.to(wordsOf(from), {
+            yPercent: k > from ? -112 : 112,
+            rotate: 0,
+            duration: 0.35,
+            ease: "power2.in",
+            stagger: 0.008,
+            onComplete: () => {
+              stepTweens[from].pause(0);
+              exitTween = null;
+              enter();
+            },
+          });
+        } else {
+          if (from >= 0) stepTweens[from].pause(0);
+          enter();
+        }
+      };
+
+      // ---------- Vídeo ----------
+      const applyPause = () => {
+        pauseBtn.setAttribute("aria-pressed", String(paused));
+        pauseBtn.setAttribute("aria-label", paused ? "Play" : "Pause");
+        pauseBtn.querySelector("[data-icon-play]")?.toggleAttribute("hidden", !paused);
+        pauseBtn.querySelector("[data-icon-pause]")?.toggleAttribute("hidden", paused);
+      };
+      const playCurrent = () => {
+        if (paused || mode !== "watch" || current < 0) return;
+        lastPlayTry = performance.now();
+        videos[current].play().catch(() => {});
+      };
+
+      let visibleSlide = 0;
+      const showSlide = (k: number) => {
+        videos.forEach((v, i) => {
+          if (i !== k) v.pause();
+        });
+        const v = videos[k];
+        v.loop = false;
+        try {
+          v.currentTime = 0;
+        } catch {}
+        v.preload = "auto";
+        if (videos[k + 1]) videos[k + 1].preload = "auto";
+        stepStartedAt = performance.now();
+        done[k] = false;
+        playCurrent();
+        if (k === visibleSlide) return;
+        const incoming = slides[k];
+        const outgoing = slides[visibleSlide];
+        gsap.killTweensOf([incoming, v]);
+        slides.forEach((s, i) => {
+          s.setAttribute("aria-hidden", i === k ? "false" : "true");
+          if (i !== k && i !== visibleSlide) gsap.set(s, { autoAlpha: 0, zIndex: 0 });
+        });
+        gsap.set(outgoing, { zIndex: 1, autoAlpha: 1 });
+        gsap.set(incoming, { zIndex: 2 });
+        gsap.fromTo(incoming, { autoAlpha: 0 }, {
+          autoAlpha: 1,
+          duration: 0.5,
+          ease: "power2.inOut",
+          onComplete: () => {
+            if (visibleSlide === k) gsap.set(outgoing, { autoAlpha: 0 });
+          },
+        });
+        gsap.fromTo(v, { scale: 1.05 }, { scale: 1, duration: 1.2, ease: EASE });
+        visibleSlide = k;
+      };
+
+      const setStep = (k: number) => {
+        k = Math.max(0, Math.min(n - 1, k));
+        if (k === current) return;
+        current = k;
+        stepShownAt = performance.now();
+        showStep(k);
+        showSlide(k);
+        prev.disabled = k === 0;
+        next.disabled = k === n - 1;
+        segs.forEach((s, i) => {
+          s.classList.toggle("is-current", i === k);
+          if (i === k) s.setAttribute("aria-current", "step");
+          else s.removeAttribute("aria-current");
+        });
+        const title = stepsEls[k].querySelector("[data-how-title]")?.textContent?.replace(/\s+/g, " ").trim();
+        status.textContent = `Step ${k + 1} of ${n}: ${title}`;
+      };
+
+      // ---------- El pin: scroll real del navegador, con un punto de parada por paso ----------
+      const stepPx = () => Math.round(innerHeight * STEP_VH);
+      const totalPx = () => LEAD + stepPx() * (n - 1 + TAIL);
+      // Paso que corresponde a un progreso del pin (0–1)
+      const stepFromProgress = (p: number) => Math.max(0, Math.min(n - 1, Math.round((p * totalPx() - LEAD) / stepPx())));
+      const progressOf = (k: number) => (LEAD + k * stepPx()) / totalPx();
+      // eslint-disable-next-line prefer-const
+      let pinST: ScrollTrigger;
+      pinST = ScrollTrigger.create({
+        trigger: stage,
+        start: "top top",
+        end: () => "+=" + totalPx(),
+        pin: true,
+        pinSpacing: true,
+        invalidateOnRefresh: true,
+        refreshPriority: 1,
+        snap: {
+          // Desde el paso asentado, un empujón corto lleva al siguiente (o al anterior); un scroll largo, al más cercano
+          snapTo: (value: number) => {
+            const pos = (value * totalPx() - LEAD) / stepPx();
+            // Un empujón más allá del primero o del último paso suelta la sección por ese lado
+            const dir = pinST ? pinST.direction : 1;
+            if (dir > 0 && anchor === n - 1 && pos > n - 1 + NUDGE) return 1;
+            if (dir < 0 && anchor === 0 && pos < -NUDGE) return 0;
+            let k = anchor;
+            if (Math.abs(pos - anchor) > 1) k = Math.round(pos);
+            else if (performance.now() - stepShownAt < SETTLE_MS && !autoTween) k = anchor;
+            else if (pos > anchor + NUDGE) k = anchor + 1;
+            else if (pos < anchor - NUDGE) k = anchor - 1;
+            k = Math.max(0, Math.min(n - 1, k));
+            return progressOf(k);
+          },
+          duration: { min: 0.25, max: 0.6 },
+          delay: 0.08,
+          ease: "power2.inOut",
+          inertia: false,
+          onComplete: (self) => {
+            anchor = stepFromProgress(self.progress);
+            setStep(anchor);
+          },
+        },
+        onToggle: (self) => {
+          active = self.isActive;
+          // El nav solo vuelve al salir del escenario, por arriba o por abajo
+          setNavHidden(self.isActive);
+          if (self.isActive) {
+            anchor = stepFromProgress(self.progress);
+            if (current < 0) setStep(anchor);
+            playCurrent();
+          }
+        },
+        onUpdate: (self) => {
+          const k = stepFromProgress(self.progress);
+          if (k !== current) setStep(k);
+        },
+      });
+
+      // Lleva la página al punto de un paso (avance automático, barritas y flechas)
+      const scrollToStep = (k: number) => {
+        k = Math.max(0, Math.min(n - 1, k));
+        anchor = k;
+        if (!pinST.enabled) return setStep(k);
+        const y = Math.round(pinST.start + LEAD + stepPx() * k);
+        autoTween?.kill();
+        const proxy = { y: scrollY };
+        autoTween = gsap.to(proxy, {
+          y,
+          duration: Math.min(1, 0.45 + Math.abs(y - scrollY) / 3000),
+          ease: "power2.inOut",
+          onUpdate: () => window.scrollTo(0, Math.round(proxy.y)),
+          onComplete: () => {
+            autoTween = null;
+            setStep(k);
+          },
+        });
+      };
+      // Si la persona hace scroll mientras el script mueve la página, manda la persona
+      const cancelAuto = () => {
+        if (autoTween) {
+          autoTween.kill();
+          autoTween = null;
+        }
+      };
+      addEventListener("wheel", cancelAuto, { passive: true, signal: ls });
+      addEventListener("touchstart", cancelAuto, { passive: true, signal: ls });
+      addEventListener("keydown", cancelAuto, { signal: ls });
+
+      // Fin de un vídeo: pasa solo al siguiente paso. El último se queda en bucle.
+      const finishCurrent = () => {
+        const i = current;
+        if (i < 0 || done[i]) return;
+        done[i] = true;
+        if (mode !== "watch") return;
+        if (i < n - 1) {
+          if (active && !paused) scrollToStep(i + 1);
+        } else {
+          videos[i].loop = true;
+          playCurrent();
+        }
+      };
+      videos.forEach((v, i) =>
+        v.addEventListener(
+          "ended",
+          () => {
+            if (i === current) finishCurrent();
+          },
+          { signal: ls },
+        ),
+      );
+
+      // ---------- Vista: animación o tabla ----------
+      const setMode = (m: "watch" | "list") => {
+        if (m === mode) return;
+        mode = m;
+        viewBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.howView === m)));
+        cancelAuto();
+        if (m === "list") {
+          videos.forEach((v) => v.pause());
+          pinST.disable();
+          section.classList.add("show-all");
+          setNavHidden(false);
+          ScrollTrigger.refresh();
+          const y = Math.round(allBox.getBoundingClientRect().top + scrollY - 88);
+          window.scrollTo({ top: y, behavior: "smooth" });
+          allBox.focus({ preventScroll: true });
+        } else {
+          section.classList.remove("show-all");
+          pinST.enable();
+          ScrollTrigger.refresh();
+          layoutCurve();
+          const k = Math.max(0, current);
+          current = -1;
+          anchor = k;
+          setStep(k);
+          scrollToStep(k);
+        }
+      };
+      viewBtns.forEach((b) =>
+        b.addEventListener("click", () => setMode(b.dataset.howView === "list" ? "list" : "watch"), { signal: ls }),
+      );
+
+      // ---------- Botones del vídeo ----------
+      prev.addEventListener("click", () => scrollToStep(current - 1), { signal: ls });
+      next.addEventListener("click", () => scrollToStep(current + 1), { signal: ls });
+      segs.forEach((s, i) => s.addEventListener("click", () => scrollToStep(i), { signal: ls }));
+      pauseBtn.addEventListener(
+        "click",
+        () => {
+          paused = !paused;
+          applyPause();
+          if (paused) videos[Math.max(0, current)].pause();
+          else if (done[current] && current < n - 1) scrollToStep(current + 1);
+          else playCurrent();
+        },
+        { signal: ls },
+      );
+
+      // ---------- Cada fotograma: avance, línea y barritas ----------
+      const tick = () => {
+        if (mode !== "watch" || current < 0) return;
+        const now = performance.now();
+        const v = videos[current];
+        let p: number;
+        if (v.loop || done[current]) p = 1;
+        else if (v.readyState >= 1 && v.duration) p = Math.min(1, v.currentTime / v.duration);
+        else p = Math.min(1, (now - stepStartedAt) / 1000 / durations[current]);
+        // Avance seguro: aunque el navegador no avise del final (o el vídeo no cargue), el paso termina igual
+        if (active && !paused && !done[current] && !autoTween) {
+          const atEnd = v.ended || (v.duration > 0 && v.currentTime >= v.duration - 0.06);
+          const stalled = v.readyState < 2 && now - stepStartedAt > (durations[current] + 2) * 1000;
+          if (atEnd || stalled) finishCurrent();
+          else if (v.paused && now - lastPlayTry > 1000) playCurrent();
+        }
+        gsap.set(curve, { drawSVG: `0% ${((current + p) / n) * 100}%` });
+        segFills.forEach((f, i) => {
+          f.style.transform = `scaleX(${i < current ? 1 : i === current ? p : 0})`;
+        });
+      };
+      gsap.ticker.add(tick);
+
+      // Fuera de la vista, los vídeos se detienen
+      const stageIO = new IntersectionObserver(
+        ([e]) => {
+          if (e.isIntersecting) {
+            if (active || current === n - 1) playCurrent();
+          } else videos.forEach((v) => v.pause());
+        },
+        { threshold: 0.25 },
+      );
+      stageIO.observe(stage);
+
+      // ---------- Cabecera y tarjeta ----------
+      const headTl = gsap
+        .timeline({ paused: true })
+        .fromTo(headWords, { yPercent: 112, rotate: 7 }, { yPercent: 0, rotate: 0, duration: 1.1, ease: EASE, stagger: 0.06 })
+        .fromTo(headLead, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE }, 0.35);
+      const headST = ScrollTrigger.create({
+        trigger: section,
+        start: "top 78%",
+        onEnter: () => headTl.play(),
+        onLeaveBack: () => headTl.reverse(),
+      });
+      // La tarjeta entra acostada y se pone de pie justo cuando el escenario llega arriba
+      const cardTween = gsap.fromTo(
+        card,
+        { rotateX: 50, yPercent: 10, scale: 0.93, transformOrigin: "50% 60%" },
+        {
+          rotateX: 0,
+          yPercent: 0,
+          scale: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: stage,
+            start: "top bottom",
+            end: "top top",
+            scrub: 0.5,
+            invalidateOnRefresh: true,
+            refreshPriority: 2,
+          },
+        },
+      );
+      ScrollTrigger.sort();
+
+      const onRefreshInit = () => layoutCurve();
+      ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
+
+      return () => {
+        live.abort();
+        ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
+        gsap.ticker.remove(tick);
+        stageIO.disconnect();
+        cancelAuto();
+        pinST.kill();
+        headST.kill();
+        headTl.kill();
+        cardTween.scrollTrigger?.kill();
+        cardTween.kill();
+        exitTween?.kill();
+        stepTweens.forEach((t) => t.progress(1).pause());
+        videos.forEach((v) => v.pause());
+        setNavHidden(false);
+      };
+    }
+
+    teardown = () => {
+      mm?.revert();
+      mm = null;
+      thumbIO.disconnect();
+      setNavHidden(false);
+    };
   }
 
   function destroyHow() {
-    mm?.revert();
-    mm = null;
-    controller?.abort();
-    controller = null;
-    setNavHidden(false);
+    teardown?.();
+    teardown = null;
   }
 
   document.addEventListener("astro:page-load", initHow);

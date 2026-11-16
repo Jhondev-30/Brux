@@ -1,60 +1,414 @@
 ---
+import { Image } from "astro:assets";
 import Button from "../ui/Button.astro";
-import { plans } from "../../data/site";
+import report from "../../assets/plans/monthly-report.webp";
+
+/*
+  Planes en la portada: sin precios a propósito. Cada tarjeta dice para quién es, sus dos cifras
+  (pitches y posts al mes) y lo que la distingue; el precio y la lista completa están en /pricing/.
+  Datos del PDF de planes del 1 de noviembre de 2026.
+  Criterio tasteskill (servicio): fondo plano, una familia de tarjetas, lo común a todos los planes
+  dicho una vez, el plan recomendado con un filo de acento, una sola acción («Compare plans»),
+  una imagen real (un fotograma del informe mensual de los vídeos de «How we book»).
+*/
+const everyPlan = [
+  "Press kit and demo reel",
+  "CRM access",
+  "Post-event follow-up",
+  "LinkedIn profile optimization",
+  "Network growth on LinkedIn",
+  "Monthly report",
+];
+
+const tiers = [
+  {
+    id: "founder",
+    badge: "Founder rate",
+    name: "Founder",
+    for: "Foundation at a founder rate. Month to month, 3-month minimum.",
+    pitches: "60",
+    posts: "2",
+    adds: "Keeps the founder rate until we book your first paid stage",
+  },
+  {
+    id: "foundation",
+    name: "Foundation",
+    for: "A speaker-ready profile and niche events every month.",
+    pitches: "60",
+    posts: "2",
+    adds: "No minimum commitment",
+  },
+  {
+    id: "growth",
+    name: "Growth",
+    for: "More pitches, plus content that keeps your name visible.",
+    pitches: "110",
+    posts: "4",
+    adds: "Video editing of your talks",
+    badge: "Recommended",
+    featured: true,
+  },
+  {
+    id: "complete",
+    name: "Complete",
+    for: "Full outreach in your name and the most stages we can go after.",
+    pitches: "160+",
+    posts: "8",
+    adds: "Outreach to organizers in your name",
+  },
+];
 ---
 
 <!-- La sección clara del formato Backstage -->
-<section id="plans" class="bg-paper py-24 text-ink sm:py-32" aria-labelledby="plans-title">
+<section id="plans" class="plans bg-paper py-24 text-ink sm:py-32" aria-labelledby="plans-title" data-plans>
   <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
-      <div>
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-x-8">
+      <div class="lg:col-span-5">
         <h2
           id="plans-title"
           class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance"
         >
-          Plans from $500 a month. No commission on your fees.
+          Four plans for keynote speakers
         </h2>
-        <p class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-ink/80">
-          Every plan combines booking and LinkedIn. The Founder plan keeps the $500 rate until we book your first
-          paid stage, then moves to Foundation.
+        <p class="mt-5 max-w-[32rem] text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-normal text-pretty text-ink/80">
+          Each plan pairs speaker booking with LinkedIn. No commission on your fees.
         </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-          <Button href="/pricing/">Compare plans</Button>
-          <Button href="/contact/" variant="secondary-light">Book a call</Button>
+
+        <h3 class="plans__label mt-9">In every plan</h3>
+        <ul class="plans__every mt-4">
+          {everyPlan.map((item) => (
+            <li>
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-10">
+          <Button href="/pricing/" arrow>Compare plans</Button>
         </div>
       </div>
 
-      <div>
-        <table class="w-full text-left tabular-nums">
-          <caption class="sr-only">Brux plans: monthly price and pitches to event organizers per month</caption>
-          <thead>
-            <tr class="border-b-2 border-ink text-sm text-muted">
-              <th scope="col" class="py-3 pr-4 font-semibold">Plan</th>
-              <th scope="col" class="py-3 pr-4 font-semibold">Price</th>
-              <th scope="col" class="py-3 font-semibold">Pitches / month</th>
-            </tr>
-          </thead>
-          <tbody>
-            {plans.map((p) => (
-              <tr class="border-b border-ink/15">
-                <th scope="row" class="py-5 pr-3 text-base font-extrabold tracking-[-0.01em] sm:text-lg">
-                  {p.name}
-                  {p.name === "Growth" && (
-                    <span class="mt-1 block w-fit rounded-full sm:mt-0 sm:ml-2 sm:inline-block bg-stage px-2.5 py-0.5 align-middle text-xs font-semibold text-paper">
-                      Recommended
-                    </span>
-                  )}
-                </th>
-                <td class="py-5 pr-3 text-base whitespace-nowrap sm:text-lg">
-                  <span class="font-semibold">{p.price}</span>
-                  <span class="text-muted"> /mo</span>
-                </td>
-                <td class="py-5 text-base sm:text-lg">{p.pitches}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div class="plans__frame lg:col-span-7" data-visual>
+        <Image
+          src={report}
+          alt="A Brux monthly report: keynotes booked, LinkedIn followers and post impressions, with a follower growth chart"
+          widths={[640, 960, 1440]}
+          sizes="(min-width: 1280px) 690px, (min-width: 1024px) 56vw, 92vw"
+          class="size-full object-cover"
+          loading="lazy"
+        />
       </div>
     </div>
+
+    <!-- Las cuatro tarjetas. El filo rojo descansa en el plan recomendado y viaja a la tarjeta que se señala -->
+    <ul class="plans__grid mt-14 lg:mt-20" data-plans-grid>
+      {tiers.map((t) => (
+        <li class="plans__item">
+          <a href={`/pricing/#${t.id}`} class:list={["plan", t.featured && "is-featured"]} data-plan aria-describedby={`plan-${t.id}-more`}>
+            {t.featured && <span class="plan__focus" aria-hidden="true" data-plans-focus></span>}
+            <span class="plan__top">
+              {t.badge && <span class:list={["plan__badge", t.featured && "is-accent"]}>{t.badge}</span>}
+            </span>
+            <span class="plan__name">{t.name}</span>
+            <span class="plan__for">{t.for}</span>
+            <span class="plan__facts">
+              <span class="plan__fact">
+                <span class="plan__num">{t.pitches}</span>
+                <span class="plan__unit">pitches to event organizers a month</span>
+              </span>
+              <span class="plan__fact">
+                <span class="plan__num">{t.posts}</span>
+                <span class="plan__unit">LinkedIn posts a month</span>
+              </span>
+            </span>
+            <span class="plan__adds">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                <path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              {t.adds}
+            </span>
+            <span class="plan__more" id={`plan-${t.id}-more`}>
+              See the price and full plan
+              <svg class="plan__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path d="M2.5 8h10M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
   </div>
 </section>
+
+<style>
+  /* ---------- Cabecera: lo que incluye cada plan, dicho una vez ---------- */
+  .plans__label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-muted);
+  }
+  .plans__every {
+    display: grid;
+    gap: 0.75rem 1.5rem;
+  }
+  @media (min-width: 640px) {
+    .plans__every {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .plans__every li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgb(10 10 10 / 0.84);
+  }
+  .plans__every svg {
+    flex: none;
+    margin-top: 0.2rem;
+    color: var(--color-stage);
+  }
+  .plans__frame {
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--color-ink);
+    aspect-ratio: 16 / 9;
+  }
+
+  /* ---------- Tarjetas: cuatro en fila (3+3+3+3), dos en tableta, una en el móvil ---------- */
+  .plans__grid {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .plans__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .plans__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+  .plans__item {
+    display: flex;
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: var(--color-paper);
+    box-shadow: inset 0 0 0 1px rgb(10 10 10 / 0.12);
+    color: var(--color-ink);
+    transition:
+      translate 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @media (min-width: 1024px) {
+    .plan {
+      padding: 2rem 1.75rem 1.75rem;
+    }
+  }
+  /* Ratón: la tarjeta sube 2px, su borde se oscurece y aparece una sombra suave (solo al pasar) */
+  @media (hover: hover) and (pointer: fine) {
+    .plan:hover {
+      translate: 0 -2px;
+      box-shadow:
+        inset 0 0 0 1px rgb(10 10 10 / 0.3),
+        0 18px 30px -18px rgb(10 10 10 / 0.25);
+    }
+  }
+  .plan:focus-visible {
+    outline: 2px solid var(--color-stage);
+    outline-offset: 2px;
+  }
+
+  /* El filo rojo: un solo elemento que Flip lleva de una tarjeta a otra */
+  .plan__focus {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 2px var(--color-stage);
+    pointer-events: none;
+  }
+
+  .plan__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .plan__top:empty {
+    display: none;
+  }
+  /* Con las tarjetas lado a lado, mismas alturas para que nombres y cifras queden a nivel en la fila */
+  @media (min-width: 640px) {
+    .plan__top,
+    .plan__top:empty {
+      display: flex;
+      min-height: 1.75rem;
+    }
+    .plan__for {
+      min-height: 4.5rem;
+    }
+  }
+  .plan__badge {
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+    background: var(--color-mist);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .plan__badge.is-accent {
+    background: rgb(229 12 19 / 0.08);
+    color: var(--color-stage-text);
+  }
+  .plan__name {
+    margin-top: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .plan__for {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgb(10 10 10 / 0.84);
+  }
+  .plan__facts {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(10 10 10 / 0.1);
+  }
+  .plan__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .plan__num {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .plan__unit {
+    font-size: 1rem;
+    line-height: 1.35;
+    color: rgb(10 10 10 / 0.84);
+  }
+  .plan__adds {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .plan__adds svg {
+    flex: none;
+    margin-top: 0.25rem;
+    color: var(--color-stage);
+  }
+  .plan__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-stage-text);
+  }
+  .plan__arrow {
+    transition: translate 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .plan:hover .plan__arrow {
+      translate: 3px 0;
+    }
+  }
+  .plan:focus-visible .plan__arrow {
+    translate: 3px 0;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { Flip } from "gsap/Flip";
+
+  gsap.registerPlugin(Flip);
+
+  /*
+    El único movimiento de la sección responde a la persona, nunca al scroll (tasteskill: las tarjetas no
+    aparecen al hacer scroll y la página ya tiene sus dos momentos). El filo rojo descansa en el plan
+    recomendado; al señalar otra tarjeta (ratón o teclado) viaja hasta ella con Flip y, al salir de la fila,
+    vuelve a su sitio. Llegar es más lento que volver (Bang Motion: llegar despacio, salir limpio).
+  */
+  const TRAVEL = 0.32; // s, ir a la tarjeta señalada (recorrido, ease de ida y vuelta)
+  const RETURN = 0.2; // s, volver al recomendado (una salida es 40-50 % más corta)
+  const LEAVE_DELAY = 140; // ms antes de volver, para que pasar de una tarjeta a otra no lo haga rebotar
+
+  let cleanup: (() => void) | null = null;
+
+  function initPlans() {
+    const grid = document.querySelector<HTMLElement>("[data-plans-grid]");
+    const focus = grid?.querySelector<HTMLElement>("[data-plans-focus]");
+    if (!grid || !focus) return;
+    const cards = [...grid.querySelectorAll<HTMLAnchorElement>("[data-plan]")];
+    const home = focus.parentElement as HTMLElement;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    let leaveTimer = 0;
+    let tween: gsap.core.Timeline | null = null;
+
+    const moveTo = (card: HTMLElement, duration: number) => {
+      if (focus.parentElement === card) return;
+      window.clearTimeout(leaveTimer);
+      const state = Flip.getState(focus);
+      card.prepend(focus);
+      tween?.kill();
+      if (reduce.matches) return;
+      tween = Flip.from(state, { duration, ease: "power3.inOut", absolute: true });
+    };
+    const goHome = () => {
+      window.clearTimeout(leaveTimer);
+      leaveTimer = window.setTimeout(() => moveTo(home, RETURN), LEAVE_DELAY);
+    };
+
+    for (const card of cards) {
+      card.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && moveTo(card, TRAVEL), { signal });
+      card.addEventListener("focus", () => moveTo(card, TRAVEL), { signal });
+      card.addEventListener("blur", goHome, { signal });
+    }
+    grid.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && goHome(), { signal });
+
+    cleanup = () => {
+      controller.abort();
+      window.clearTimeout(leaveTimer);
+      tween?.kill();
+      if (focus.parentElement !== home) home.prepend(focus);
+    };
+  }
+
+  document.addEventListener("astro:page-load", initPlans);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>
