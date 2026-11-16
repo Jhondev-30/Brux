@@ -1,0 +1,166 @@
+---
+import { Image } from "astro:assets";
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+import report from "../../assets/plans/monthly-report.webp";
+import { deliverableExplainers } from "../../data/pricing";
+
+const toneBadge = {
+  all: "bg-paper/10 text-paper/90 border border-paper/15",
+  growth: "bg-stage-text text-paper border border-stage-text",
+  complete: "bg-stage text-paper border border-stage",
+};
+---
+
+<section
+  id="included"
+  class="scroll-mt-24 bg-ink-raised py-24 text-paper sm:py-32"
+  aria-labelledby="included-title"
+  data-deliverables
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="max-w-[44rem]">
+      <h2
+        id="included-title"
+        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+      >
+        What's inside every plan — explained
+      </h2>
+      <p class="mt-4 text-base leading-relaxed text-muted-on-ink sm:text-lg">
+        No vague agency retainers. Here is exactly what our team builds, sends, and tracks for you every month.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-x-10 gap-y-12 border-t border-paper/10 pt-12 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-16">
+      {deliverableExplainers.map((item) => (
+        <article class="flex flex-col" id={item.id}>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-[clamp(1.25rem,1.1rem+0.6vw,1.625rem)] leading-tight font-extrabold tracking-[-0.02em] text-paper">
+              {item.title}
+            </h3>
+            <span
+              class:list={[
+                "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap",
+                toneBadge[item.availabilityTone],
+              ]}
+            >
+              {item.availability}
+            </span>
+          </div>
+
+          <p class="mt-4 text-[0.9375rem] leading-relaxed text-paper/85 sm:text-base">
+            {item.description}
+          </p>
+
+          <ul class="mt-4 grid gap-2 text-sm leading-relaxed text-muted-on-ink">
+            {item.details.map((detail) => (
+              <li class="flex items-start gap-2.5">
+                <span class="mt-2 size-1.5 shrink-0 rounded-full bg-stage-glow" aria-hidden="true" />
+                <span>{detail}</span>
+              </li>
+            ))}
+          </ul>
+
+          {item.visual === "pitch" && (
+            <div class="mt-6 aspect-video overflow-hidden rounded-[14px] bg-ink ring-1 ring-paper/10" data-deliv-visual>
+              <img
+                src="/videos/how/step-3-poster.webp"
+                alt="Direct personal pitch and outreach workflow to event organizers"
+                width="1280"
+                height="720"
+                loading="lazy"
+                class="size-full object-cover will-change-transform"
+                data-deliv-img
+              />
+            </div>
+          )}
+
+          {item.visual === "presskit" && (
+            <div class="mt-6 aspect-video overflow-hidden rounded-[14px] bg-ink ring-1 ring-paper/10" data-deliv-visual>
+              <img
+                src="/videos/how/step-2-poster.webp"
+                alt="Speaker press kit and demo reel packaged for event organizers"
+                width="1280"
+                height="720"
+                loading="lazy"
+                class="size-full object-cover will-change-transform"
+                data-deliv-img
+              />
+            </div>
+          )}
+
+          {item.visual === "report" && (
+            <div class="mt-6 aspect-video overflow-hidden rounded-[14px] bg-ink ring-1 ring-paper/10" data-deliv-visual>
+              <Image
+                src={report}
+                alt="A Brux monthly report: keynotes booked, LinkedIn followers and post impressions"
+                widths={[640, 960]}
+                sizes="(min-width: 1024px) 560px, 92vw"
+                loading="lazy"
+                class="size-full object-cover will-change-transform"
+                data-deliv-img
+              />
+            </div>
+          )}
+
+          {item.linkHref && item.linkLabel && (
+            <div class="mt-5">
+              <a
+                href={item.linkHref}
+                class="group/dlink inline-flex items-center gap-2 text-sm font-semibold text-stage-glow transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+                data-deliv-link
+              >
+                <span>{item.linkLabel}</span>
+                <span class="inline-flex shrink-0 transition-transform duration-150 group-hover/dlink:translate-x-0.5" aria-hidden="true">
+                  <MorphIcon icon={ArrowRight} size={15} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                </span>
+              </a>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
+
+  function initDeliverables() {
+    const root = document.querySelector<HTMLElement>("[data-deliverables]");
+    if (!root) return;
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        root.querySelectorAll<HTMLElement>("[data-deliv-visual]").forEach((frame) => {
+          const img = frame.querySelector<HTMLElement>("[data-deliv-img]");
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: frame, start: "top 85%", once: true },
+          });
+          tl.fromTo(
+            frame,
+            { clipPath: "inset(0% 100% 0% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 1.0, ease: "power4.inOut", clearProps: "clipPath" },
+          );
+          if (img) {
+            tl.from(img, { scale: 1.08, duration: 1.25, ease: "expo.out", clearProps: "scale" }, 0);
+          }
+        });
+      }, root);
+
+      return () => ctx.revert();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initDeliverables);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+</script>

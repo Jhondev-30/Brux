@@ -1,0 +1,117 @@
+---
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+import { bookingUrl } from "../../data/site";
+---
+
+<section id="book" class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="pricing-book-title" data-pcta>
+  <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+    <h2
+      id="pricing-book-title"
+      class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+    >
+      Not sure which plan fits your stage?
+    </h2>
+    <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+      Tell us your niche, fee range, and recent talks, and we will recommend the plan that fits — no pressure and 0% commission.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <a
+        href={bookingUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-[3px] bg-ink px-8 text-base font-semibold text-paper transition-colors duration-200 will-change-transform hover:bg-ink-raised focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+        data-pcta-btn
+      >
+        <span>Book a strategy call</span>
+        <span class="inline-flex shrink-0 will-change-transform" data-pcta-arrow-wrap>
+          <MorphIcon
+            icon={ArrowRight}
+            size={18}
+            strokeWidth={2}
+            spring="snappy"
+            reducedMotion="user"
+            data-pcta-icon
+          />
+        </span>
+      </a>
+
+      <a
+        href="/services/"
+        class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+      >
+        <span>Explore services</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let cleanupBtn: (() => void) | null = null;
+
+  function initPricingCta() {
+    cleanupBtn?.();
+    const root = document.querySelector<HTMLElement>("[data-pcta]");
+    const btn = root?.querySelector<HTMLElement>("[data-pcta-btn]");
+    if (!root || !btn) return;
+
+    const arrowWrap = btn.querySelector<HTMLElement>("[data-pcta-arrow-wrap]");
+    const arrowIcon = btn.querySelector<MorphEl>("[data-pcta-icon]");
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    const bx = gsap.quickTo(btn, "x", { duration: 0.45, ease: "power3.out" });
+    const by = gsap.quickTo(btn, "y", { duration: 0.45, ease: "power3.out" });
+    const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.22, ease: "power3.out" }) : null;
+
+    btn.addEventListener(
+      "pointerenter",
+      (e) => {
+        if (e.pointerType === "mouse") {
+          arrowIcon?.morphTo?.(ArrowUpRight);
+          if (!reduce.matches) nudgeX?.(3);
+        }
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointermove",
+      (e) => {
+        if (reduce.matches || e.pointerType !== "mouse") return;
+        const r = btn.getBoundingClientRect();
+        bx(((e.clientX - r.left) / r.width - 0.5) * 10);
+        by(((e.clientY - r.top) / r.height - 0.5) * 10);
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointerleave",
+      () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          bx(0);
+          by(0);
+          nudgeX?.(0);
+        }
+      },
+      { signal },
+    );
+    btn.addEventListener("focus", () => arrowIcon?.morphTo?.(ArrowUpRight), { signal });
+    btn.addEventListener("blur", () => arrowIcon?.morphTo?.(ArrowRight), { signal });
+
+    cleanupBtn = () => controller.abort();
+  }
+
+  document.addEventListener("astro:page-load", initPricingCta);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupBtn?.();
+    cleanupBtn = null;
+  });
+</script>

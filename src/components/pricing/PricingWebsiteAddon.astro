@@ -1,0 +1,52 @@
+---
+import { Check as LucideCheck } from "@lucide/astro";
+import { websiteAddon } from "../../data/pricing";
+import { bookingUrl } from "../../data/site";
+import Button from "../ui/Button.astro";
+---
+
+<section
+  id="website"
+  class="scroll-mt-24 bg-paper py-20 text-ink sm:py-28"
+  aria-labelledby="website-addon-title"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="grid gap-10 rounded-[24px] border border-ink/10 bg-mist p-7 sm:p-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-14">
+      <div class="lg:col-span-7">
+        <h2
+          id="website-addon-title"
+          class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+        >
+          {websiteAddon.title}
+        </h2>
+        <p class="mt-4 max-w-[38rem] text-base leading-relaxed text-muted sm:text-lg">
+          {websiteAddon.description}
+        </p>
+
+        <ul class="mt-6 grid gap-2.5 sm:grid-cols-2 sm:gap-x-6">
+          {websiteAddon.includes.map((item) => (
+            <li class="flex items-start gap-2.5 text-[0.9375rem] leading-snug text-ink/90">
+              <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="flex flex-col justify-between rounded-[20px] bg-ink p-7 text-paper sm:p-8 lg:col-span-5">
+        <div>
+          <p class="text-sm font-bold text-stage-glow">{websiteAddon.name}</p>
+          <p class="mt-2 text-[clamp(2rem,1.7rem+1.2vw,2.75rem)] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">
+            {websiteAddon.price}
+          </p>
+          <p class="mt-2 text-sm text-muted-on-ink">{websiteAddon.billing}</p>
+        </div>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col">
+          <Button href={bookingUrl} arrow>Get a website quote</Button>
+          <Button href="/services/web-design/" variant="secondary" arrow>Explore speaker websites</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

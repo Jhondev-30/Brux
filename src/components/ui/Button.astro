@@ -7,8 +7,11 @@
  * link: enlace de texto con subrayado que se dibuja al pasar el ratón. Para la acción secundaria del hero,
  *       así no compite con el botón rojo.
  *
- * arrow: añade una flecha que avanza al pasar el ratón (por defecto solo en link; en primary se activa con arrow).
+ * arrow: añade una flecha con MorphIcon + Lucide que avanza y se transforma al pasar el ratón.
  */
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+
 interface Props {
   href: string;
   variant?: "primary" | "secondary" | "secondary-light" | "link";
@@ -19,17 +22,24 @@ const { href, variant = "primary", arrow, class: className } = Astro.props;
 const showArrow = arrow ?? variant === "link";
 
 const box =
-  "group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-[3px] px-6 text-base font-semibold transition-[background-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-px active:translate-y-px active:scale-[0.98]";
+  "group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-[3px] px-6 text-base font-semibold transition-colors duration-150 ease-out will-change-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage";
 const variants = {
   primary: `${box} bg-stage text-paper hover:bg-stage-text`,
   secondary: `${box} text-paper ring-1 ring-paper/40 ring-inset hover:bg-paper/10 hover:ring-paper/70`,
   "secondary-light": `${box} text-ink ring-1 ring-ink/30 ring-inset hover:bg-ink/5 hover:ring-ink/60`,
-  link: "group/btn inline-flex min-h-12 items-center gap-2 text-base font-semibold text-paper",
+  link: "group/btn inline-flex min-h-12 items-center gap-2 text-base font-semibold text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage",
 };
 const external = /^https?:\/\//.test(href);
 ---
 
-<a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} class:list={[variants[variant], className]}>
+<a
+  href={href}
+  target={external ? "_blank" : undefined}
+  rel={external ? "noopener" : undefined}
+  class:list={[variants[variant], className]}
+  data-ui-btn
+  data-ui-btn-variant={variant}
+>
   {
     variant === "link" ? (
       <span class="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 ease-out group-hover/btn:bg-[length:100%_1px] group-focus-visible/btn:bg-[length:100%_1px]">
@@ -41,20 +51,89 @@ const external = /^https?:\/\//.test(href);
   }
   {
     showArrow && (
-      <svg
-        viewBox="0 0 16 16"
-        width="16"
-        height="16"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.75"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-        class="shrink-0 transition-transform duration-200 ease-out group-hover/btn:translate-x-1"
-      >
-        <path d="M2.5 8h10M8.5 4l4 4-4 4" />
-      </svg>
+      <span class="inline-flex shrink-0 will-change-transform" data-ui-btn-arrow-wrap>
+        <MorphIcon
+          icon={ArrowRight}
+          size={16}
+          strokeWidth={2}
+          spring="snappy"
+          reducedMotion="user"
+          data-ui-btn-arrow
+        />
+      </span>
     )
   }
 </a>
+
+<script>
+  import { gsap } from "gsap";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let cleanup: (() => void) | null = null;
+
+  function initButtons() {
+    cleanup?.();
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    document.querySelectorAll<HTMLElement>("[data-ui-btn]").forEach((btn) => {
+      const variant = btn.dataset.uiBtnVariant;
+      const isBox = variant !== "link";
+      const arrowWrap = btn.querySelector<HTMLElement>("[data-ui-btn-arrow-wrap]");
+      const arrowIcon = btn.querySelector<MorphEl>("[data-ui-btn-arrow]");
+      const isExternal = btn.getAttribute("target") === "_blank";
+
+      const liftY = isBox ? gsap.quickTo(btn, "y", { duration: 0.24, ease: "power3.out" }) : null;
+      const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.24, ease: "power3.out" }) : null;
+
+      const onEnter = () => {
+        if (isExternal) arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) {
+          liftY?.(-1.5);
+          nudgeX?.(4);
+        }
+      };
+      const onLeave = () => {
+        if (isExternal) arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          liftY?.(0);
+          nudgeX?.(0);
+          if (isBox) gsap.to(btn, { scale: 1, duration: 0.35, ease: "back.out(2.5)" });
+        }
+      };
+
+      btn.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      btn.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      btn.addEventListener("focus", onEnter, { signal });
+      btn.addEventListener("blur", onLeave, { signal });
+
+      if (isBox) {
+        btn.addEventListener(
+          "pointerdown",
+          () => {
+            if (!reduce.matches) gsap.to(btn, { scale: 0.98, duration: 0.1, ease: "power2.out" });
+          },
+          { signal },
+        );
+        btn.addEventListener(
+          "pointerup",
+          () => {
+            if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.35, ease: "back.out(2.5)" });
+          },
+          { signal },
+        );
+      }
+    });
+
+    cleanup = () => controller.abort();
+  }
+
+  document.addEventListener("astro:page-load", initButtons);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

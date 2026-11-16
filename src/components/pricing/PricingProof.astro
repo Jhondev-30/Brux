@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+
+const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+{testimonials.length > 0 && (
+  <section
+    id="proof"
+    class="scroll-mt-24 bg-ink py-20 text-paper sm:py-28"
+    aria-labelledby="pricing-proof-title"
+  >
+    <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <h2
+          id="pricing-proof-title"
+          class="max-w-[34rem] text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+        >
+          What speakers say after working with us
+        </h2>
+        <div class="flex flex-wrap gap-5 text-sm font-semibold">
+          <a
+            href="/#testimonials"
+            class="group/pl inline-flex items-center gap-1.5 text-stage-glow transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            <span>Read full testimonials</span>
+            <span class="inline-flex transition-transform duration-150 group-hover/pl:translate-x-0.5" aria-hidden="true">
+              <MorphIcon icon={ArrowRight} size={15} strokeWidth={2} spring="snappy" reducedMotion="user" />
+            </span>
+          </a>
+          <a
+            href="/#work"
+            class="group/pw inline-flex items-center gap-1.5 text-paper/85 transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            <span>See client work</span>
+            <span class="inline-flex transition-transform duration-150 group-hover/pw:translate-x-0.5" aria-hidden="true">
+              <MorphIcon icon={ArrowRight} size={15} strokeWidth={2} spring="snappy" reducedMotion="user" />
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-12 grid gap-6 lg:grid-cols-2">
+        {testimonials.map((t) => {
+          const d = t.data;
+          return (
+            <figure class="flex flex-col justify-between gap-8 rounded-[20px] border border-paper/12 bg-ink-raised p-7 sm:p-9">
+              <blockquote class="text-lg leading-relaxed text-paper/90 sm:text-[1.1875rem]">
+                “{d.quote}”
+              </blockquote>
+
+              <figcaption class="flex flex-wrap items-center justify-between gap-4 border-t border-paper/10 pt-6">
+                <div class="flex items-center gap-3.5">
+                  <Image
+                    src={d.photo}
+                    alt={d.name}
+                    width={96}
+                    height={96}
+                    class="size-12 shrink-0 rounded-full object-cover ring-1 ring-paper/15"
+                  />
+                  <div>
+                    <p class="text-base font-bold text-paper">{d.name}</p>
+                    <p class="text-sm text-muted-on-ink">{d.role}</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center rounded-full bg-stage/15 px-3 py-1 text-xs font-semibold text-stage-glow">
+                  {d.result}
+                </span>
+              </figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+)}

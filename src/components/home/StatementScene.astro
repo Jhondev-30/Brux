@@ -9,6 +9,7 @@
  *  4. El fondo queda en el mismo rojo que FinalCta, así las dos secciones se leen como una sola.
  *
  * Sin JS o con movimiento reducido se muestra el estado estático: fondo rojo y las dos líneas, una debajo de otra.
+ * Estilos con Tailwind v4 y animación con GSAP.
  */
 interface Props {
   lead?: string;
@@ -18,35 +19,55 @@ const { lead = "Stop waiting for invites,", keyLine = "start deciding." } = Astr
 
 const leadWords = lead.split(" ");
 const keyWords = keyLine.split(" ").map((w) => [...w]);
+const maskClass = "inline-block overflow-clip pt-[0.06em] pb-[0.14em] -mt-[0.06em] -mb-[0.14em] align-top";
 ---
 
-<section id="statement" class="statement" aria-labelledby="statement-title" data-statement>
-  <div class="statement__stage" data-statement-stage>
-    <div class="statement__flood" data-statement-flood aria-hidden="true">
-      <div class="statement__halo"></div>
-      <div class="statement__core"></div>
+<section id="statement" class="group/statement overflow-x-clip" aria-labelledby="statement-title" data-statement>
+  <div
+    class="relative isolate grid min-h-svh place-items-center overflow-clip bg-stage group-[.is-live]/statement:bg-ink"
+    data-statement-stage
+  >
+    <div
+      class="pointer-events-none absolute top-full left-1/2 z-0 hidden aspect-[1.6] w-[max(190%,260svh)] -translate-x-1/2 group-[.is-live]/statement:block group-[.is-live]/statement:will-change-transform"
+      data-statement-flood
+      aria-hidden="true"
+    >
+      <div class="absolute -inset-[6%] rounded-full bg-stage-glow opacity-85 blur-[min(6svh,4vw)]"></div>
+      <div class="absolute inset-[4%] rounded-full bg-stage blur-[min(4svh,3vw)]"></div>
     </div>
 
-    <h2 id="statement-title" class="statement__line" aria-label={`${lead} ${keyLine}`}>
-      <span class="statement__lead" data-statement-lead aria-hidden="true">
+    <h2
+      id="statement-title"
+      class="relative z-10 m-0 flex w-full max-w-[80rem] flex-col items-center gap-[0.04em] px-4 text-center leading-none font-extrabold tracking-[-0.02em] text-balance group-[.is-live]/statement:grid group-[.is-live]/statement:place-items-center"
+      aria-label={`${lead} ${keyLine}`}
+    >
+      <span
+        class="block text-[clamp(2.375rem,1.2rem+5.2vw,7.5rem)] text-ink group-[.is-live]/statement:col-start-1 group-[.is-live]/statement:row-start-1 group-[.is-live]/statement:text-paper"
+        data-statement-lead
+        aria-hidden="true"
+      >
         {
           leadWords.map((word, i) => (
             <>
-              <span class="statement__mask">
-                <span class="statement__word" data-lead-word>{word}</span>
+              <span class={maskClass}>
+                <span class="inline-block" data-lead-word>{word}</span>
               </span>
               {i < leadWords.length - 1 && " "}
             </>
           ))
         }
       </span>
-      <span class="statement__key" data-statement-key aria-hidden="true">
+      <span
+        class="block text-[min(clamp(2.875rem,1.4rem+7.8vw,11rem),10.6vw)] whitespace-nowrap text-paper group-[.is-live]/statement:col-start-1 group-[.is-live]/statement:row-start-1"
+        data-statement-key
+        aria-hidden="true"
+      >
         {
           keyWords.map((chars, i) => (
             <>
-              <span class="statement__mask">
+              <span class={maskClass}>
                 {chars.map((c) => (
-                  <span class="statement__char" data-key-char>{c}</span>
+                  <span class="inline-block" data-key-char>{c}</span>
                 ))}
               </span>
               {i < keyWords.length - 1 && " "}
@@ -58,127 +79,17 @@ const keyWords = keyLine.split(" ").map((w) => [...w]);
   </div>
 </section>
 
-<style>
-  /* El foco es mucho más ancho que la pantalla: nunca debe generar scroll horizontal (clip, no hidden, para no romper el pin) */
-  .statement {
-    overflow-x: clip;
-  }
-  .statement__stage {
-    position: relative;
-    isolation: isolate;
-    display: grid;
-    place-items: center;
-    min-height: 100svh;
-    overflow: clip;
-    /* Estado estático por defecto: sin JS la frase se lee igual */
-    background: var(--color-stage);
-  }
-
-  .statement__flood {
-    position: absolute;
-    z-index: 0;
-    left: 50%;
-    top: 100%;
-    /* En pantallas altas (móvil) el foco crece con la altura para llegar a cubrirla entera */
-    width: max(190%, 260svh);
-    aspect-ratio: 1.6;
-    translate: -50% 0;
-    pointer-events: none;
-    display: none;
-  }
-  .statement__halo,
-  .statement__core {
-    position: absolute;
-    border-radius: 50%;
-  }
-  .statement__halo {
-    inset: -6%;
-    background: var(--color-stage-glow);
-    filter: blur(min(6svh, 4vw));
-    opacity: 0.85;
-  }
-  .statement__core {
-    inset: 4%;
-    background: var(--color-stage);
-    filter: blur(min(4svh, 3vw));
-  }
-
-  .statement__line {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.04em;
-    width: 100%;
-    max-width: 80rem;
-    margin: 0;
-    padding-inline: 16px;
-    text-align: center;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    text-wrap: balance;
-  }
-  .statement__lead {
-    display: block;
-    font-size: clamp(2.375rem, 1.2rem + 5.2vw, 7.5rem);
-    color: var(--color-ink);
-  }
-  .statement__key {
-    display: block;
-    white-space: nowrap;
-    /* El tope en vw evita que toque los bordes en móvil (390 px → ~41 px, 320 px → ~34 px) */
-    font-size: min(clamp(2.875rem, 1.4rem + 7.8vw, 11rem), 10.6vw);
-    color: var(--color-paper);
-  }
-
-  /* Cada palabra es una ventana: lo que entra desde abajo aparece sin verse fuera de ella */
-  .statement__mask {
-    display: inline-block;
-    overflow: clip;
-    padding-block: 0.06em 0.14em;
-    margin-block: -0.06em -0.14em;
-    vertical-align: top;
-  }
-  .statement__word,
-  .statement__char {
-    display: inline-block;
-  }
-
-  /* Con la animación activa: las dos frases ocupan el mismo sitio y se relevan */
-  .statement.is-live .statement__stage {
-    background: var(--color-ink);
-  }
-  .statement.is-live .statement__flood {
-    display: block;
-    will-change: transform;
-  }
-  .statement.is-live .statement__line {
-    display: grid;
-    place-items: center;
-  }
-  .statement.is-live .statement__lead,
-  .statement.is-live .statement__key {
-    grid-area: 1 / 1;
-  }
-  .statement.is-live .statement__lead {
-    color: var(--color-paper);
-  }
-</style>
-
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
 
-  let ctx: gsap.Context | null = null;
+  let mm: gsap.MatchMedia | null = null;
 
   function initStatement() {
     const section = document.querySelector<HTMLElement>("[data-statement]");
     if (!section) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const stage = section.querySelector<HTMLElement>("[data-statement-stage]");
     const flood = section.querySelector<HTMLElement>("[data-statement-flood]");
@@ -187,58 +98,66 @@ const keyWords = keyLine.split(" ").map((w) => [...w]);
     const keyChars = section.querySelectorAll<HTMLElement>("[data-key-char]");
     if (!stage || !flood || !lead || !leadWords.length || !keyChars.length) return;
 
-    section.classList.add("is-live");
     const red = getComputedStyle(document.documentElement).getPropertyValue("--color-stage").trim() || "#E50C13";
 
-    ctx = gsap.context(() => {
-      // Estado inicial: la primera frase y la segunda, escondidas bajo su ventana
-      gsap.set(leadWords, { yPercent: 115 });
-      gsap.set(keyChars, { yPercent: 120, rotate: 8, transformOrigin: "0% 100%" });
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      section.classList.add("is-live");
+      const ctx = gsap.context(() => {
+        // Estado inicial: la primera frase y la segunda, escondidas bajo su ventana
+        gsap.set(leadWords, { yPercent: 115 });
+        gsap.set(keyChars, { yPercent: 120, rotate: 8, transformOrigin: "0% 100%" });
 
-      // 1. La primera frase entra sola al llegar a la sección (una vez por pasada, no ligada al scroll)
-      gsap.to(leadWords, {
-        yPercent: 0,
-        duration: 1,
-        ease: "power4.out",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 65%",
-          toggleActions: "play none none reverse",
-        },
-      });
+        // 1. La primera frase entra sola al llegar a la sección (una vez por pasada, no ligada al scroll)
+        gsap.to(leadWords, {
+          yPercent: 0,
+          duration: 1,
+          ease: "power4.out",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 65%",
+            toggleActions: "play none none reverse",
+          },
+        });
 
-      // 2 a 4. Ligado al scroll mientras la sección está fija
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => "+=" + window.innerHeight * 1.8,
-          pin: stage,
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-        },
-      });
+        // 2 a 4. Ligado al scroll mientras la sección está fija
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => "+=" + window.innerHeight * 1.8,
+            pin: stage,
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        });
 
-      tl
-        // El foco sube e inunda el escenario
-        .fromTo(flood, { yPercent: 0, scale: 0.55 }, { yPercent: -82, scale: 1.25, duration: 0.6, ease: "power1.in" }, 0.1)
-        // La primera frase se va hacia arriba, palabra a palabra, y se desenfoca
-        .to(lead, { filter: "blur(10px)", autoAlpha: 0, duration: 0.22, ease: "power2.in" }, 0.32)
-        .to(leadWords, { yPercent: -60, duration: 0.24, stagger: 0.025, ease: "power2.in" }, 0.3)
-        // El fondo queda en rojo plano
-        .to(stage, { backgroundColor: red, duration: 0.12 }, 0.6)
-        // «start deciding.» entra letra a letra
-        .to(keyChars, { yPercent: 0, rotate: 0, duration: 0.22, stagger: 0.012, ease: "power3.out" }, 0.5)
-        // Margen para leerla antes de soltar el pin
-        .to({}, { duration: 0.2 });
-    }, section);
+        tl
+          // El foco sube e inunda el escenario
+          .fromTo(flood, { yPercent: 0, scale: 0.55 }, { yPercent: -82, scale: 1.25, duration: 0.6, ease: "power1.in" }, 0.1)
+          // La primera frase se va hacia arriba, palabra a palabra, y se desenfoca
+          .to(lead, { filter: "blur(10px)", autoAlpha: 0, duration: 0.22, ease: "power2.in" }, 0.32)
+          .to(leadWords, { yPercent: -60, duration: 0.24, stagger: 0.025, ease: "power2.in" }, 0.3)
+          // El fondo queda en rojo plano
+          .to(stage, { backgroundColor: red, duration: 0.12 }, 0.6)
+          // «start deciding.» entra letra a letra
+          .to(keyChars, { yPercent: 0, rotate: 0, duration: 0.22, stagger: 0.012, ease: "power3.out" }, 0.5)
+          // Margen para leerla antes de soltar el pin
+          .to({}, { duration: 0.2 });
+      }, section);
+
+      return () => {
+        ctx.revert();
+        section.classList.remove("is-live");
+      };
+    });
   }
 
   function destroyStatement() {
-    ctx?.revert();
-    ctx = null;
+    mm?.revert();
+    mm = null;
     document.querySelector("[data-statement]")?.classList.remove("is-live");
   }
 

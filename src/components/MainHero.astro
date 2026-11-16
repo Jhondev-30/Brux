@@ -1,8 +1,10 @@
 ---
+import { Pause } from "lucide";
+import MorphIcon from "morphicons/astro";
 import LogoBlanco from "../assets/images/brux-logo-blanco-una-tinta.svg";
+import { bookingUrl } from "../data/site";
 import Button from "./ui/Button.astro";
 import CtaButton from "./ui/CtaButton.astro";
-import { bookingUrl } from "../data/site";
 ---
 
 <!--
@@ -36,9 +38,13 @@ import { bookingUrl } from "../data/site";
   })();
 </script>
 
-<div class="curtain" data-curtain-layer aria-hidden="true">
+<div
+  class="fixed inset-0 z-100 hidden bg-ink bg-[url('/videos/brux-curtain-poster.webp')] bg-cover bg-center bg-no-repeat [:root[data-curtain=on]_&]:block"
+  data-curtain-layer
+  aria-hidden="true"
+>
   <video
-    class="curtain__video stage-frame"
+    class="absolute inset-y-0 left-0 size-full object-cover stage-wide:w-[128%] stage-wide:max-w-none"
     data-curtain-video
     muted
     playsinline
@@ -48,14 +54,24 @@ import { bookingUrl } from "../data/site";
     <source src="/videos/brux-curtain-reveal.webm" type="video/webm" />
     <source src="/videos/brux-curtain-reveal.mp4" type="video/mp4" />
   </video>
-  <div class="curtain__logo" data-curtain-logo>
+  <div class="absolute inset-0 grid place-items-center px-4 [&_svg]:h-auto [&_svg]:w-[min(56vw,360px)]" data-curtain-logo>
     <LogoBlanco />
   </div>
 </div>
 
-<section id="hero" class="hero relative isolate flex min-h-svh md:min-h-screen flex-col justify-end overflow-hidden bg-ink" aria-labelledby="hero-title">
+<!--
+  Dos composiciones con el custom-variant `stage-wide`:
+  - Vertical (móvil y tablet en vertical): el escenario ocupa la mitad superior de la pantalla (50svh) y el texto va debajo.
+  - Ancha (desde 1024 px, o cualquier pantalla apaisada desde 640 px con aspect-ratio >= 4/3):
+    el escenario ocupa todo el fondo, agrandado al 128 % para que el podio quede a la derecha y el texto a la izquierda.
+-->
+<section
+  id="hero"
+  class="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink md:min-h-screen"
+  aria-labelledby="hero-title"
+>
   <video
-    class="stage-frame hero__stage absolute top-0 left-0 -z-20 w-full object-cover"
+    class="absolute top-0 left-0 -z-20 h-[50svh] w-full object-cover stage-wide:h-full stage-wide:w-[128%] stage-wide:max-w-none"
     data-stage-loop
     muted
     loop
@@ -69,34 +85,38 @@ import { bookingUrl } from "../data/site";
   </video>
 
   <!-- Sombra para leer el texto sobre el vídeo: desde abajo en móvil, desde la izquierda en escritorio -->
-  <div class="hero__shade absolute inset-x-0 top-0 -z-10" aria-hidden="true"></div>
+  <div
+    class="absolute inset-x-0 top-0 -z-10 h-[50svh] bg-[linear-gradient(to_top,var(--color-ink)_0%,rgb(10_10_10/0.75)_14%,rgb(10_10_10/0)_42%)] stage-wide:h-full stage-wide:bg-[linear-gradient(to_right,rgb(10_10_10/0.88)_0%,rgb(10_10_10/0.55)_34%,rgb(10_10_10/0)_58%),linear-gradient(to_top,var(--color-ink)_0%,rgb(10_10_10/0)_34%)]"
+    aria-hidden="true"
+  >
+  </div>
 
-  <div class="hero__content mx-auto w-full max-w-7xl px-4 pb-14 sm:px-8 sm:pb-16 lg:px-12 lg:pb-24">
-    <div class="max-w-[38rem]">
+  <div class="mx-auto w-full max-w-7xl px-4 pt-[calc(50svh-3rem)] pb-14 sm:px-8 sm:pb-16 lg:px-12 lg:pb-24 stage-wide:pt-[min(8rem,12svh)]">
+    <div class="max-w-[38rem] stage-wide:max-w-[min(38rem,54vw)]">
       <h1
         id="hero-title"
         data-hero-in
-        class="text-[min(clamp(2.5rem,1.75rem+3.2vw,4.5rem),11svh)] font-extrabold leading-[1.02] tracking-[-0.02em] text-balance text-paper"
+        class="text-[min(clamp(2.5rem,1.75rem+3.2vw,4.5rem),11svh)] leading-[1.02] font-extrabold tracking-[-0.02em] text-balance text-paper [:root[data-curtain=on]_&]:invisible"
       >
         Get booked for the keynotes you want
       </h1>
 
       <p
         data-hero-in
-        class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper/90"
+        class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper/90 [:root[data-curtain=on]_&]:invisible"
       >
         Speaker booking for keynote speakers: every month we pitch you to the organizers in your niche, and grow
         your LinkedIn so they know your name when they look you up.
       </p>
 
       <!-- Una acción principal (rojo, con flecha) y una secundaria como enlace de texto, para que no compitan -->
-      <div data-hero-in class="mt-9 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-7">
+      <div data-hero-in class="mt-9 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-7 [:root[data-curtain=on]_&]:invisible">
         <CtaButton href={bookingUrl}>Book a strategy call</CtaButton>
         <Button href="/pricing/" variant="link" class="justify-center sm:justify-start">Compare plans</Button>
       </div>
 
-      <p data-hero-in class="mt-6 text-sm text-muted-on-ink">
-         No commission on your speaking fees.
+      <p data-hero-in class="mt-6 text-sm text-muted-on-ink [:root[data-curtain=on]_&]:invisible ">
+        No commission on your speaking fees.
       </p>
     </div>
   </div>
@@ -106,110 +126,17 @@ import { bookingUrl } from "../data/site";
     data-loop-toggle
     aria-pressed="false"
     aria-label="Pause background video"
-    class="absolute right-4 bottom-4 grid size-11 place-items-center rounded-full text-paper/70 ring-1 ring-paper/25 ring-inset transition-colors duration-150 hover:text-paper hover:ring-paper/60 sm:right-8 sm:bottom-8"
+    class="absolute right-4 bottom-4 grid size-11 place-items-center rounded-full text-paper/70 ring-1 ring-paper/25 ring-inset transition-colors duration-150 will-change-transform hover:text-paper hover:ring-paper/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper sm:right-8 sm:bottom-8 motion-reduce:hidden"
   >
-    <span data-icon-pause class="contents">
-      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <rect x="3.5" y="2.5" width="3" height="11" rx="0.5" />
-        <rect x="9.5" y="2.5" width="3" height="11" rx="0.5" />
-      </svg>
-    </span>
-    <span data-icon-play class="contents" hidden>
-      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M4.5 2.8v10.4a.5.5 0 0 0 .77.42l8.1-5.2a.5.5 0 0 0 0-.84l-8.1-5.2a.5.5 0 0 0-.77.42Z" />
-      </svg>
-    </span>
+    <MorphIcon icon={Pause} size={16} strokeWidth={2.2} spring="snappy" reducedMotion="user" data-loop-icon />
   </button>
 </section>
 
-<style>
-  /* El telón solo existe mientras <html data-curtain="on"> */
-  .curtain {
-    display: none;
-  }
-  :global(html[data-curtain="on"]) .curtain {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: var(--color-ink) url("/videos/brux-curtain-poster.webp") center / cover no-repeat;
-  }
-  .curtain__video {
-    position: absolute;
-    inset-block: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  /*
-    Dos composiciones:
-    - Vertical (móvil y tablet en vertical): el escenario ocupa la mitad superior de la pantalla y el texto va debajo.
-    - Ancha (desde 1024 px, o cualquier pantalla apaisada desde 640 px, como un móvil en horizontal):
-      el escenario ocupa todo el fondo, agrandado para que el podio quede a la derecha (~64 %) y el texto a la izquierda.
-    El vídeo del telón lleva el mismo encuadre para que el fundido al bucle no salte.
-  */
-  .hero__stage {
-    height: 50svh;
-  }
-  .hero__content {
-    padding-top: calc(50svh - 3rem);
-  }
-  @media (min-width: 1024px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
-    .stage-frame {
-      width: 128%;
-      max-width: none;
-    }
-    .hero__stage {
-      height: 100%;
-    }
-    .hero__content {
-      padding-top: min(8rem, 12svh);
-    }
-    /* El texto nunca pasa del 54 % del ancho: a la derecha está el podio */
-    .hero__content > div {
-      max-width: min(38rem, 54vw);
-    }
-  }
-  .curtain__logo {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding-inline: 16px;
-  }
-  .curtain__logo :global(svg) {
-    width: min(56vw, 360px);
-    height: auto;
-  }
-
-  /* Vertical: el borde de abajo del escenario se funde con el negro del texto */
-  .hero__shade {
-    height: 50svh;
-    background: linear-gradient(to top, var(--color-ink) 0%, rgb(10 10 10 / 0.75) 14%, rgb(10 10 10 / 0) 42%);
-  }
-  @media (min-width: 1024px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
-    .hero__shade {
-      height: 100%;
-      background:
-        linear-gradient(to right, rgb(10 10 10 / 0.88) 0%, rgb(10 10 10 / 0.55) 34%, rgb(10 10 10 / 0) 58%),
-        linear-gradient(to top, var(--color-ink) 0%, rgb(10 10 10 / 0) 34%);
-    }
-  }
-
-  /* Hasta que GSAP toma el control, el texto entra oculto solo si hay animación */
-  :global(html[data-curtain="on"]) [data-hero-in] {
-    visibility: hidden;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    [data-loop-toggle] {
-      display: none;
-    }
-  }
-</style>
-
 <script>
   import { gsap } from "gsap";
+  import { Pause, Play, type IconNode } from "lucide";
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
   let ctx: gsap.Context | null = null;
   let cleanups: Array<() => void> = [];
@@ -228,26 +155,36 @@ import { bookingUrl } from "../data/site";
     const curtainLogo = document.querySelector<HTMLElement>("[data-curtain-logo]");
     const curtainOn = root.dataset.curtain === "on";
 
-    // Botón de pausa del vídeo de fondo
+    // Botón de pausa del vídeo de fondo con MorphIcon (Pause <-> Play) y respuesta GSAP
     if (loop && toggle) {
-      const iconPause = toggle.querySelector<HTMLElement>("[data-icon-pause]");
-      const iconPlay = toggle.querySelector<HTMLElement>("[data-icon-play]");
+      const loopIcon = toggle.querySelector<MorphEl>("[data-loop-icon]");
       const sync = () => {
         const paused = loop.paused;
         toggle.setAttribute("aria-pressed", String(paused));
         toggle.setAttribute("aria-label", paused ? "Play background video" : "Pause background video");
-        iconPause?.toggleAttribute("hidden", paused);
-        iconPlay?.toggleAttribute("hidden", !paused);
+        loopIcon?.morphTo?.(paused ? Play : Pause);
       };
       const onClick = () => {
         if (loop.paused) loop.play().catch(() => {});
         else loop.pause();
       };
+      const onDown = () => {
+        if (!reduceMotion) gsap.to(toggle, { scale: 0.9, duration: 0.1, ease: "power2.out" });
+      };
+      const onUp = () => {
+        if (!reduceMotion) gsap.to(toggle, { scale: 1, duration: 0.4, ease: "back.out(3)" });
+      };
       toggle.addEventListener("click", onClick);
+      toggle.addEventListener("pointerdown", onDown);
+      toggle.addEventListener("pointerup", onUp);
+      toggle.addEventListener("pointerleave", onUp);
       loop.addEventListener("play", sync);
       loop.addEventListener("pause", sync);
       cleanups.push(() => {
         toggle.removeEventListener("click", onClick);
+        toggle.removeEventListener("pointerdown", onDown);
+        toggle.removeEventListener("pointerup", onUp);
+        toggle.removeEventListener("pointerleave", onUp);
         loop.removeEventListener("play", sync);
         loop.removeEventListener("pause", sync);
       });

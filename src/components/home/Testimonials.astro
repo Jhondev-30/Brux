@@ -1,19 +1,26 @@
 ---
-import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { Check as LucideCheck } from "@lucide/astro";
+import { Globe, type IconNode } from "lucide";
+import MorphIcon from "morphicons/astro";
 
 /**
  * Testimonios de src/content/testimonials/, uno por fila.
  * Cada fila: tarjeta blanca + su imagen (vídeo vertical o foto en escenario), pegadas y con el mismo alto:
  * la imagen toma el alto de la tarjeta (en móvil van una encima de la otra).
  * El lado alterna: la 1.ª fila lleva la tarjeta a la izquierda, la 2.ª a la derecha, y así.
- * Animaciones (GSAP, al final del archivo): título por líneas, entrada de cada fila al llegar a ella,
- * y respuesta al ratón en tarjetas, imágenes y botones. Con «reducir movimiento» todo se ve quieto.
- * Si todavía no hay ninguno, la sección no se muestra.
+ * Estilos con Tailwind v4, iconos con @lucide/astro y MorphIcon + Lucide, y animaciones con GSAP.
  */
 const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+
+const LINKEDIN_ICON: IconNode = [
+  ["path", { d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" }],
+  ["rect", { width: "4", height: "12", x: "2", y: "9" }],
+  ["circle", { cx: "4", cy: "4", r: "2" }],
+];
 
 // Parte la cita en [antes, frase resaltada, después]
 const splitQuote = (quote: string, highlight?: string) => {
@@ -23,6 +30,10 @@ const splitQuote = (quote: string, highlight?: string) => {
 };
 const isLinkedIn = (url?: string) => Boolean(url && /linkedin\.com/.test(url));
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.08em] pb-[0.16em] px-[0.05em] -mt-[0.08em] -mb-[0.16em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
 {testimonials.length > 0 && (
@@ -30,10 +41,15 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
       <h2
         id="testimonials-title"
-        class="mx-auto max-w-[34rem] text-center text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-paper"
+        class="mx-auto max-w-[34rem] text-center text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
         data-tm-title
       >
-        What speakers say about working with us
+        {words("What speakers say about working with us").map((w, j, a) => (
+          <>
+            <span class={maskClass}><span class={wordClass} data-tm-title-word>{w}</span></span>
+            {j < a.length - 1 && " "}
+          </>
+        ))}
       </h2>
 
       <div class="mt-14 grid gap-16 sm:mt-20 lg:gap-24">
@@ -44,10 +60,11 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
           const [before, mark, after] = splitQuote(d.quote, d.highlight);
           // Una cita corta va más grande: la tarjeta gana alto y el vídeo vertical no queda aplastado
           const short = d.quote.length < 320;
+          const linkedin = isLinkedIn(d.link);
           return (
             <div
               class:list={[
-                "tm-row grid rounded-[1.75rem]",
+                "relative isolate grid rounded-[1.75rem] shadow-[0_18px_36px_-28px_rgb(0_0_0/0.35)] will-change-transform [--sh:0] after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:opacity-(--sh) after:shadow-[0_26px_44px_-30px_rgb(0_0_0/0.45)]",
                 hasMedia &&
                   (d.video
                     ? flip ? "lg:grid-cols-[20rem_minmax(0,1fr)]" : "lg:grid-cols-[minmax(0,1fr)_20rem]"
@@ -83,22 +100,22 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
                       href={d.link}
                       target="_blank"
                       rel="noopener"
-                      class="grid size-11 shrink-0 place-items-center rounded-full bg-mist text-ink transition-colors duration-200 hover:bg-stage-text hover:text-paper"
-                      aria-label={isLinkedIn(d.link) ? `${d.name} on LinkedIn` : `Visit ${host(d.link)}`}
+                      class:list={[
+                        "grid size-11 shrink-0 place-items-center rounded-full bg-mist transition-colors duration-200 hover:bg-stage-text hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage",
+                        linkedin ? "text-[#0A66C2]" : "text-ink",
+                      ]}
+                      aria-label={linkedin ? `${d.name} on LinkedIn` : `Visit ${host(d.link)}`}
                       data-tm-btn
+                      data-tm-btn-kind={linkedin ? "linkedin" : "web"}
                     >
-                      {isLinkedIn(d.link) ? (
-                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                          <path
-                            fill="#0A66C2"
-                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                          />
-                        </svg>
-                      ) : (
-                        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <path d="M5 11l6-6M6 5h5v5" />
-                        </svg>
-                      )}
+                      <MorphIcon
+                        icon={linkedin ? LINKEDIN_ICON : Globe}
+                        size={18}
+                        strokeWidth={2}
+                        spring="snappy"
+                        reducedMotion="user"
+                        data-tm-btn-icon
+                      />
                     </a>
                   )}
                 </figcaption>
@@ -112,15 +129,24 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
                   ]}
                   data-tm-quote
                 >
-                  <p>“{before}{mark && <mark class="tm-mark">{mark}</mark>}{after}”</p>
+                  <p>
+                    “{before}
+                    {mark && (
+                      <mark
+                        class="bg-transparent bg-[linear-gradient(color-mix(in_oklab,var(--color-stage)_30%,transparent),color-mix(in_oklab,var(--color-stage)_30%,transparent))] bg-[position:0_88%] bg-no-repeat box-decoration-clone text-inherit [--hl:100%] [background-size:var(--hl)_0.42em]"
+                        data-tm-mark
+                      >
+                        {mark}
+                      </mark>
+                    )}
+                    {after}”
+                  </p>
                 </blockquote>
 
                 {d.result && (
                   <p class="flex items-center gap-3 self-start rounded-2xl bg-mist py-3 pr-5 pl-3 font-semibold text-ink" data-tm-result>
                     <span class="grid size-8 shrink-0 place-items-center rounded-full bg-stage text-paper" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3.5 8.5l3 3 6-7" />
-                      </svg>
+                      <LucideCheck class="size-4 text-paper" stroke-width={2.5} aria-hidden="true" />
                     </span>
                     {d.result}
                   </p>
@@ -169,44 +195,21 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
   </section>
 )}
 
-<style>
-  /* Frase resaltada: un trazo rojo bajo el texto que GSAP «dibuja» de izquierda a derecha (--hl) */
-  .tm-mark {
-    --hl: 100%;
-    color: inherit;
-    background: linear-gradient(color-mix(in oklab, var(--color-stage) 30%, transparent), color-mix(in oklab, var(--color-stage) 30%, transparent))
-      no-repeat 0 88% / var(--hl) 0.42em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-  /*
-    Sombra suave en reposo. La del ratón vive en una capa aparte (::after) y solo cambia su opacidad:
-    animar box-shadow directamente daba un salto exagerado la primera vez.
-  */
-  .tm-row {
-    position: relative;
-    isolation: isolate;
-    box-shadow: 0 18px 36px -28px rgb(0 0 0 / 0.35);
-    will-change: transform;
-  }
-  .tm-row::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    box-shadow: 0 26px 44px -30px rgb(0 0 0 / 0.45);
-    opacity: var(--sh, 0);
-    pointer-events: none;
-  }
-</style>
-
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { SplitText } from "gsap/SplitText";
+  import { ArrowUpRight, Globe, type IconNode } from "lucide";
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  const LINKEDIN_ICON: IconNode = [
+    ["path", { d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" }],
+    ["rect", { width: "4", height: "12", x: "2", y: "9" }],
+    ["circle", { cx: "4", cy: "4", r: "2" }],
+  ];
 
   /*
     Ritmo (criterios de brux-motion): primero la frase, luego el objeto, al final el detalle.
@@ -214,34 +217,72 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     - Cada fila, al entrar en pantalla (una sola vez, nunca ligado al scroll):
       la imagen se descubre desde abajo con un leve zoom de retroceso; la tarjeta sube;
       la cita aparece por líneas; el resaltado se dibuja; el resultado entra el último.
-    - Ratón: la fila (tarjeta + imagen) sube 4 px y su sombra crece; la imagen se acerca un 3 %; los botones se hunden al pulsar.
+    - Ratón: la fila (tarjeta + imagen) sube 4 px y su sombra crece; la imagen se acerca un 3 %; los botones transforman su icono y se hunden al pulsar.
   */
   const EASE = "expo.out";
   let ctx: gsap.Context | null = null;
   let mm: gsap.MatchMedia | null = null;
+  let cleanupBtns: (() => void) | null = null;
 
   function initTestimonials() {
     const root = document.querySelector<HTMLElement>("[data-tm]");
     if (!root) return;
 
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLElement>("[data-tm-btn]").forEach((btn) => {
+      const icon = btn.querySelector<MorphEl>("[data-tm-btn-icon]");
+      const restIcon = btn.dataset.tmBtnKind === "linkedin" ? LINKEDIN_ICON : Globe;
+
+      const onEnter = () => icon?.morphTo?.(ArrowUpRight);
+      const onLeave = () => {
+        icon?.morphTo?.(restIcon);
+        if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+      };
+
+      btn.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      btn.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      btn.addEventListener("focus", onEnter, { signal });
+      btn.addEventListener("blur", onLeave, { signal });
+      btn.addEventListener(
+        "pointerdown",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 0.9, duration: 0.12, ease: "power2.out" });
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointerup",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+        },
+        { signal },
+      );
+    });
+    cleanupBtns = () => controller.abort();
+
     mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       ctx = gsap.context(() => {
-        // ---------- Título ----------
+        // ---------- Título (misma técnica de ventana por palabra que StatementScene y HowWeBook) ----------
         const title = root.querySelector<HTMLElement>("[data-tm-title]")!;
-        SplitText.create(title, {
-          type: "lines",
-          mask: "lines",
-          autoSplit: true,
-          onSplit: (self) =>
-            gsap.from(self.lines, {
-              yPercent: 110,
-              duration: 1.1,
+        const titleWords = root.querySelectorAll<HTMLElement>("[data-tm-title-word]");
+        if (titleWords.length) {
+          gsap.fromTo(
+            titleWords,
+            { yPercent: 115, rotate: 6 },
+            {
+              yPercent: 0,
+              rotate: 0,
+              duration: 1.05,
               ease: EASE,
-              stagger: 0.09,
+              stagger: 0.055,
               scrollTrigger: { trigger: title, start: "top 85%", once: true },
-            }),
-        });
+            },
+          );
+        }
 
         // ---------- Filas ----------
         root.querySelectorAll<HTMLElement>("[data-tm-row]").forEach((row) => {
@@ -251,13 +292,13 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
           const meta = card.querySelector<HTMLElement>("[data-tm-meta]")!;
           const quote = card.querySelector<HTMLElement>("[data-tm-quote] p")!;
           const result = card.querySelector<HTMLElement>("[data-tm-result]");
-          const marks = () => card.querySelectorAll<HTMLElement>(".tm-mark");
+          const marks = () => card.querySelectorAll<HTMLElement>("[data-tm-mark]");
 
           gsap.set(marks(), { "--hl": "0%" });
 
           SplitText.create(quote, {
             type: "lines",
-            mask: "lines",
+            linesClass: "overflow-visible",
             autoSplit: true,
             onSplit(self) {
               gsap.set(marks(), { "--hl": "0%" });
@@ -276,7 +317,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
               }
               tl.from(row, { y: 56, autoAlpha: 0, duration: 1.1 }, 0)
                 .from(meta.children, { x: -16, autoAlpha: 0, duration: 0.8, stagger: 0.07 }, 0.35)
-                .from(self.lines, { yPercent: 105, duration: 0.95, stagger: 0.06 }, 0.45)
+                .from(self.lines, { y: 20, autoAlpha: 0, duration: 0.9, stagger: 0.055 }, 0.42)
                 .to(marks(), { "--hl": "100%", duration: 0.9, ease: "power2.inOut", stagger: 0.15 }, ">-0.35");
               if (result) tl.from(result, { y: 12, scale: 0.94, autoAlpha: 0, duration: 0.7, ease: "back.out(2)" }, "<0.2");
               return tl;
@@ -284,7 +325,6 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
           });
 
           // ---------- Ratón ----------
-          // La fila se mueve entera: tarjeta e imagen están pegadas
           const lift = gsap.quickTo(row, "y", { duration: 0.5, ease: "power3.out" });
           const zoom = inner ? gsap.quickTo(inner, "scale", { duration: 0.8, ease: "power3.out" }) : null;
           const enter = () => {
@@ -302,14 +342,6 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
             media.addEventListener("pointerleave", () => zoom(1));
           }
         });
-
-        // Botones: se hunden al pulsar y vuelven con un pequeño rebote
-        root.querySelectorAll<HTMLElement>("[data-tm-btn]").forEach((btn) => {
-          btn.addEventListener("pointerdown", () => gsap.to(btn, { scale: 0.9, duration: 0.12, ease: "power2.out" }));
-          const up = () => gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
-          btn.addEventListener("pointerup", up);
-          btn.addEventListener("pointerleave", up);
-        });
       }, root);
 
       return () => ctx?.revert();
@@ -320,5 +352,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
   document.addEventListener("astro:before-swap", () => {
     mm?.revert();
     mm = null;
+    cleanupBtns?.();
+    cleanupBtns = null;
   });
 </script>

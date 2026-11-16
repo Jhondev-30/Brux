@@ -3,12 +3,14 @@
  * El botón de la acción principal de Brux («Book a strategy call»). Uno por pantalla como máximo.
  *
  * Más alto que un botón normal (56 px), con la flecha a la derecha del texto.
- * Al pasar el ratón: sube 1 px, se enciende un halo rojo suave debajo (luz de escenario) y la flecha avanza.
- * Al hacer clic se hunde. Con movimiento reducido solo cambia el color.
+ * Estilos con Tailwind v4, icono con MorphIcon + Lucide, y respuesta táctil con GSAP.
  *
  * tone="stage": rojo, sobre fondo negro (por defecto).
  * tone="ink": negro, sobre fondo rojo (FinalCta).
  */
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+
 interface Props {
   href: string;
   tone?: "stage" | "ink";
@@ -16,81 +18,101 @@ interface Props {
 }
 const { href, tone = "stage", class: className } = Astro.props;
 const external = /^https?:\/\//.test(href);
+
+const base =
+  "inline-flex min-h-14 items-center justify-center gap-3 rounded-[3px] pr-6 pl-7 text-[1.0625rem] leading-none font-semibold whitespace-nowrap text-paper no-underline transition-[background-color,box-shadow] duration-200 ease-out will-change-transform focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper";
+
+const tones = {
+  stage: "bg-stage hover:bg-[#f2141b] hover:shadow-[0_8px_24px_-10px_rgb(229_12_19/0.35)]",
+  ink: "bg-ink hover:bg-ink-raised hover:shadow-[0_8px_24px_-10px_rgb(10_10_10/0.3)]",
+};
 ---
 
-<a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} class:list={["cta", `cta--${tone}`, className]}>
+<a
+  href={href}
+  target={external ? "_blank" : undefined}
+  rel={external ? "noopener" : undefined}
+  class:list={[base, tones[tone], className]}
+  data-cta-button
+>
   <span><slot /></span>
-  <svg class="cta__icon" viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M2.5 8h10M8.5 4l4 4-4 4" />
-  </svg>
+  <span class="inline-flex shrink-0 will-change-transform" data-cta-button-arrow-wrap>
+    <MorphIcon
+      icon={ArrowRight}
+      size={18}
+      strokeWidth={2}
+      spring="snappy"
+      reducedMotion="user"
+      data-cta-button-arrow
+    />
+  </span>
 </a>
 
-<style>
-  .cta {
-    --cta-bg: var(--color-stage);
-    --cta-bg-hover: #f2141b;
-    --cta-fg: var(--color-paper);
-    --cta-glow: rgb(229 12 19 / 0.35);
+<script>
+  import { gsap } from "gsap";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    min-height: 3.5rem;
-    padding-inline: 1.75rem 1.5rem;
-    border-radius: 3px;
-    background: var(--cta-bg);
-    color: var(--cta-fg);
-    font-size: 1.0625rem;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-    text-decoration: none;
-    box-shadow: 0 0 0 0 transparent;
-    transition:
-      transform 200ms ease-out,
-      box-shadow 260ms ease-out,
-      background-color 200ms ease-out;
-  }
-  .cta--ink {
-    --cta-bg: var(--color-ink);
-    --cta-bg-hover: var(--color-ink-raised);
-    --cta-glow: rgb(10 10 10 / 0.3);
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let cleanup: (() => void) | null = null;
+
+  function initCtaButtons() {
+    cleanup?.();
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    document.querySelectorAll<HTMLElement>("[data-cta-button]").forEach((btn) => {
+      const arrowWrap = btn.querySelector<HTMLElement>("[data-cta-button-arrow-wrap]");
+      const arrowIcon = btn.querySelector<MorphEl>("[data-cta-button-arrow]");
+      const isExternal = btn.getAttribute("target") === "_blank";
+
+      const liftY = gsap.quickTo(btn, "y", { duration: 0.24, ease: "power3.out" });
+      const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.24, ease: "power3.out" }) : null;
+
+      const onEnter = () => {
+        if (isExternal) arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) {
+          liftY(-1.5);
+          nudgeX?.(3.5);
+        }
+      };
+
+      const onLeave = () => {
+        if (isExternal) arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          liftY(0);
+          nudgeX?.(0);
+          gsap.to(btn, { scale: 1, duration: 0.35, ease: "back.out(2.5)" });
+        }
+      };
+
+      btn.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      btn.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      btn.addEventListener("focus", onEnter, { signal });
+      btn.addEventListener("blur", onLeave, { signal });
+      btn.addEventListener(
+        "pointerdown",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 0.985, duration: 0.08, ease: "power2.out" });
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointerup",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.35, ease: "back.out(2.5)" });
+        },
+        { signal },
+      );
+    });
+
+    cleanup = () => controller.abort();
   }
 
-  .cta__icon {
-    flex-shrink: 0;
-    transition: transform 200ms ease-out;
-  }
-
-  @media (hover: hover) {
-    .cta:hover {
-      background: var(--cta-bg-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px -10px var(--cta-glow);
-    }
-    .cta:hover .cta__icon {
-      transform: translateX(3px);
-    }
-  }
-  .cta:active {
-    transform: translateY(0) scale(0.985);
-    transition-duration: 80ms;
-  }
-  .cta:focus-visible {
-    outline: 2px solid var(--color-paper);
-    outline-offset: 3px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cta,
-    .cta__icon {
-      transition: background-color 150ms ease;
-    }
-    .cta:hover,
-    .cta:active,
-    .cta:hover .cta__icon {
-      transform: none;
-    }
-  }
-</style>
+  document.addEventListener("astro:page-load", initCtaButtons);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

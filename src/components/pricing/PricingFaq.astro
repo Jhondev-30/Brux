@@ -1,0 +1,134 @@
+---
+import { Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
+import { pricingFaqs } from "../../data/pricing";
+---
+
+<section
+  id="faq"
+  class="scroll-mt-24 bg-ink-raised py-24 text-paper sm:py-32"
+  aria-labelledby="pricing-faq-title"
+  data-pfaq
+>
+  <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20 lg:px-12">
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      <h2
+        id="pricing-faq-title"
+        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+      >
+        Questions about pricing and plans
+      </h2>
+      <p class="mt-6 max-w-[30rem] leading-relaxed text-muted-on-ink">
+        Straight answers on commissions, the Founder transition, commitments, and choosing the right tier.
+      </p>
+    </div>
+
+    <div class="relative">
+      <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+      {pricingFaqs.map((f) => (
+        <details class="group relative" data-pfaq-item>
+          <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+            <span class="absolute inset-x-0 bottom-0 h-px bg-paper/10" aria-hidden="true"></span>
+            <h3 class="text-pretty">{f.q}</h3>
+            <span
+              aria-hidden="true"
+              class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-[background-color,color,box-shadow] duration-200 group-open:bg-stage group-open:text-paper group-open:ring-stage group-hover:ring-paper/40"
+            >
+              <MorphIcon
+                icon={Plus}
+                size={16}
+                strokeWidth={2}
+                spring="snappy"
+                reducedMotion="user"
+                data-pfaq-icon
+              />
+            </span>
+          </summary>
+          <div class="overflow-hidden" data-pfaq-answer>
+            <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { Minus, Plus, type IconNode } from "lucide";
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let cleanupFaq: (() => void) | null = null;
+
+  function initPricingFaq() {
+    cleanupFaq?.();
+    const root = document.querySelector<HTMLElement>("[data-pfaq]");
+    if (!root) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLDetailsElement>("[data-pfaq-item]").forEach((details) => {
+      const summary = details.querySelector("summary");
+      const answer = details.querySelector<HTMLElement>("[data-pfaq-answer]");
+      const icon = details.querySelector<MorphEl>("[data-pfaq-icon]");
+      if (!summary || !answer) return;
+
+      let anim: gsap.core.Tween | null = null;
+
+      summary.addEventListener(
+        "click",
+        (e) => {
+          e.preventDefault();
+          anim?.kill();
+          const opening = !details.open;
+
+          if (reduce.matches) {
+            details.open = opening;
+            icon?.morphTo?.(opening ? Minus : Plus);
+            return;
+          }
+
+          if (opening) {
+            details.open = true;
+            icon?.morphTo?.(Minus);
+            anim = gsap.fromTo(
+              answer,
+              { height: 0, autoAlpha: 0 },
+              {
+                height: "auto",
+                autoAlpha: 1,
+                duration: 0.36,
+                ease: "expo.out",
+                clearProps: "height,opacity,visibility",
+              },
+            );
+          } else {
+            icon?.morphTo?.(Plus);
+            anim = gsap.to(answer, {
+              height: 0,
+              autoAlpha: 0,
+              duration: 0.22,
+              ease: "power2.inOut",
+              onComplete: () => {
+                details.open = false;
+                gsap.set(answer, { clearProps: "height,opacity,visibility" });
+              },
+            });
+          }
+        },
+        { signal },
+      );
+    });
+
+    cleanupFaq = () => controller.abort();
+  }
+
+  document.addEventListener("astro:page-load", initPricingFaq);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupFaq?.();
+    cleanupFaq = null;
+  });
+</script>

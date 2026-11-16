@@ -1,5 +1,12 @@
 ---
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
 import { bookingUrl } from "../../data/site";
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.05em] -mt-[0.06em] -mb-[0.14em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
 <!--
@@ -9,10 +16,15 @@ import { bookingUrl } from "../../data/site";
   <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
     <h2
       id="book-title"
-      class="max-w-[44rem] text-[clamp(2.5rem,1.7rem+3.4vw,4.75rem)] font-extrabold leading-[1.02] tracking-[-0.02em] text-paper"
+      class="max-w-[44rem] text-[clamp(2.5rem,1.7rem+3.4vw,4.75rem)] leading-[1.02] font-extrabold tracking-[-0.02em] text-balance text-paper"
       data-cta-title
     >
-      Ready for your next stage?
+      {words("Ready for your next stage?").map((w, j, a) => (
+        <>
+          <span class={maskClass}><span class={wordClass} data-cta-word>{w}</span></span>
+          {j < a.length - 1 && " "}
+        </>
+      ))}
     </h2>
     <p
       class="mt-7 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-paper"
@@ -25,13 +37,20 @@ import { bookingUrl } from "../../data/site";
       href={bookingUrl}
       target="_blank"
       rel="noopener"
-      class="group mt-10 inline-flex min-h-14 items-center justify-center gap-2.5 rounded-[3px] bg-ink px-8 text-base font-semibold text-paper transition-colors duration-200 hover:bg-ink-raised"
+      class="mt-10 inline-flex min-h-14 items-center justify-center gap-2.5 rounded-[3px] bg-ink px-8 text-base font-semibold text-paper transition-colors duration-200 will-change-transform hover:bg-ink-raised focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
       data-cta-btn
     >
-      Book a call
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">
-        <path d="M2.5 8h10M8.5 4l4 4-4 4" />
-      </svg>
+      <span>Book a call</span>
+      <span class="inline-flex shrink-0 will-change-transform" data-cta-arrow-wrap>
+        <MorphIcon
+          icon={ArrowRight}
+          size={18}
+          strokeWidth={2}
+          spring="snappy"
+          reducedMotion="user"
+          data-cta-icon
+        />
+      </span>
     </a>
   </div>
 </section>
@@ -40,63 +59,127 @@ import { bookingUrl } from "../../data/site";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { SplitText } from "gsap/SplitText";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
   /*
     Variación respecto a las otras secciones:
     - Título letra a letra, desde el centro hacia fuera, con un pequeño giro 3D que se endereza.
     - Texto y botón suben detrás; el botón «respira» una vez para pedir el clic.
-    - Ratón: el botón sigue un poco al cursor (efecto imán, máx. 6 px) y se hunde al pulsar.
+    - Ratón: el botón sigue un poco al cursor (efecto imán, máx. 6 px), transforma la flecha con MorphIcon y se hunde al pulsar.
   */
   let mm: gsap.MatchMedia | null = null;
+  let cleanupBtn: (() => void) | null = null;
 
   function initCta() {
     const root = document.querySelector<HTMLElement>("[data-cta]");
     if (!root) return;
+
+    const btn = root.querySelector<HTMLElement>("[data-cta-btn]")!;
+    const arrowWrap = btn.querySelector<HTMLElement>("[data-cta-arrow-wrap]");
+    const arrowIcon = btn.querySelector<MorphEl>("[data-cta-icon]");
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    const bx = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" });
+    const by = gsap.quickTo(btn, "y", { duration: 0.5, ease: "power3.out" });
+    const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.24, ease: "power3.out" }) : null;
+
+    btn.addEventListener(
+      "pointerenter",
+      (e) => {
+        if (e.pointerType === "mouse") {
+          arrowIcon?.morphTo?.(ArrowUpRight);
+          if (!reduce.matches) nudgeX?.(3);
+        }
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointermove",
+      (e) => {
+        if (reduce.matches || e.pointerType !== "mouse") return;
+        const r = btn.getBoundingClientRect();
+        bx(((e.clientX - r.left) / r.width - 0.5) * 12);
+        by(((e.clientY - r.top) / r.height - 0.5) * 12);
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointerleave",
+      () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          bx(0);
+          by(0);
+          nudgeX?.(0);
+          gsap.to(btn, { scale: 1, duration: 0.4, ease: "back.out(3)" });
+        }
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "focus",
+      () => {
+        arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) nudgeX?.(3);
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "blur",
+      () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) nudgeX?.(0);
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointerdown",
+      () => {
+        if (!reduce.matches) gsap.to(btn, { scale: 0.95, duration: 0.12, ease: "power2.out" });
+      },
+      { signal },
+    );
+    btn.addEventListener(
+      "pointerup",
+      () => {
+        if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+      },
+      { signal },
+    );
+    cleanupBtn = () => controller.abort();
+
     mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const ctx = gsap.context(() => {
-        const title = root.querySelector<HTMLElement>("[data-cta-title]")!;
+        const titleWords = root.querySelectorAll<HTMLElement>("[data-cta-word]");
         const lead = root.querySelector<HTMLElement>("[data-cta-lead]")!;
-        const btn = root.querySelector<HTMLElement>("[data-cta-btn]")!;
 
-        SplitText.create(title, {
-          type: "words,chars",
-          mask: "words",
-          autoSplit: true,
-          onSplit: (self) => {
-            const tl = gsap.timeline({
-              scrollTrigger: { trigger: root, start: "top 70%", once: true },
-              defaults: { ease: "expo.out" },
-            });
-            tl.from(
-                self.chars,
-                { yPercent: 110, rotationX: -70, transformPerspective: 600, transformOrigin: "50% 100%", duration: 1, stagger: { each: 0.025, from: "center" } },
-                0.1,
-              )
-              .from(lead, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.55)
-              .from(btn, { y: 24, scale: 0.85, autoAlpha: 0, duration: 0.9, ease: "back.out(1.8)" }, 0.7)
-              .to(btn, { scale: 1.05, duration: 0.35, ease: "power2.out", yoyo: true, repeat: 1 }, ">0.2");
-            return tl;
-          },
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 70%", once: true },
+          defaults: { ease: "expo.out" },
         });
-
-        // Botón imán
-        const bx = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" });
-        const by = gsap.quickTo(btn, "y", { duration: 0.5, ease: "power3.out" });
-        btn.addEventListener("pointermove", (e) => {
-          const r = btn.getBoundingClientRect();
-          bx(((e.clientX - r.left) / r.width - 0.5) * 12);
-          by(((e.clientY - r.top) / r.height - 0.5) * 12);
-        });
-        btn.addEventListener("pointerleave", () => {
-          bx(0);
-          by(0);
-          gsap.to(btn, { scale: 1, duration: 0.4, ease: "back.out(3)" });
-        });
-        btn.addEventListener("pointerdown", () => gsap.to(btn, { scale: 0.95, duration: 0.12, ease: "power2.out" }));
-        btn.addEventListener("pointerup", () => gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" }));
+        if (titleWords.length) {
+          tl.fromTo(
+            titleWords,
+            { yPercent: 115, rotate: 6 },
+            {
+              yPercent: 0,
+              rotate: 0,
+              duration: 1.05,
+              stagger: 0.065,
+            },
+            0.05,
+          );
+        }
+        tl.from(lead, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.35)
+          .from(btn, { y: 24, scale: 0.88, autoAlpha: 0, duration: 0.9, ease: "back.out(1.8)" }, 0.52)
+          .to(btn, { scale: 1.04, duration: 0.35, ease: "power2.out", yoyo: true, repeat: 1 }, ">0.18");
       }, root);
       return () => ctx.revert();
     });
@@ -106,5 +189,7 @@ import { bookingUrl } from "../../data/site";
   document.addEventListener("astro:before-swap", () => {
     mm?.revert();
     mm = null;
+    cleanupBtn?.();
+    cleanupBtn = null;
   });
 </script>

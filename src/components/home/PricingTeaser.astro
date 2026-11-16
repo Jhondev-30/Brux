@@ -1,15 +1,21 @@
 ---
 import { Image } from "astro:assets";
-import Button from "../ui/Button.astro";
+import { Check as LucideCheck } from "@lucide/astro";
+import { ArrowRight, Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import report from "../../assets/plans/monthly-report.webp";
+import Button from "../ui/Button.astro";
 
 /*
-  Planes en la portada: sin precios a propósito. Cada tarjeta dice para quién es, sus dos cifras
-  (pitches y posts al mes) y lo que la distingue; el precio y la lista completa están en /pricing/.
+  Planes en la portada: sin precios a propósito. Cada tarjeta presenta el plan, para quién es,
+  lo que la distingue primero y su capacidad mensual (pitches y posts) en lectura tabular;
+  el precio y la lista completa están en /pricing/.
   Datos del PDF de planes del 1 de noviembre de 2026.
-  Criterio tasteskill (servicio): fondo plano, una familia de tarjetas, lo común a todos los planes
-  dicho una vez, el plan recomendado con un filo de acento, una sola acción («Compare plans»),
-  una imagen real (un fotograma del informe mensual de los vídeos de «How we book»).
+  Diseño (Backstage editorial):
+  - Tres tarjetas en negro (bg-ink) y solo la recomendada (Growth) en rojo (bg-stage-text).
+  - Silueta ::before con fondo sutil en el contenedor de cada tarjeta: al elevarse en hover/focus (-5px),
+    queda visible su silueta detrás; en Growth asoma levemente desde el reposo.
+  - Subgrid en escritorio (lg) para alinear nombre, descripción, diferenciador, cifras y enlace.
 */
 const everyPlan = [
   "Press kit and demo reel",
@@ -57,358 +63,480 @@ const tiers = [
     adds: "Outreach to organizers in your name",
   },
 ];
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.08em] pb-[0.16em] px-[0.05em] -mt-[0.08em] -mb-[0.16em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
 <!-- La sección clara del formato Backstage -->
-<section id="plans" class="plans bg-paper py-24 text-ink sm:py-32" aria-labelledby="plans-title" data-plans>
+<section id="plans" class="overflow-hidden bg-paper py-24 text-ink sm:py-32" aria-labelledby="plans-title" data-plans>
   <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
     <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-x-8">
       <div class="lg:col-span-5">
         <h2
           id="plans-title"
           class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance"
+          data-plans-title
         >
-          Four plans for keynote speakers
+          {words("Four plans for keynote speakers").map((w, j, a) => (
+            <>
+              <span class={maskClass}><span class={wordClass} data-plans-title-word>{w}</span></span>
+              {j < a.length - 1 && " "}
+            </>
+          ))}
         </h2>
-        <p class="mt-5 max-w-[32rem] text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-normal text-pretty text-ink/80">
+        <p
+          class="mt-5 max-w-[32rem] text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-normal text-pretty text-ink/80"
+          data-plans-lead
+        >
           Each plan pairs speaker booking with LinkedIn. No commission on your fees.
         </p>
 
-        <h3 class="plans__label mt-9">In every plan</h3>
-        <ul class="plans__every mt-4">
-          {everyPlan.map((item) => (
-            <li>
-              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                <path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              {item}
-            </li>
-          ))}
+        <h3 class="mt-9 text-sm font-bold text-muted" data-plans-label>In every plan</h3>
+        <ul class="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2" data-plans-every>
+          {
+            everyPlan.map((item) => (
+              <li class="flex items-start gap-2.5 text-base leading-normal text-ink/85" data-plans-every-item>
+                <LucideCheck class="mt-1 size-4 shrink-0 text-stage" stroke-width={2.25} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))
+          }
         </ul>
 
-        <div class="mt-10">
+        <div class="mt-10" data-plans-cta>
           <Button href="/pricing/" arrow>Compare plans</Button>
         </div>
       </div>
 
-      <div class="plans__frame lg:col-span-7" data-visual>
+      <div
+        class="aspect-video overflow-hidden rounded-[20px] bg-ink ring-1 ring-ink/10 lg:col-span-7"
+        data-visual
+        data-plans-visual
+      >
         <Image
           src={report}
           alt="A Brux monthly report: keynotes booked, LinkedIn followers and post impressions, with a follower growth chart"
           widths={[640, 960, 1440]}
           sizes="(min-width: 1280px) 690px, (min-width: 1024px) 56vw, 92vw"
-          class="size-full object-cover"
+          class="size-full object-cover will-change-transform"
           loading="lazy"
+          data-plans-img
         />
       </div>
     </div>
 
-    <!-- Las cuatro tarjetas. El filo rojo descansa en el plan recomendado y viaja a la tarjeta que se señala -->
-    <ul class="plans__grid mt-14 lg:mt-20" data-plans-grid>
-      {tiers.map((t) => (
-        <li class="plans__item">
-          <a href={`/pricing/#${t.id}`} class:list={["plan", t.featured && "is-featured"]} data-plan aria-describedby={`plan-${t.id}-more`}>
-            {t.featured && <span class="plan__focus" aria-hidden="true" data-plans-focus></span>}
-            <span class="plan__top">
-              {t.badge && <span class:list={["plan__badge", t.featured && "is-accent"]}>{t.badge}</span>}
-            </span>
-            <span class="plan__name">{t.name}</span>
-            <span class="plan__for">{t.for}</span>
-            <span class="plan__facts">
-              <span class="plan__fact">
-                <span class="plan__num">{t.pitches}</span>
-                <span class="plan__unit">pitches to event organizers a month</span>
+    <!-- Las cuatro tarjetas: 3 en bg-ink y solo la recomendada (Growth) en bg-stage-text, silueta ::before con bg y subgrid -->
+    <ul
+      class="mt-14 grid gap-4 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto] lg:gap-x-5 lg:gap-y-0"
+      data-plans-grid
+    >
+      {
+        tiers.map((t) => (
+          <li
+            class:list={[
+              "relative isolate flex lg:row-span-5 lg:grid lg:grid-rows-subgrid",
+              "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[20px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
+              t.featured
+                ? "before:translate-y-1.5 before:bg-stage-text/22 has-[a:hover]:before:bg-stage-text/32 has-[a:focus-visible]:before:bg-stage-text/32"
+                : "before:bg-ink/12 has-[a:hover]:before:bg-ink/20 has-[a:focus-visible]:before:bg-ink/20",
+            ]}
+            data-plans-item
+          >
+            <a
+              href={`/pricing/#${t.id}`}
+              class:list={[
+                "group/plan relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper transition-shadow duration-300 ease-out will-change-transform lg:row-span-5 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stage focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
+                t.featured
+                  ? "border-stage-text bg-stage-text"
+                  : "border-ink bg-ink",
+              ]}
+              data-plan
+              data-plan-id={t.id}
+              data-plan-featured={t.featured ? "true" : undefined}
+              aria-describedby={`plan-${t.id}-more`}
+            >
+              <!-- 1. Nombre y badge en la misma línea (sin huecos vacíos en las tarjetas sin badge) -->
+              <span class="flex flex-wrap items-baseline justify-between gap-x-2.5 gap-y-1.5" data-plan-top>
+                <span
+                  class="text-[1.375rem] font-extrabold leading-[1.15] tracking-[-0.02em] text-paper"
+                  data-plan-name
+                >
+                  {t.name}
+                </span>
+                {t.badge && (
+                  <span
+                    class:list={[
+                      "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[0.75rem] font-bold tracking-[0.01em] whitespace-nowrap text-paper",
+                      t.featured ? "bg-ink" : "bg-paper/10",
+                    ]}
+                    data-plan-badge
+                  >
+                    {t.badge}
+                  </span>
+                )}
               </span>
-              <span class="plan__fact">
-                <span class="plan__num">{t.posts}</span>
-                <span class="plan__unit">LinkedIn posts a month</span>
+
+              <!-- 2. Para quién es -->
+              <span
+                class:list={[
+                  "mt-2.5 text-[0.9375rem] leading-[1.5]",
+                  t.featured ? "text-paper/90" : "text-muted-on-ink",
+                ]}
+                data-plan-for
+              >
+                {t.for}
               </span>
-            </span>
-            <span class="plan__adds">
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-                <path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-              {t.adds}
-            </span>
-            <span class="plan__more" id={`plan-${t.id}-more`}>
-              See the price and full plan
-              <svg class="plan__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                <path d="M2.5 8h10M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </a>
-        </li>
-      ))}
+
+              <!-- 3. Lo que distingue al plan antes de las cifras (evita que Founder y Foundation parezcan iguales) -->
+              <span
+                class="mt-4 flex items-start gap-2 text-[0.9375rem] font-semibold leading-[1.45] text-paper"
+                data-plan-adds
+              >
+                <span
+                  class:list={[
+                    "mt-0.5 inline-flex shrink-0",
+                    t.featured ? "text-paper" : "text-stage-glow",
+                  ]}
+                >
+                  <MorphIcon
+                    icon={Plus}
+                    size={14}
+                    strokeWidth={2.25}
+                    spring="snappy"
+                    reducedMotion="user"
+                    data-plan-add-icon
+                  />
+                </span>
+                <span>{t.adds}</span>
+              </span>
+
+              <!-- 4. Capacidad mensual en lectura tabular compacta -->
+              <span
+                class:list={[
+                  "relative mt-5 grid gap-3.5 border-t pt-5",
+                  t.featured ? "border-paper/20" : "border-paper/12",
+                ]}
+                data-plan-facts
+              >
+                <!-- Línea de luz que se dibuja de izquierda a derecha al hacer hover -->
+                <span
+                  class:list={[
+                    "pointer-events-none absolute inset-x-0 -top-px h-px origin-left [transform:scaleX(0)]",
+                    t.featured ? "bg-paper" : "bg-stage-glow",
+                  ]}
+                  aria-hidden="true"
+                  data-plan-line
+                />
+
+                <span class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr] xl:gap-x-3" data-plan-fact>
+                  <span
+                    class="origin-left text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform xl:text-[1.875rem]"
+                    data-plan-num
+                  >
+                    {t.pitches}
+                  </span>
+                  <span
+                    class:list={[
+                      "text-[0.875rem] leading-[1.35]",
+                      t.featured ? "text-paper/90" : "text-muted-on-ink",
+                    ]}
+                  >
+                    pitches to event organizers a month
+                  </span>
+                </span>
+
+                <span class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr] xl:gap-x-3" data-plan-fact>
+                  <span
+                    class="origin-left text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform xl:text-[1.875rem]"
+                    data-plan-num
+                  >
+                    {t.posts}
+                  </span>
+                  <span
+                    class:list={[
+                      "text-[0.875rem] leading-[1.35]",
+                      t.featured ? "text-paper/90" : "text-muted-on-ink",
+                    ]}
+                  >
+                    LinkedIn posts a month
+                  </span>
+                </span>
+              </span>
+
+              <!-- 5. Acción -->
+              <span
+                class="mt-auto inline-flex items-center gap-1.5 pt-6 text-[0.9375rem] font-semibold text-paper lg:mt-0 lg:self-end"
+                id={`plan-${t.id}-more`}
+                data-plan-more
+              >
+                <span class="relative text-paper">
+                  See the price and full plan
+                  <span
+                    class="pointer-events-none absolute inset-x-0 -bottom-0.5 h-px origin-left bg-paper [transform:scaleX(0)]"
+                    aria-hidden="true"
+                    data-plan-underline
+                  />
+                </span>
+                <span class="inline-flex shrink-0 text-paper will-change-transform" data-plan-arrow-wrap>
+                  <MorphIcon
+                    icon={ArrowRight}
+                    size={16}
+                    strokeWidth={2}
+                    spring="snappy"
+                    reducedMotion="user"
+                    data-plan-arrow
+                  />
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </div>
 </section>
 
-<style>
-  /* ---------- Cabecera: lo que incluye cada plan, dicho una vez ---------- */
-  .plans__label {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-muted);
-  }
-  .plans__every {
-    display: grid;
-    gap: 0.75rem 1.5rem;
-  }
-  @media (min-width: 640px) {
-    .plans__every {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  .plans__every li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: rgb(10 10 10 / 0.84);
-  }
-  .plans__every svg {
-    flex: none;
-    margin-top: 0.2rem;
-    color: var(--color-stage);
-  }
-  .plans__frame {
-    overflow: hidden;
-    border-radius: 20px;
-    background: var(--color-ink);
-    aspect-ratio: 16 / 9;
-  }
-
-  /* ---------- Tarjetas: cuatro en fila (3+3+3+3), dos en tableta, una en el móvil ---------- */
-  .plans__grid {
-    display: grid;
-    gap: 1rem;
-  }
-  @media (min-width: 640px) {
-    .plans__grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  @media (min-width: 1024px) {
-    .plans__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1.25rem;
-    }
-  }
-  .plans__item {
-    display: flex;
-  }
-  .plan {
-    position: relative;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: 1.5rem;
-    border-radius: 20px;
-    background: var(--color-paper);
-    box-shadow: inset 0 0 0 1px rgb(10 10 10 / 0.12);
-    color: var(--color-ink);
-    transition:
-      translate 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
-      box-shadow 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  @media (min-width: 1024px) {
-    .plan {
-      padding: 2rem 1.75rem 1.75rem;
-    }
-  }
-  /* Ratón: la tarjeta sube 2px, su borde se oscurece y aparece una sombra suave (solo al pasar) */
-  @media (hover: hover) and (pointer: fine) {
-    .plan:hover {
-      translate: 0 -2px;
-      box-shadow:
-        inset 0 0 0 1px rgb(10 10 10 / 0.3),
-        0 18px 30px -18px rgb(10 10 10 / 0.25);
-    }
-  }
-  .plan:focus-visible {
-    outline: 2px solid var(--color-stage);
-    outline-offset: 2px;
-  }
-
-  /* El filo rojo: un solo elemento que Flip lleva de una tarjeta a otra */
-  .plan__focus {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: inset 0 0 0 2px var(--color-stage);
-    pointer-events: none;
-  }
-
-  .plan__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  .plan__top:empty {
-    display: none;
-  }
-  /* Con las tarjetas lado a lado, mismas alturas para que nombres y cifras queden a nivel en la fila */
-  @media (min-width: 640px) {
-    .plan__top,
-    .plan__top:empty {
-      display: flex;
-      min-height: 1.75rem;
-    }
-    .plan__for {
-      min-height: 4.5rem;
-    }
-  }
-  .plan__badge {
-    padding: 0.2rem 0.65rem;
-    border-radius: 9999px;
-    background: var(--color-mist);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--color-ink);
-    white-space: nowrap;
-  }
-  .plan__badge.is-accent {
-    background: rgb(229 12 19 / 0.08);
-    color: var(--color-stage-text);
-  }
-  .plan__name {
-    margin-top: 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
-  .plan__for {
-    margin-top: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: rgb(10 10 10 / 0.84);
-  }
-  .plan__facts {
-    display: grid;
-    gap: 1.1rem;
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid rgb(10 10 10 / 0.1);
-  }
-  .plan__fact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-  .plan__num {
-    font-size: 2.25rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-  }
-  .plan__unit {
-    font-size: 1rem;
-    line-height: 1.35;
-    color: rgb(10 10 10 / 0.84);
-  }
-  .plan__adds {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.45;
-  }
-  .plan__adds svg {
-    flex: none;
-    margin-top: 0.25rem;
-    color: var(--color-stage);
-  }
-  .plan__more {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: auto;
-    padding-top: 1.75rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-stage-text);
-  }
-  .plan__arrow {
-    transition: translate 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .plan:hover .plan__arrow {
-      translate: 3px 0;
-    }
-  }
-  .plan:focus-visible .plan__arrow {
-    translate: 3px 0;
-  }
-</style>
-
 <script>
   import { gsap } from "gsap";
-  import { Flip } from "gsap/Flip";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+  import { ArrowRight, ArrowUpRight, Check, Plus, type IconNode } from "lucide";
 
-  gsap.registerPlugin(Flip);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
   /*
-    El único movimiento de la sección responde a la persona, nunca al scroll (tasteskill: las tarjetas no
-    aparecen al hacer scroll y la página ya tiene sus dos momentos). El filo rojo descansa en el plan
-    recomendado; al señalar otra tarjeta (ratón o teclado) viaja hasta ella con Flip y, al salir de la fila,
-    vuelve a su sitio. Llegar es más lento que volver (Bang Motion: llegar despacio, salir limpio).
+    Criterios de Bang Motion / Brand Motion + GSAP:
+    1. Jerarquía de entrada («primero la frase, luego el objeto, al final el detalle»):
+       - El titular se despliega palabra a palabra desde su máscara con leve inclinación (expo.out).
+       - El subtítulo, la lista «In every plan» y el botón entran en cascada ordenada.
+       - El cuadro del reporte mensual se descubre con cortinilla lateral (power4.inOut) y retroceso de cámara (scale 1.12 → 1).
+       - Las cuatro tarjetas entran escalonadas una sola vez al llegar a la sección.
+    2. Animación de hover:
+       - La tarjeta sube 5px (power3.out) dejando visible la silueta ::before debajo, la línea divisoria interior
+         se dibuja de izquierda a derecha (scaleX 0 → 1), las dos cifras ganan relieve con un pulso escalonado,
+         el enlace dibuja su subrayado y los MorphIcons transforman su trazo (Plus → Check y ArrowRight → ArrowUpRight).
+       - La salida es un ~40 % más rápida que la entrada (asimetría Bang Motion).
   */
-  const TRAVEL = 0.32; // s, ir a la tarjeta señalada (recorrido, ease de ida y vuelta)
-  const RETURN = 0.2; // s, volver al recomendado (una salida es 40-50 % más corta)
-  const LEAVE_DELAY = 140; // ms antes de volver, para que pasar de una tarjeta a otra no lo haga rebotar
+  const EASE_ENTER = "expo.out";
 
-  let cleanup: (() => void) | null = null;
+  let mm: gsap.MatchMedia | null = null;
+  let cleanupInteractions: (() => void) | null = null;
 
   function initPlans() {
-    const grid = document.querySelector<HTMLElement>("[data-plans-grid]");
-    const focus = grid?.querySelector<HTMLElement>("[data-plans-focus]");
-    if (!grid || !focus) return;
-    const cards = [...grid.querySelectorAll<HTMLAnchorElement>("[data-plan]")];
-    const home = focus.parentElement as HTMLElement;
+    const root = document.querySelector<HTMLElement>("[data-plans]");
+    if (!root) return;
+
+    const grid = root.querySelector<HTMLElement>("[data-plans-grid]");
+    const cards = grid ? [...grid.querySelectorAll<HTMLAnchorElement>("[data-plan]")] : [];
+
+    // ---------- 1. Animaciones de entrada con ScrollTrigger + SplitText (solo sin reduced-motion) ----------
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const titleWords = root.querySelectorAll<HTMLElement>("[data-plans-title-word]");
+        const lead = root.querySelector<HTMLElement>("[data-plans-lead]");
+        const label = root.querySelector<HTMLElement>("[data-plans-label]");
+        const everyItems = root.querySelectorAll<HTMLElement>("[data-plans-every-item]");
+        const cta = root.querySelector<HTMLElement>("[data-plans-cta]");
+        const visual = root.querySelector<HTMLElement>("[data-plans-visual]");
+        const img = root.querySelector<HTMLElement>("[data-plans-img]");
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 78%", once: true },
+          defaults: { ease: EASE_ENTER },
+        });
+
+        if (titleWords.length) {
+          tl.fromTo(
+            titleWords,
+            { yPercent: 115, rotate: 6 },
+            {
+              yPercent: 0,
+              rotate: 0,
+              duration: 1.05,
+              stagger: 0.055,
+            },
+          );
+        }
+
+        if (lead) tl.from(lead, { y: 16, autoAlpha: 0, duration: 0.8 }, 0.22);
+        if (label) tl.from(label, { y: 12, autoAlpha: 0, duration: 0.65 }, 0.34);
+        if (everyItems.length) {
+          tl.from(
+            everyItems,
+            { x: -14, autoAlpha: 0, duration: 0.7, stagger: 0.04 },
+            0.4,
+          );
+        }
+        if (cta) tl.from(cta, { y: 14, autoAlpha: 0, duration: 0.7 }, 0.58);
+
+        if (visual) {
+          tl.fromTo(
+            visual,
+            { clipPath: "inset(0% 100% 0% 0%)" },
+            {
+              clipPath: "inset(0% 0% 0% 0%)",
+              duration: 1.1,
+              ease: "power4.inOut",
+              clearProps: "clipPath",
+            },
+            0.18,
+          );
+        }
+        if (img) {
+          tl.from(img, { scale: 1.12, duration: 1.4, ease: EASE_ENTER, clearProps: "scale" }, 0.18);
+        }
+
+        // Entrada escalonada de las 4 tarjetas siguiendo jerarquía frase → cifra → acción
+        if (grid && cards.length) {
+          const items = root.querySelectorAll<HTMLElement>("[data-plans-item]");
+          const cardsTl = gsap.timeline({
+            scrollTrigger: { trigger: grid, start: "top 82%", once: true },
+            defaults: { ease: EASE_ENTER },
+          });
+
+          cardsTl.from(items, {
+            y: 44,
+            autoAlpha: 0,
+            duration: 0.85,
+            stagger: 0.06,
+            clearProps: "transform,opacity,visibility",
+          });
+
+          cards.forEach((card, i) => {
+            const at = 0.15 + i * 0.06;
+            const nums = card.querySelectorAll("[data-plan-num]");
+            const more = card.querySelector("[data-plan-more]");
+
+            if (nums.length) {
+              cardsTl.from(
+                nums,
+                { yPercent: 30, autoAlpha: 0, duration: 0.7, stagger: 0.05 },
+                at + 0.12,
+              );
+            }
+            if (more) cardsTl.from(more, { y: 8, autoAlpha: 0, duration: 0.6 }, at + 0.22);
+          });
+        }
+
+        // Zoom suave en la imagen del reporte al pasar el ratón
+        if (visual && img) {
+          const zoomImg = gsap.quickTo(img, "scale", { duration: 0.6, ease: "power3.out" });
+          visual.addEventListener("pointerenter", () => zoomImg(1.025));
+          visual.addEventListener("pointerleave", () => zoomImg(1));
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    // ---------- 2. Animación de hover por tarjeta (Elevación + trazo divisor + relieve + MorphIcons) ----------
+    if (!grid) return;
+
     const controller = new AbortController();
     const { signal } = controller;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
-    let leaveTimer = 0;
-    let tween: gsap.core.Timeline | null = null;
-
-    const moveTo = (card: HTMLElement, duration: number) => {
-      if (focus.parentElement === card) return;
-      window.clearTimeout(leaveTimer);
-      const state = Flip.getState(focus);
-      card.prepend(focus);
-      tween?.kill();
-      if (reduce.matches) return;
-      tween = Flip.from(state, { duration, ease: "power3.inOut", absolute: true });
-    };
-    const goHome = () => {
-      window.clearTimeout(leaveTimer);
-      leaveTimer = window.setTimeout(() => moveTo(home, RETURN), LEAVE_DELAY);
-    };
 
     for (const card of cards) {
-      card.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && moveTo(card, TRAVEL), { signal });
-      card.addEventListener("focus", () => moveTo(card, TRAVEL), { signal });
-      card.addEventListener("blur", goHome, { signal });
-    }
-    grid.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && goHome(), { signal });
+      const line = card.querySelector<HTMLElement>("[data-plan-line]");
+      const underline = card.querySelector<HTMLElement>("[data-plan-underline]");
+      const nums = card.querySelectorAll<HTMLElement>("[data-plan-num]");
+      const name = card.querySelector<HTMLElement>("[data-plan-name]");
+      const addIcon = card.querySelector<MorphEl>("[data-plan-add-icon]");
+      const arrowIcon = card.querySelector<MorphEl>("[data-plan-arrow]");
+      const arrowWrap = card.querySelector<HTMLElement>("[data-plan-arrow-wrap]");
 
-    cleanup = () => {
+      const liftY = gsap.quickTo(card, "y", { duration: 0.36, ease: "power3.out" });
+
+      const onActivate = () => {
+        addIcon?.morphTo?.(Check);
+        arrowIcon?.morphTo?.(ArrowUpRight);
+        if (reduce.matches) return;
+
+        liftY(-5);
+        if (line) {
+          gsap.set(line, { transformOrigin: "0% 50%" });
+          gsap.to(line, { scaleX: 1, duration: 0.45, ease: "expo.out", overwrite: "auto" });
+        }
+        if (underline) {
+          gsap.set(underline, { transformOrigin: "0% 50%" });
+          gsap.to(underline, { scaleX: 1, duration: 0.38, ease: "expo.out", overwrite: "auto" });
+        }
+        if (name) gsap.to(name, { x: 2, duration: 0.35, ease: "expo.out", overwrite: "auto" });
+        if (nums.length) {
+          gsap.to(nums, {
+            x: 3,
+            scale: 1.04,
+            duration: 0.4,
+            stagger: 0.035,
+            ease: "expo.out",
+            overwrite: "auto",
+          });
+        }
+        if (arrowWrap) {
+          gsap.to(arrowWrap, { x: 4, y: -1, duration: 0.3, ease: "expo.out", overwrite: "auto" });
+        }
+      };
+
+      const onDeactivate = () => {
+        addIcon?.morphTo?.(Plus);
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (reduce.matches) return;
+
+        // Salida ~40 % más rápida que la entrada (criterio Bang Motion)
+        liftY(0);
+        if (line) {
+          gsap.set(line, { transformOrigin: "100% 50%" });
+          gsap.to(line, { scaleX: 0, duration: 0.24, ease: "power2.inOut", overwrite: "auto" });
+        }
+        if (underline) {
+          gsap.set(underline, { transformOrigin: "100% 50%" });
+          gsap.to(underline, { scaleX: 0, duration: 0.22, ease: "power2.inOut", overwrite: "auto" });
+        }
+        if (name) gsap.to(name, { x: 0, duration: 0.22, ease: "power2.out", overwrite: "auto" });
+        if (nums.length) {
+          gsap.to(nums, { x: 0, scale: 1, duration: 0.24, ease: "power2.out", overwrite: "auto" });
+        }
+        if (arrowWrap) {
+          gsap.to(arrowWrap, { x: 0, y: 0, duration: 0.2, ease: "power2.out", overwrite: "auto" });
+        }
+      };
+
+      card.addEventListener(
+        "pointerenter",
+        (e) => {
+          if (e.pointerType === "mouse") onActivate();
+        },
+        { signal },
+      );
+
+      card.addEventListener(
+        "pointerleave",
+        (e) => {
+          if (e.pointerType === "mouse") onDeactivate();
+        },
+        { signal },
+      );
+
+      card.addEventListener("focus", onActivate, { signal });
+      card.addEventListener("blur", onDeactivate, { signal });
+    }
+
+    cleanupInteractions = () => {
       controller.abort();
-      window.clearTimeout(leaveTimer);
-      tween?.kill();
-      if (focus.parentElement !== home) home.prepend(focus);
     };
   }
 
   document.addEventListener("astro:page-load", initPlans);
   document.addEventListener("astro:before-swap", () => {
-    cleanup?.();
-    cleanup = null;
+    mm?.revert();
+    mm = null;
+    cleanupInteractions?.();
+    cleanupInteractions = null;
   });
 </script>

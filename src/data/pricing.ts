@@ -1,0 +1,363 @@
+/**
+ * Fuente de verdad tipada para /pricing/ y los schemas JSON-LD de precios.
+ * Datos vigentes: PDF de planes del 1 de noviembre de 2026 y servicios/web-design.astro.
+ */
+
+export interface PricingTier {
+  id: "founder" | "foundation" | "growth" | "complete";
+  name: string;
+  badge: string;
+  price: number;
+  priceLabel: string;
+  pitches: string;
+  posts: string;
+  commitment: string;
+  summary: string;
+  adds: string;
+  highlights: string[];
+  featured?: boolean;
+}
+
+export type MatrixCell = boolean | string;
+
+export interface ComparisonRow {
+  label: string;
+  note?: string;
+  values: {
+    founder: MatrixCell;
+    foundation: MatrixCell;
+    growth: MatrixCell;
+    complete: MatrixCell;
+  };
+}
+
+export interface ComparisonCategory {
+  id: string;
+  title: string;
+  rows: ComparisonRow[];
+}
+
+export interface DeliverableExplainer {
+  id: string;
+  title: string;
+  availability: string;
+  availabilityTone: "all" | "growth" | "complete";
+  description: string;
+  details: string[];
+  linkHref?: string;
+  linkLabel?: string;
+  visual?: "pitch" | "presskit" | "report";
+}
+
+export interface PricingFaq {
+  q: string;
+  a: string;
+}
+
+export const pricingMeta = {
+  title: "Speaker Booking & LinkedIn Plans & Pricing | Brux",
+  description:
+    "Compare Brux speaker booking and LinkedIn plans from $500 to $2,500/mo. 60 to 160+ organizer pitches monthly, 0% commission on your speaking fees.",
+  canonical: "/pricing/",
+};
+
+export const everyPlanIncludes = [
+  "0% commission on your speaking fees",
+  "Niche-only event targeting (no generic listings)",
+  "Speaker press kit and demo reel",
+  "Full CRM access, post-event follow-up, and monthly report",
+  "LinkedIn profile optimization and active network growth",
+];
+
+export const pricingTiers: PricingTier[] = [
+  {
+    id: "founder",
+    name: "Founder",
+    badge: "Founder rate",
+    price: 500,
+    priceLabel: "$500",
+    pitches: "60",
+    posts: "2",
+    commitment: "3-month minimum · moves to $1,200/mo after 1st paid stage",
+    summary: "Foundation at a founder rate until we book your first paid stage.",
+    adds: "Keeps $500/mo until your first paid keynote",
+    highlights: [
+      "60 pitches to event organizers / mo",
+      "2 LinkedIn posts / mo",
+      "Press kit, demo reel & CRM access",
+      "0% commission on speaking fees",
+    ],
+  },
+  {
+    id: "foundation",
+    name: "Foundation",
+    badge: "LinkedIn + Booking",
+    price: 1200,
+    priceLabel: "$1,200",
+    pitches: "60",
+    posts: "2",
+    commitment: "No minimum commitment",
+    summary: "A speaker-ready profile and niche events pitched every month.",
+    adds: "Month-to-month flexibility from day one",
+    highlights: [
+      "60 pitches to event organizers / mo",
+      "2 LinkedIn posts / mo",
+      "Press kit, demo reel & CRM access",
+      "0% commission on speaking fees",
+    ],
+  },
+  {
+    id: "growth",
+    name: "Growth",
+    badge: "Recommended",
+    price: 1800,
+    priceLabel: "$1,800",
+    pitches: "110",
+    posts: "4",
+    commitment: "No minimum commitment",
+    summary: "More pitches, plus content and edited clips that keep your name visible.",
+    adds: "Video editing of your talks included",
+    highlights: [
+      "110 pitches to event organizers / mo",
+      "4 LinkedIn posts / mo",
+      "Edited vertical clips from your talks",
+      "0% commission on speaking fees",
+    ],
+    featured: true,
+  },
+  {
+    id: "complete",
+    name: "Complete",
+    badge: "LinkedIn + Booking",
+    price: 2500,
+    priceLabel: "$2,500",
+    pitches: "160+",
+    posts: "8",
+    commitment: "No minimum commitment",
+    summary: "Full outreach in your name and the most stages we can go after.",
+    adds: "Outreach & strategic comments in your name",
+    highlights: [
+      "160+ pitches to event organizers / mo",
+      "8 LinkedIn posts / mo + video editing",
+      "Comments on relevant industry posts",
+      "Direct outreach to organizers in your name",
+    ],
+  },
+];
+
+export const comparisonCategories: ComparisonCategory[] = [
+  {
+    id: "booking-outreach",
+    title: "Booking & Outreach",
+    rows: [
+      {
+        label: "Pitches to event organizers / month",
+        values: { founder: "60", foundation: "60", growth: "110", complete: "160+" },
+      },
+      {
+        label: "Niche-only event targeting",
+        note: "No generic speaker directories or mass lists",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "Speaker press kit",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "Speaker demo reel",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "CRM access (every organizer contacted)",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "Post-event follow-up & calendar management",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+    ],
+  },
+  {
+    id: "linkedin-content",
+    title: "LinkedIn & Content",
+    rows: [
+      {
+        label: "Positioning & profile optimization",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "LinkedIn posts / month",
+        values: { founder: "2", foundation: "2", growth: "4", complete: "8" },
+      },
+      {
+        label: "Active network expansion (organizers in niche)",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "Video editing of your talks",
+        values: { founder: false, foundation: false, growth: true, complete: true },
+      },
+      {
+        label: "Comments on relevant posts & accounts",
+        values: { founder: false, foundation: false, growth: false, complete: true },
+      },
+      {
+        label: "Direct outreach to organizers in your name",
+        values: { founder: false, foundation: false, growth: false, complete: true },
+      },
+    ],
+  },
+  {
+    id: "reporting-terms",
+    title: "Reporting & Terms",
+    rows: [
+      {
+        label: "Monthly performance report",
+        values: { founder: true, foundation: true, growth: true, complete: true },
+      },
+      {
+        label: "Commission on your speaking fees",
+        values: { founder: "0%", foundation: "0%", growth: "0%", complete: "0%" },
+      },
+      {
+        label: "Minimum commitment",
+        note: "Founder rate moves to $1,200/mo after your 1st paid stage",
+        values: {
+          founder: "3 months",
+          foundation: "None",
+          growth: "None",
+          complete: "None",
+        },
+      },
+    ],
+  },
+];
+
+export const deliverableExplainers: DeliverableExplainer[] = [
+  {
+    id: "direct-pitching",
+    title: "Direct Organizer Pitching",
+    availability: "All plans (60 to 160+/mo)",
+    availabilityTone: "all",
+    description:
+      "Every month our team manually researches conferences, corporate summits, and associations in your niche, then sends tailored pitches straight to the organizers who decide the lineup — never to generic call-for-speaker directories or mass lists.",
+    details: [
+      "60 pitches/mo on Founder & Foundation, 110 on Growth, 160+ on Complete",
+      "You approve the target event categories and topics before outreach begins",
+    ],
+    linkHref: "/services/booking/",
+    linkLabel: "Explore speaker booking",
+    visual: "pitch",
+  },
+  {
+    id: "press-kit-reel",
+    title: "Press Kit & Demo Reel",
+    availability: "All plans",
+    availabilityTone: "all",
+    description:
+      "Organizers check how you sound on stage before replying. We package your biography, talk topics, past stages, and best speaking moments into a sharp press kit and demo reel attached to every pitch we send.",
+    details: [
+      "Built to answer organizer questions in under three minutes",
+      "Includes highlight cuts from your keynotes, panels, or interviews",
+    ],
+    linkHref: "/#work",
+    linkLabel: "See Philip Chan's reel",
+    visual: "presskit",
+  },
+  {
+    id: "linkedin-growth",
+    title: "LinkedIn Positioning & Network Growth",
+    availability: "All plans",
+    availabilityTone: "all",
+    description:
+      "Before event organizers book you, they look up your LinkedIn. We rewrite your positioning and profile, publish 2 to 8 posts a month in your voice, and expand your network weekly with decision-makers in your industry.",
+    details: [
+      "Profile headline, about section, and featured proof aligned with your topics",
+      "Consistent weekly connection requests to event organizers in your niche",
+    ],
+    linkHref: "/services/linkedin/",
+    linkLabel: "Explore LinkedIn management",
+  },
+  {
+    id: "crm-report",
+    title: "Transparent CRM & Monthly Report",
+    availability: "All plans",
+    availabilityTone: "all",
+    description:
+      "You never have to guess who we contacted. Every plan gives you live CRM visibility of each organizer pitched, replies, calendar holds, post-event follow-ups, and a monthly performance report tracking bookings and LinkedIn growth.",
+    details: [
+      "Live tracker of every organizer, event date, and outreach status",
+      "Post-event follow-up so one keynote turns into repeat bookings and referrals",
+    ],
+    visual: "report",
+  },
+  {
+    id: "video-editing",
+    title: "Talk Video Editing",
+    availability: "Growth & Complete",
+    availabilityTone: "growth",
+    description:
+      "We turn long recordings of your keynotes, workshops, and podcast interviews into tight, captioned vertical video clips built for LinkedIn — giving organizers immediate proof of your stage presence as they browse your feed.",
+    details: [
+      "Subtitled, paced for silent-autoplay feeds, and formatted to match your brand",
+      "Paired with your 4 or 8 monthly LinkedIn posts",
+    ],
+    linkHref: "/services/content/",
+    linkLabel: "Explore speaker content",
+  },
+  {
+    id: "outreach-in-name",
+    title: "Outreach & Engagement in Your Name",
+    availability: "Complete only",
+    availabilityTone: "complete",
+    description:
+      "Designed for speakers going after flagship stages. Alongside 160+ pitches and 8 posts a month, our team leaves thoughtful comments on relevant industry accounts and sends direct organizer outreach in your name to maximize reply rates.",
+    details: [
+      "Strategic comments on posts from conference chairs and industry leaders",
+      "High-touch direct outreach sent under your own identity",
+    ],
+  },
+];
+
+export const websiteAddon = {
+  title: "Don't have a speaker website yet?",
+  name: "Speaker Website Design",
+  price: "From $1,100",
+  billing: "One-time · quoted after a short call",
+  description:
+    "When an organizer considers booking you, they want one clear link that answers their questions fast. We design and build conversion-ready speaker websites you can drop into every pitch, LinkedIn profile, and email signature.",
+  includes: [
+    "Your bio and speaking topics, clearly structured",
+    "Your best stage clips and embedded demo reel",
+    "Past events, podcasts, and social proof",
+    "A downloadable speaker one-sheet or press kit",
+    "Direct booking inquiry form for organizers",
+  ],
+};
+
+export const pricingFaqs: PricingFaq[] = [
+  {
+    q: "Do you take any commission on the paid stages you book?",
+    a: "No. We take 0% commission on your speaking fees. You pay your flat monthly plan and keep 100% of every keynote fee, workshop honorarium, or travel stipend you negotiate.",
+  },
+  {
+    q: "How does the $500/mo Founder plan transition to Foundation?",
+    a: "Founder includes everything in Foundation for $500/mo on a month-to-month contract with a 3-month minimum. You keep the $500/mo rate until we book your first paid stage; once your first paid event is booked, your plan moves to Foundation at $1,200/mo.",
+  },
+  {
+    q: "Can I upgrade or switch plans month to month?",
+    a: "Yes. Foundation ($1,200/mo), Growth ($1,800/mo), and Complete ($2,500/mo) have no minimum commitment, so you can adjust your pitch volume or pause at the end of any billing cycle. If you are on Founder, you can also upgrade to Growth or Complete anytime.",
+  },
+  {
+    q: "What happens if I already have a speaker website vs if I need one?",
+    a: "If you already have a website, we link straight to it across your pitches, press kit, and LinkedIn profile. If you don't have one yet — or yours doesn't show your demo reel and topics clearly — we offer Speaker Website Design starting from $1,100 one-time.",
+  },
+  {
+    q: "How fast do we start after booking a strategy call?",
+    a: "Onboarding kicks off within 72 hours of getting started. We align on your niche, topics, and ideal stages, optimize your LinkedIn profile, prepare your press kit and demo reel, and begin pitching organizers.",
+  },
+  {
+    q: "Which plan fits me if I'm just starting vs already speaking regularly?",
+    a: "Founder ($500/mo) and Foundation ($1,200/mo) fit speakers building steady monthly momentum with 60 targeted pitches and 2 LinkedIn posts. Growth ($1,800/mo) is best if you already have talk footage and want 110 pitches plus edited clips. Complete ($2,500/mo) fits established speakers who want maximum pitch volume (160+/mo) and direct outreach in their name.",
+  },
+];

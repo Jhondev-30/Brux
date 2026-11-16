@@ -1,6 +1,8 @@
 ---
-import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 
 // Artículos de src/content/blog/, del más reciente al más antiguo.
@@ -17,31 +19,38 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
   title="How Paid Keynotes Get Booked: Blog for Keynote Speakers | Brux"
   description="What event organizers ask for when we pitch keynote speakers, and what gets them booked. A new article every other week."
 >
-  <section class="blog-top bg-stage-ink pb-24 sm:pb-32" aria-labelledby="blog-title">
+  <section
+    class="bg-ink pt-[max(9rem,calc(4.5rem+8svh))] pb-24 sm:pb-32"
+    aria-labelledby="blog-title"
+    data-blog
+  >
     <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
       <h1
         id="blog-title"
-        class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+2.8vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-paper"
+        class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+2.8vw,4rem)] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        data-blog-title
       >
         How paid keynotes get booked
       </h1>
-      <p class="mt-6 max-w-[38rem] text-[clamp(1.0625rem,1rem+0.25vw,1.1875rem)] leading-relaxed text-muted-on-ink">
+      <p class="mt-6 max-w-[38rem] text-[clamp(1.0625rem,1rem+0.25vw,1.1875rem)] leading-relaxed text-muted-on-ink" data-blog-lead>
         What event organizers ask for when we pitch keynote speakers, and what gets them booked. A new article every other week.
       </p>
 
       {latest && (
         <a
           href={`/blog/${latest.id}/`}
-          class="group mt-16 grid gap-8 border-t border-paper/10 pt-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-14"
+          class="group mt-16 grid gap-8 border-t border-paper/10 pt-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-14 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          data-blog-card
         >
-          <div class="overflow-hidden rounded-md ring-1 ring-paper/10">
+          <div class="overflow-hidden rounded-md ring-1 ring-paper/10" data-blog-media>
             <Image
               src={latest.data.cover}
               alt=""
               widths={[640, 960, 1280]}
               sizes="(min-width: 1024px) 58vw, 100vw"
               loading="eager"
-              class="w-full transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              class="w-full will-change-transform"
+              data-blog-img
             />
           </div>
           <div>
@@ -53,10 +62,17 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
             </h2>
             <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">{latest.data.description}</p>
             <span class="mt-6 inline-flex items-center gap-2 font-semibold text-paper">
-              Read the article
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">
-                <path d="M2.5 8h10M8.5 4l4 4-4 4" />
-              </svg>
+              <span>Read the article</span>
+              <span class="inline-flex shrink-0 will-change-transform" data-blog-arrow-wrap>
+                <MorphIcon
+                  icon={ArrowRight}
+                  size={16}
+                  strokeWidth={2}
+                  spring="snappy"
+                  reducedMotion="user"
+                  data-blog-arrow
+                />
+              </span>
             </span>
           </div>
         </a>
@@ -66,14 +82,19 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
         <ul class="mt-20 grid gap-12 border-t border-paper/10 pt-12 md:grid-cols-2">
           {rest.map((post) => (
             <li>
-              <a href={`/blog/${post.id}/`} class="group block">
-                <div class="overflow-hidden rounded-md ring-1 ring-paper/10">
+              <a
+                href={`/blog/${post.id}/`}
+                class="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+                data-blog-card
+              >
+                <div class="overflow-hidden rounded-md ring-1 ring-paper/10" data-blog-media>
                   <Image
                     src={post.data.cover}
                     alt=""
                     widths={[640, 960]}
                     sizes="(min-width: 768px) 50vw, 100vw"
-                    class="w-full transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                    class="w-full will-change-transform"
+                    data-blog-img
                   />
                 </div>
                 <p class="mt-6 text-sm text-muted-on-ink">
@@ -92,12 +113,95 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
   </section>
 </MainLayout>
 
-<style>
-  /*
-    Espacio para el nav fijo: su alto (3.5rem) + su separación del borde (1rem) + aire.
-    Con un valor mínimo en rem para que el título nunca quede debajo de la barra, ni con zoom.
-  */
-  .blog-top {
-    padding-top: max(9rem, calc(4.5rem + 8svh));
+<script>
+  import { gsap } from "gsap";
+  import { SplitText } from "gsap/SplitText";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+
+  gsap.registerPlugin(SplitText);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let mm: gsap.MatchMedia | null = null;
+  let cleanupCards: (() => void) | null = null;
+
+  function initBlogIndex() {
+    const root = document.querySelector<HTMLElement>("[data-blog]");
+    if (!root) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLElement>("[data-blog-card]").forEach((card) => {
+      const img = card.querySelector<HTMLElement>("[data-blog-img]");
+      const arrowWrap = card.querySelector<HTMLElement>("[data-blog-arrow-wrap]");
+      const arrowIcon = card.querySelector<MorphEl>("[data-blog-arrow]");
+      const zoom = img ? gsap.quickTo(img, "scale", { duration: 0.6, ease: "power3.out" }) : null;
+      const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.24, ease: "power3.out" }) : null;
+
+      const onEnter = () => {
+        arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) {
+          zoom?.(1.025);
+          nudgeX?.(4);
+        }
+      };
+      const onLeave = () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          zoom?.(1);
+          nudgeX?.(0);
+        }
+      };
+
+      card.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      card.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      card.addEventListener("focus", onEnter, { signal });
+      card.addEventListener("blur", onLeave, { signal });
+    });
+
+    cleanupCards = () => controller.abort();
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const title = root.querySelector<HTMLElement>("[data-blog-title]");
+        const lead = root.querySelector<HTMLElement>("[data-blog-lead]");
+        const cards = root.querySelectorAll<HTMLElement>("[data-blog-card]");
+
+        if (title) {
+          SplitText.create(title, {
+            type: "words",
+            mask: "words",
+            autoSplit: true,
+            onSplit: (self) => {
+              const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+              tl.from(self.words, {
+                yPercent: 112,
+                rotation: 6,
+                transformOrigin: "0% 100%",
+                duration: 0.95,
+                stagger: 0.045,
+              });
+              if (lead) tl.from(lead, { y: 18, autoAlpha: 0, duration: 0.85 }, 0.22);
+              if (cards.length) {
+                tl.from(cards, { y: 32, autoAlpha: 0, duration: 0.9, stagger: 0.08, clearProps: "transform,opacity,visibility" }, 0.35);
+              }
+              return tl;
+            },
+          });
+        }
+      }, root);
+      return () => ctx.revert();
+    });
   }
-</style>
+
+  document.addEventListener("astro:page-load", initBlogIndex);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    cleanupCards?.();
+    cleanupCards = null;
+  });
+</script>

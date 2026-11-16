@@ -1,8 +1,10 @@
 ---
 import { getCollection, render } from "astro:content";
-import MainLayout from "../../layouts/MainLayout.astro";
+import { ArrowLeft } from "lucide";
+import MorphIcon from "morphicons/astro";
 import Button from "../../components/ui/Button.astro";
 import { bookingUrl } from "../../data/site";
+import MainLayout from "../../layouts/MainLayout.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -32,15 +34,26 @@ const jsonLd = {
 ---
 
 <MainLayout title={`${d.title} | Brux`} description={d.description}>
-  <article class="article-top bg-ink pb-24 sm:pb-32">
+  <article class="bg-ink pt-[max(9rem,calc(4.5rem+8svh))] pb-24 sm:pb-32" data-blog-post>
     <header class="mx-auto max-w-[46rem] px-4 sm:px-8">
-      <a href="/blog/" class="group -ml-1 inline-flex min-h-11 items-center gap-2 rounded-[3px] px-1 text-sm font-semibold text-muted-on-ink transition-colors duration-150 hover:text-paper">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-150 group-hover:-translate-x-1">
-          <path d="M13.5 8h-10M7.5 4l-4 4 4 4" />
-        </svg>
-        All articles
+      <a
+        href="/blog/"
+        class="-ml-1 inline-flex min-h-11 items-center gap-2 rounded-[3px] px-1 text-sm font-semibold text-muted-on-ink transition-colors duration-150 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage"
+        data-blog-back
+      >
+        <span class="inline-flex shrink-0 will-change-transform" data-blog-back-arrow-wrap>
+          <MorphIcon
+            icon={ArrowLeft}
+            size={16}
+            strokeWidth={2}
+            spring="snappy"
+            reducedMotion="user"
+            data-blog-back-arrow
+          />
+        </span>
+        <span>All articles</span>
       </a>
-      <h1 class="mt-8 text-[clamp(2.25rem,1.6rem+2.8vw,3.75rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-paper">
+      <h1 class="mt-8 text-[clamp(2.25rem,1.6rem+2.8vw,3.75rem)] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance text-paper">
         {d.title}
       </h1>
       <p class="mt-6 text-muted-on-ink">
@@ -54,7 +67,9 @@ const jsonLd = {
     </header>
 
     <!-- La portada repite el título, así que aquí no se muestra: va en el índice del blog y en el schema -->
-    <div class="prose-brux mx-auto mt-12 max-w-[46rem] px-4 sm:px-8">
+    <div
+      class="mx-auto mt-12 max-w-[46rem] px-4 text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-[1.75] text-paper/88 sm:px-8 [&_a]:text-paper [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-[2.4em] [&_h2]:mb-[0.8em] [&_h2]:text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] [&_h2]:leading-[1.15] [&_h2]:font-extrabold [&_h2]:tracking-[-0.02em] [&_h2]:text-paper [&_p+p]:mt-[1.4em] [&_p:last-child]:font-semibold [&_p:last-child]:text-paper"
+    >
       <Content />
     </div>
 
@@ -62,7 +77,7 @@ const jsonLd = {
       {d.linkedinUrl && (
         <p class="border-t border-paper/10 pt-8 text-muted-on-ink">
           First published in our LinkedIn newsletter,{" "}
-          <a href={d.linkedinUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline underline-offset-4 decoration-paper/30 hover:decoration-paper">
+          <a href={d.linkedinUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline decoration-paper/30 underline-offset-4 hover:decoration-paper">
             How Paid Keynotes Get Booked
           </a>.
         </p>
@@ -83,36 +98,45 @@ const jsonLd = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </MainLayout>
 
-<style>
-  /* Espacio para el nav fijo (mismo cálculo que el índice del blog) */
-  .article-top {
-    padding-top: max(9rem, calc(4.5rem + 8svh));
+<script>
+  import { gsap } from "gsap";
+  import { ArrowLeft, ChevronLeft, type IconNode } from "lucide";
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let cleanup: (() => void) | null = null;
+
+  function initBlogPost() {
+    const back = document.querySelector<HTMLElement>("[data-blog-back]");
+    if (!back) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const arrowWrap = back.querySelector<HTMLElement>("[data-blog-back-arrow-wrap]");
+    const arrowIcon = back.querySelector<MorphEl>("[data-blog-back-arrow]");
+    const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.22, ease: "power3.out" }) : null;
+
+    const onEnter = () => {
+      arrowIcon?.morphTo?.(ChevronLeft);
+      if (!reduce.matches) nudgeX?.(-3);
+    };
+    const onLeave = () => {
+      arrowIcon?.morphTo?.(ArrowLeft);
+      if (!reduce.matches) nudgeX?.(0);
+    };
+
+    back.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+    back.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+    back.addEventListener("focus", onEnter, { signal });
+    back.addEventListener("blur", onLeave, { signal });
+
+    cleanup = () => controller.abort();
   }
-  /* Texto del artículo: medida de lectura cómoda, sin plugin de tipografía */
-  .prose-brux {
-    color: color-mix(in oklab, var(--color-paper) 88%, transparent);
-    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
-    line-height: 1.75;
-  }
-  .prose-brux :global(p + p) {
-    margin-top: 1.4em;
-  }
-  .prose-brux :global(h2) {
-    margin-top: 2.4em;
-    margin-bottom: 0.8em;
-    color: var(--color-paper);
-    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
-  .prose-brux :global(a) {
-    color: var(--color-paper);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .prose-brux :global(p:last-child) {
-    color: var(--color-paper);
-    font-weight: 600;
-  }
-</style>
+
+  document.addEventListener("astro:page-load", initBlogPost);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

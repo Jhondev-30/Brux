@@ -1,20 +1,48 @@
 ---
-const {title, description} = Astro.props;
-import {Font} from 'astro:assets';
-import { ClientRouter } from 'astro:transitions';
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
 
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogType = "website",
+  noindex = false,
+} = Astro.props;
+
+const canonicalUrl = canonical
+  ? new URL(canonical, Astro.site ?? "https://www.brux.site").href
+  : Astro.site
+    ? new URL(Astro.url.pathname, Astro.site).href
+    : undefined;
 ---
 <head>
-
 	<meta charset="utf-8" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="icon" href="/favicon.ico" />
 	<meta name="viewport" content="width=device-width" />
 	<meta name="generator" content={Astro.generator} />
-	<Font cssVariable='--font-brux' preload/>
+	<Font cssVariable="--font-brux" preload />
 	<title>{title}</title>
-	<ClientRouter />
 	{description && <meta name="description" content={description} />}
-
-
+	{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+	{noindex && <meta name="robots" content="noindex, nofollow" />}
+	<meta property="og:site_name" content="Brux" />
+	<meta property="og:type" content={ogType} />
+	<meta property="og:title" content={title} />
+	{description && <meta property="og:description" content={description} />}
+	{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={title} />
+	{description && <meta name="twitter:description" content={description} />}
+	<ClientRouter />
+	<slot />
 </head>

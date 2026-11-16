@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant stage-wide (@media (min-width: 1024px), (min-width: 640px) and (min-aspect-ratio: 4/3));
+
 @theme { 
   --color-ink: #0A0A0A;            /* fondo principal y texto sobre claro */
   --color-ink-raised: #161616;     /* tarjetas y secciones sobre el negro */
@@ -10,5 +12,22 @@
   --color-stage-text: #C20A18;     /* texto rojo sobre blanco */
   --color-muted: #5C5C5C;          /* texto secundario sobre claro, 5,97 */
   --color-muted-on-ink: #A8A8A8;   /* texto secundario sobre negro, 8,33 */
-  --font-sans:var(--font-brux) ;
+  --font-sans: var(--font-brux);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  ::selection {
+    background-color: var(--color-stage);
+    color: var(--color-paper);
+  }
 }

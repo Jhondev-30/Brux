@@ -1,0 +1,110 @@
+---
+import { Check as LucideCheck, Minus as LucideMinus } from "@lucide/astro";
+import { comparisonCategories, pricingTiers } from "../../data/pricing";
+---
+
+<section
+  id="compare"
+  class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28"
+  aria-labelledby="compare-title"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="max-w-[44rem]">
+      <h2
+        id="compare-title"
+        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+      >
+        Compare our plans
+      </h2>
+      <p class="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+        Every tier includes your press kit, demo reel, CRM access, and 0% commission. Scale up when you want more monthly
+        pitches, talk video clips, or outreach sent in your name.
+      </p>
+    </div>
+
+    <div class="mt-12 overflow-x-auto rounded-[20px] border border-ink/10 bg-paper">
+      <table class="w-full min-w-[680px] border-collapse text-left">
+        <caption class="sr-only">
+          Feature-by-feature comparison of Brux Founder, Foundation, Growth, and Complete plans
+        </caption>
+        <thead>
+          <tr class="border-b border-ink/12">
+            <th scope="col" class="w-[36%] px-5 py-5 text-sm font-bold tracking-[-0.01em] text-muted sm:px-7 sm:py-6">
+              Deliverable &amp; terms
+            </th>
+            {pricingTiers.map((t) => (
+              <th
+                scope="col"
+                class:list={[
+                  "w-[16%] px-4 py-5 align-bottom sm:px-5 sm:py-6",
+                  t.featured && "bg-stage-text/[0.04]",
+                ]}
+              >
+                <div class="flex flex-col gap-1">
+                  {t.featured && (
+                    <span class="inline-flex w-fit items-center rounded-full bg-stage-text px-2 py-0.5 text-[0.6875rem] font-bold text-paper">
+                      Recommended
+                    </span>
+                  )}
+                  <span class="text-base font-extrabold tracking-[-0.01em] text-ink">{t.name}</span>
+                  <span class="text-sm font-semibold text-muted tabular-nums">{t.priceLabel}/mo</span>
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody>
+          {comparisonCategories.map((cat) => (
+            <>
+              <tr class="border-b border-ink/10 bg-mist/70">
+                <th
+                  colspan={5}
+                  scope="colgroup"
+                  class="px-5 py-3.5 text-sm font-extrabold tracking-[-0.01em] text-ink sm:px-7"
+                >
+                  {cat.title}
+                </th>
+              </tr>
+
+              {cat.rows.map((row) => (
+                <tr class="border-b border-ink/8 transition-colors duration-150 last:border-b-0 hover:bg-mist/45">
+                  <th scope="row" class="px-5 py-4 text-[0.9375rem] font-medium text-ink sm:px-7">
+                    <span>{row.label}</span>
+                    {row.note && (
+                      <span class="mt-0.5 block text-xs font-normal text-muted">{row.note}</span>
+                    )}
+                  </th>
+
+                  {pricingTiers.map((tier) => {
+                    const cell = row.values[tier.id];
+                    return (
+                      <td
+                        class:list={[
+                          "px-4 py-4 text-[0.9375rem] sm:px-5",
+                          tier.featured && "bg-stage-text/[0.04]",
+                        ]}
+                      >
+                        {cell === true ? (
+                          <span class="inline-flex items-center text-ink" aria-label="Included">
+                            <LucideCheck class="size-4.5 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                          </span>
+                        ) : cell === false ? (
+                          <span class="inline-flex items-center text-ink/30" aria-label="Not included">
+                            <LucideMinus class="size-4" stroke-width={2} aria-hidden="true" />
+                          </span>
+                        ) : (
+                          <span class="font-bold text-ink tabular-nums">{cell}</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

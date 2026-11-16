@@ -1,38 +1,78 @@
 ---
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
 import { services } from "../../data/site";
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.08em] pb-[0.16em] px-[0.05em] -mt-[0.08em] -mb-[0.16em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
-<section id="services" class="bg-ink-raised py-24 sm:py-32" aria-labelledby="services-title">
+<section id="services" class="bg-ink-raised py-24 sm:py-32" aria-labelledby="services-title" data-services>
   <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
     <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
       <h2
         id="services-title"
-        class="max-w-[32rem] text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance text-paper"
+        class="max-w-[32rem] text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        data-services-title
       >
-        What we do for speakers
+        {words("What we do for speakers").map((w, j, a) => (
+          <>
+            <span class={maskClass}><span class={wordClass} data-services-title-word>{w}</span></span>
+            {j < a.length - 1 && " "}
+          </>
+        ))}
       </h2>
-      <a href="/services/" class="group inline-flex items-center gap-2 font-semibold text-stage-glow">
-        All services
-        <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+      <a
+        href="/services/"
+        class="group inline-flex items-center gap-2 font-semibold text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+        data-services-all
+      >
+        <span>All services</span>
+        <span class="inline-flex shrink-0 will-change-transform" data-services-arrow-wrap>
+          <MorphIcon
+            icon={ArrowRight}
+            size={18}
+            strokeWidth={2}
+            spring="snappy"
+            reducedMotion="user"
+            data-services-arrow
+          />
+        </span>
       </a>
     </div>
 
-    <ul class="mt-14 border-t border-paper/10">
+    <ul class="relative mt-14">
+      <span class="pointer-events-none absolute inset-x-0 top-0 h-px origin-left bg-paper/10" aria-hidden="true" data-services-line></span>
       {services.map((s) => (
-        <li class="border-b border-paper/10">
+        <li class="relative" data-services-item>
+          <span class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-paper/10" aria-hidden="true" data-services-line></span>
           <a
             href={s.href}
-            class="group grid gap-2 py-8 sm:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] sm:items-baseline sm:gap-8 sm:py-10"
+            class="group grid gap-2 py-8 sm:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] sm:items-baseline sm:gap-8 sm:py-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+            data-services-row
           >
-            <h3 class="text-[clamp(1.375rem,1.15rem+1vw,2rem)] leading-tight font-extrabold tracking-[-0.02em] text-paper transition-colors duration-150 group-hover:text-stage-glow">
+            <h3
+              class="text-[clamp(1.375rem,1.15rem+1vw,2rem)] leading-tight font-extrabold tracking-[-0.02em] text-paper transition-colors duration-150 group-hover:text-stage-glow will-change-transform"
+              data-services-name
+            >
               {s.name}
             </h3>
-            <p class="max-w-[34rem] leading-relaxed text-muted-on-ink">{s.text}</p>
+            <p class="max-w-[34rem] leading-relaxed text-muted-on-ink" data-services-desc>{s.text}</p>
             <span
               aria-hidden="true"
-              class="hidden text-2xl text-paper/50 transition-[transform,color] duration-150 group-hover:translate-x-1 group-hover:text-paper sm:block"
+              class="hidden text-paper/50 transition-colors duration-150 group-hover:text-paper sm:inline-flex sm:self-center will-change-transform"
+              data-services-arrow-wrap
             >
-              →
+              <MorphIcon
+                icon={ArrowRight}
+                size={22}
+                strokeWidth={2}
+                spring="snappy"
+                reducedMotion="user"
+                data-services-arrow
+              />
             </span>
           </a>
         </li>
@@ -40,3 +80,105 @@ import { services } from "../../data/site";
     </ul>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  const EASE = "expo.out";
+  let mm: gsap.MatchMedia | null = null;
+  let cleanupInteractions: (() => void) | null = null;
+
+  function initServices() {
+    const root = document.querySelector<HTMLElement>("[data-services]");
+    if (!root) return;
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const titleWords = root.querySelectorAll<HTMLElement>("[data-services-title-word]");
+        const allLink = root.querySelector<HTMLElement>("[data-services-all]");
+        const lines = root.querySelectorAll<HTMLElement>("[data-services-line]");
+        const items = root.querySelectorAll<HTMLElement>("[data-services-item]");
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 80%", once: true },
+          defaults: { ease: EASE },
+        });
+        if (titleWords.length) {
+          tl.fromTo(
+            titleWords,
+            { yPercent: 115, rotate: 6 },
+            {
+              yPercent: 0,
+              rotate: 0,
+              duration: 1.05,
+              stagger: 0.055,
+            },
+          );
+        }
+        if (allLink) tl.from(allLink, { y: 14, autoAlpha: 0, duration: 0.75 }, 0.25);
+        if (lines.length) {
+          tl.from(lines, { scaleX: 0, duration: 1.05, ease: "power3.inOut", stagger: 0.06 }, 0.2);
+        }
+        if (items.length) {
+          tl.from(
+            items,
+            { y: 24, autoAlpha: 0, duration: 0.85, stagger: 0.07, clearProps: "transform,opacity,visibility" },
+            0.3,
+          );
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLElement>("[data-services-all], [data-services-row]").forEach((el) => {
+      const arrowWrap = el.querySelector<HTMLElement>("[data-services-arrow-wrap]");
+      const arrowIcon = el.querySelector<MorphEl>("[data-services-arrow]");
+      const nameEl = el.querySelector<HTMLElement>("[data-services-name]");
+      const nudgeArrow = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.26, ease: "power3.out" }) : null;
+      const nudgeName = nameEl ? gsap.quickTo(nameEl, "x", { duration: 0.28, ease: "power3.out" }) : null;
+
+      const onEnter = () => {
+        arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) {
+          nudgeArrow?.(4);
+          nudgeName?.(4);
+        }
+      };
+      const onLeave = () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) {
+          nudgeArrow?.(0);
+          nudgeName?.(0);
+        }
+      };
+
+      el.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      el.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      el.addEventListener("focus", onEnter, { signal });
+      el.addEventListener("blur", onLeave, { signal });
+    });
+
+    cleanupInteractions = () => controller.abort();
+  }
+
+  document.addEventListener("astro:page-load", initServices);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    cleanupInteractions?.();
+    cleanupInteractions = null;
+  });
+</script>

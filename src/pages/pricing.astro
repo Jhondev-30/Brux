@@ -1,0 +1,129 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import PricingHero from "../components/pricing/PricingHero.astro";
+import PricingPlans from "../components/pricing/PricingPlans.astro";
+import PricingCompare from "../components/pricing/PricingCompare.astro";
+import PricingDeliverables from "../components/pricing/PricingDeliverables.astro";
+import PricingWebsiteAddon from "../components/pricing/PricingWebsiteAddon.astro";
+import PricingProof from "../components/pricing/PricingProof.astro";
+import PricingFaq from "../components/pricing/PricingFaq.astro";
+import PricingFinalCta from "../components/pricing/PricingFinalCta.astro";
+import { pricingFaqs, pricingMeta, pricingTiers } from "../data/pricing";
+
+const siteUrl = "https://www.brux.site";
+const pageUrl = `${siteUrl}/pricing/`;
+
+const serviceCatalogSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Speaker Booking & LinkedIn Management",
+  serviceType: "Keynote Speaker Representation and LinkedIn Growth",
+  url: pageUrl,
+  description: pricingMeta.description,
+  provider: {
+    "@type": "Organization",
+    name: "Brux",
+    url: `${siteUrl}/`,
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Brux Monthly Speaker Plans & Website Design",
+    itemListElement: [
+      ...pricingTiers.map((tier) => ({
+        "@type": "Offer",
+        name: `${tier.name} Plan`,
+        description: `${tier.summary} Includes ${tier.pitches} organizer pitches/month, ${tier.posts} LinkedIn posts/month, 0% commission. ${tier.commitment}.`,
+        url: `${pageUrl}#${tier.id}`,
+        priceCurrency: "USD",
+        price: tier.price.toFixed(2),
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: tier.price.toFixed(2),
+          priceCurrency: "USD",
+          unitText: "MONTH",
+          unitCode: "MON",
+          referenceQuantity: {
+            "@type": "QuantitativeValue",
+            value: 1,
+            unitCode: "MON",
+          },
+        },
+      })),
+      {
+        "@type": "Offer",
+        name: "Speaker Website Design",
+        description:
+          "Conversion-ready speaker website with bio, topics, stage clips, demo reel, downloadable one-sheet, and organizer contact form. Quoted after a short call.",
+        url: `${pageUrl}#website`,
+        priceCurrency: "USD",
+        price: "1100.00",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          minPrice: "1100.00",
+          priceCurrency: "USD",
+          valueAddedTaxIncluded: false,
+        },
+      },
+    ],
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: `${siteUrl}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Pricing",
+      item: pageUrl,
+    },
+  ],
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: pricingFaqs.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
+---
+
+<MainLayout
+  title={pricingMeta.title}
+  description={pricingMeta.description}
+  canonical={pricingMeta.canonical}
+>
+  <Fragment slot="head">
+    <link
+      rel="alternate"
+      type="text/markdown"
+      href={`${siteUrl}/pricing.md`}
+      title="Brux Pricing (Markdown)"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceCatalogSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <PricingHero />
+  <PricingPlans />
+  <PricingCompare />
+  <PricingDeliverables />
+  <PricingWebsiteAddon />
+  <PricingProof />
+  <PricingFaq />
+  <PricingFinalCta />
+</MainLayout>
