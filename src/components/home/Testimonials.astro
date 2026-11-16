@@ -2,156 +2,323 @@
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 
-// Testimonios de src/content/testimonials/. Si todavía no hay ninguno, la sección no se muestra.
+/**
+ * Testimonios de src/content/testimonials/, uno por fila.
+ * Cada fila: tarjeta blanca + su imagen (vídeo vertical o foto en escenario), pegadas y con el mismo alto:
+ * la imagen toma el alto de la tarjeta (en móvil van una encima de la otra).
+ * El lado alterna: la 1.ª fila lleva la tarjeta a la izquierda, la 2.ª a la derecha, y así.
+ * Animaciones (GSAP, al final del archivo): título por líneas, entrada de cada fila al llegar a ella,
+ * y respuesta al ratón en tarjetas, imágenes y botones. Con «reducir movimiento» todo se ve quieto.
+ * Si todavía no hay ninguno, la sección no se muestra.
+ */
 const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const total = testimonials.length;
+
+// Parte la cita en [antes, frase resaltada, después]
+const splitQuote = (quote: string, highlight?: string) => {
+  const at = highlight ? quote.indexOf(highlight) : -1;
+  if (!highlight || at < 0) return [quote, "", ""];
+  return [quote.slice(0, at), highlight, quote.slice(at + highlight.length)];
+};
+const isLinkedIn = (url?: string) => Boolean(url && /linkedin\.com/.test(url));
+const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
 ---
 
-{total > 0 && (
-  <section
-    id="testimonials"
-    class="bg-ink py-24 sm:py-32"
-    aria-labelledby="testimonials-title"
-    aria-roledescription="carousel"
-    data-carousel
-  >
+{testimonials.length > 0 && (
+  <section id="testimonials" class="bg-stage-text py-28 sm:py-36" aria-labelledby="testimonials-title" data-tm>
     <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-      <div class="flex items-end justify-between gap-6">
-        <h2
-          id="testimonials-title"
-          class="max-w-[34rem] text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance text-paper"
-        >
-          What speakers say about working with us
-        </h2>
-
-        <div class="flex shrink-0 gap-2" data-carousel-controls hidden>
-          <button
-            type="button"
-            class="grid size-12 place-items-center rounded-full text-paper ring-1 ring-paper/30 ring-inset transition-[background-color,box-shadow,opacity] duration-150 hover:bg-paper/10 hover:ring-paper/70 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent"
-            aria-controls="testimonials-track"
-            aria-label="Previous testimonial"
-            data-carousel-prev
-          >
-            <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
-              <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="grid size-12 place-items-center rounded-full text-paper ring-1 ring-paper/30 ring-inset transition-[background-color,box-shadow,opacity] duration-150 hover:bg-paper/10 hover:ring-paper/70 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent"
-            aria-controls="testimonials-track"
-            aria-label="Next testimonial"
-            data-carousel-next
-          >
-            <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
-              <path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Todos los testimonios están en el HTML: Google los lee aunque no estén a la vista -->
-      <ul
-        id="testimonials-track"
-        class="testimonials-track mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2"
-        data-carousel-track
+      <h2
+        id="testimonials-title"
+        class="mx-auto max-w-[34rem] text-center text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-paper"
+        data-tm-title
       >
-        {testimonials.map((t, i) => (
-          <li
-            class="w-[88%] shrink-0 snap-start sm:w-[70%] lg:w-[calc(50%-0.75rem)]"
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${i + 1} of ${total}`}
-            data-carousel-slide
-          >
-            <figure class="flex h-full flex-col rounded-md bg-ink-raised p-7 sm:p-10">
-              {t.data.result && (
-                <p class="mb-6 self-start rounded-full px-3 py-1 text-sm font-semibold text-stage-glow ring-1 ring-stage-glow/40 ring-inset">
-                  {t.data.result}
-                </p>
-              )}
-              <blockquote class="flex-1 text-[clamp(1.125rem,1.05rem+0.4vw,1.375rem)] leading-normal text-pretty text-paper">
-                <p>“{t.data.quote}”</p>
-              </blockquote>
-              <figcaption class="mt-8 flex items-center gap-4">
-                {t.data.photo && (
-                  <Image src={t.data.photo} alt="" width={56} height={56} class="size-14 rounded-full object-cover" />
-                )}
-                <span>
-                  {t.data.link ? (
-                    <a href={t.data.link} class="font-semibold text-paper underline-offset-4 hover:underline" rel="noopener" target="_blank">
-                      {t.data.name}
-                    </a>
-                  ) : (
-                    <span class="font-semibold text-paper">{t.data.name}</span>
-                  )}
-                  <span class="mt-0.5 block text-sm text-muted-on-ink">{t.data.role}</span>
-                </span>
-              </figcaption>
-            </figure>
-          </li>
-        ))}
-      </ul>
+        What speakers say about working with us
+      </h2>
 
-      <p class="sr-only" aria-live="polite" data-carousel-status></p>
+      <div class="mt-14 grid gap-16 sm:mt-20 lg:gap-24">
+        {testimonials.map((t, i) => {
+          const d = t.data;
+          const flip = i % 2 === 1;
+          const hasMedia = Boolean(d.video || d.stagePhoto);
+          const [before, mark, after] = splitQuote(d.quote, d.highlight);
+          // Una cita corta va más grande: la tarjeta gana alto y el vídeo vertical no queda aplastado
+          const short = d.quote.length < 320;
+          return (
+            <div
+              class:list={[
+                "tm-row grid rounded-[1.75rem]",
+                hasMedia &&
+                  (d.video
+                    ? flip ? "lg:grid-cols-[20rem_minmax(0,1fr)]" : "lg:grid-cols-[minmax(0,1fr)_20rem]"
+                    : flip ? "lg:grid-cols-[28rem_minmax(0,1fr)]" : "lg:grid-cols-[minmax(0,1fr)_28rem]"),
+              ]}
+              data-tm-row
+            >
+              <figure
+                class:list={[
+                  "flex flex-col gap-9 bg-paper p-6 text-ink sm:p-10 lg:p-12",
+                  !hasMedia ? "rounded-[1.75rem]" : "rounded-t-[1.75rem] lg:rounded-none",
+                  hasMedia && (flip ? "lg:order-last lg:rounded-r-[1.75rem]" : "lg:rounded-l-[1.75rem]"),
+                ]}
+                data-tm-card
+              >
+                {/* Quién lo dice, arriba: se lee la persona antes que la cita */}
+                <figcaption class="flex items-center gap-4" data-tm-meta>
+                  {d.photo && (
+                    <Image
+                      src={d.photo}
+                      alt=""
+                      width={144}
+                      height={144}
+                      class="size-[4.5rem] shrink-0 rounded-full object-cover ring-4 ring-mist"
+                    />
+                  )}
+                  <div class="min-w-0 flex-1">
+                    <span class="block text-lg font-extrabold tracking-[-0.01em] text-ink">{d.name}</span>
+                    <span class="mt-0.5 block text-[0.9375rem] leading-snug text-muted">{d.role}</span>
+                  </div>
+                  {d.link && (
+                    <a
+                      href={d.link}
+                      target="_blank"
+                      rel="noopener"
+                      class="grid size-11 shrink-0 place-items-center rounded-full bg-mist text-ink transition-colors duration-200 hover:bg-stage-text hover:text-paper"
+                      aria-label={isLinkedIn(d.link) ? `${d.name} on LinkedIn` : `Visit ${host(d.link)}`}
+                      data-tm-btn
+                    >
+                      {isLinkedIn(d.link) ? (
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                          <path
+                            fill="#0A66C2"
+                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M5 11l6-6M6 5h5v5" />
+                        </svg>
+                      )}
+                    </a>
+                  )}
+                </figcaption>
+
+                <blockquote
+                  class:list={[
+                    "tracking-[-0.01em]",
+                    short
+                      ? "text-[clamp(1.375rem,1.1rem+1vw,1.875rem)] leading-[1.4]"
+                      : "text-[clamp(1.1875rem,1.05rem+0.55vw,1.4375rem)] leading-[1.5]",
+                  ]}
+                  data-tm-quote
+                >
+                  <p>“{before}{mark && <mark class="tm-mark">{mark}</mark>}{after}”</p>
+                </blockquote>
+
+                {d.result && (
+                  <p class="flex items-center gap-3 self-start rounded-2xl bg-mist py-3 pr-5 pl-3 font-semibold text-ink" data-tm-result>
+                    <span class="grid size-8 shrink-0 place-items-center rounded-full bg-stage text-paper" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3.5 8.5l3 3 6-7" />
+                      </svg>
+                    </span>
+                    {d.result}
+                  </p>
+                )}
+              </figure>
+
+              {hasMedia && (
+                <div
+                  class:list={[
+                    "relative overflow-hidden rounded-b-[1.75rem] bg-ink lg:aspect-auto lg:rounded-none",
+                    d.video ? "aspect-[4/5]" : "aspect-[3/2]",
+                    flip ? "lg:rounded-l-[1.75rem]" : "lg:rounded-r-[1.75rem]",
+                  ]}
+                  data-tm-media
+                >
+                  {d.video ? (
+                    // Vídeo vertical, recortado al alto de la tarjeta; se carga solo al darle a play
+                    <video
+                      class="absolute inset-0 size-full object-cover object-[50%_30%]"
+                      controls
+                      playsinline
+                      preload="none"
+                      poster={`${d.video}-poster.webp`}
+                      aria-label={`Video testimonial from ${d.name}`}
+                      data-tm-inner
+                    >
+                      <source src={`${d.video}.mp4`} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <Image
+                      src={d.stagePhoto!}
+                      alt={d.stagePhotoAlt ?? `${d.name} on stage`}
+                      widths={[480, 832, 1200]}
+                      sizes="(min-width: 1024px) 26rem, 100vw"
+                      class="absolute inset-0 size-full object-cover object-[40%_30%]"
+                      data-tm-inner
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   </section>
 )}
 
 <style>
-  /* La pista se desliza con el dedo o con los botones; la barra de scroll no se ve */
-  .testimonials-track {
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
+  /* Frase resaltada: un trazo rojo bajo el texto que GSAP «dibuja» de izquierda a derecha (--hl) */
+  .tm-mark {
+    --hl: 100%;
+    color: inherit;
+    background: linear-gradient(color-mix(in oklab, var(--color-stage) 30%, transparent), color-mix(in oklab, var(--color-stage) 30%, transparent))
+      no-repeat 0 88% / var(--hl) 0.42em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
-  .testimonials-track::-webkit-scrollbar {
-    display: none;
+  /*
+    Sombra suave en reposo. La del ratón vive en una capa aparte (::after) y solo cambia su opacidad:
+    animar box-shadow directamente daba un salto exagerado la primera vez.
+  */
+  .tm-row {
+    position: relative;
+    isolation: isolate;
+    box-shadow: 0 18px 36px -28px rgb(0 0 0 / 0.35);
+    will-change: transform;
+  }
+  .tm-row::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow: 0 26px 44px -30px rgb(0 0 0 / 0.45);
+    opacity: var(--sh, 0);
+    pointer-events: none;
   }
 </style>
 
 <script>
-  let controller: AbortController | null = null;
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
 
-  function initCarousel() {
-    controller?.abort();
-    controller = new AbortController();
-    const { signal } = controller;
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
-    const root = document.querySelector<HTMLElement>("[data-carousel]");
+  /*
+    Ritmo (criterios de brux-motion): primero la frase, luego el objeto, al final el detalle.
+    - Título: sube línea a línea desde una máscara.
+    - Cada fila, al entrar en pantalla (una sola vez, nunca ligado al scroll):
+      la imagen se descubre desde abajo con un leve zoom de retroceso; la tarjeta sube;
+      la cita aparece por líneas; el resaltado se dibuja; el resultado entra el último.
+    - Ratón: la fila (tarjeta + imagen) sube 4 px y su sombra crece; la imagen se acerca un 3 %; los botones se hunden al pulsar.
+  */
+  const EASE = "expo.out";
+  let ctx: gsap.Context | null = null;
+  let mm: gsap.MatchMedia | null = null;
+
+  function initTestimonials() {
+    const root = document.querySelector<HTMLElement>("[data-tm]");
     if (!root) return;
-    const track = root.querySelector<HTMLElement>("[data-carousel-track]")!;
-    const slides = [...root.querySelectorAll<HTMLElement>("[data-carousel-slide]")];
-    const prev = root.querySelector<HTMLButtonElement>("[data-carousel-prev]")!;
-    const next = root.querySelector<HTMLButtonElement>("[data-carousel-next]")!;
-    const controls = root.querySelector<HTMLElement>("[data-carousel-controls]")!;
-    const status = root.querySelector<HTMLElement>("[data-carousel-status]")!;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    // Distancia entre el inicio de un testimonio y el siguiente
-    const step = () => (slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth);
-    const index = () => Math.round(track.scrollLeft / step());
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      ctx = gsap.context(() => {
+        // ---------- Título ----------
+        const title = root.querySelector<HTMLElement>("[data-tm-title]")!;
+        SplitText.create(title, {
+          type: "lines",
+          mask: "lines",
+          autoSplit: true,
+          onSplit: (self) =>
+            gsap.from(self.lines, {
+              yPercent: 110,
+              duration: 1.1,
+              ease: EASE,
+              stagger: 0.09,
+              scrollTrigger: { trigger: title, start: "top 85%", once: true },
+            }),
+        });
 
-    const update = () => {
-      const max = track.scrollWidth - track.clientWidth;
-      controls.hidden = max <= 1; // si caben todos, no hacen falta flechas
-      prev.disabled = track.scrollLeft <= 1;
-      next.disabled = track.scrollLeft >= max - 1;
-    };
+        // ---------- Filas ----------
+        root.querySelectorAll<HTMLElement>("[data-tm-row]").forEach((row) => {
+          const card = row.querySelector<HTMLElement>("[data-tm-card]")!;
+          const media = row.querySelector<HTMLElement>("[data-tm-media]");
+          const inner = row.querySelector<HTMLElement>("[data-tm-inner]");
+          const meta = card.querySelector<HTMLElement>("[data-tm-meta]")!;
+          const quote = card.querySelector<HTMLElement>("[data-tm-quote] p")!;
+          const result = card.querySelector<HTMLElement>("[data-tm-result]");
+          const marks = () => card.querySelectorAll<HTMLElement>(".tm-mark");
 
-    const go = (dir: 1 | -1) => {
-      const target = Math.max(0, Math.min(slides.length - 1, index() + dir));
-      track.scrollTo({ left: slides[target].offsetLeft - slides[0].offsetLeft, behavior: reduceMotion.matches ? "auto" : "smooth" });
-      status.textContent = `Testimonial ${target + 1} of ${slides.length}`;
-    };
+          gsap.set(marks(), { "--hl": "0%" });
 
-    prev.addEventListener("click", () => go(-1), { signal });
-    next.addEventListener("click", () => go(1), { signal });
-    track.addEventListener("scroll", () => requestAnimationFrame(update), { signal, passive: true });
-    window.addEventListener("resize", update, { signal });
-    update();
+          SplitText.create(quote, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            onSplit(self) {
+              gsap.set(marks(), { "--hl": "0%" });
+              const tl = gsap.timeline({
+                scrollTrigger: { trigger: row, start: "top 78%", once: true },
+                defaults: { ease: EASE },
+              });
+              if (media) {
+                tl.fromTo(
+                  media,
+                  { clipPath: "inset(100% 0% 0% 0%)" },
+                  { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power4.inOut", clearProps: "clipPath" },
+                  0,
+                );
+                if (inner) tl.from(inner, { scale: 1.18, duration: 1.6 }, 0);
+              }
+              tl.from(row, { y: 56, autoAlpha: 0, duration: 1.1 }, 0)
+                .from(meta.children, { x: -16, autoAlpha: 0, duration: 0.8, stagger: 0.07 }, 0.35)
+                .from(self.lines, { yPercent: 105, duration: 0.95, stagger: 0.06 }, 0.45)
+                .to(marks(), { "--hl": "100%", duration: 0.9, ease: "power2.inOut", stagger: 0.15 }, ">-0.35");
+              if (result) tl.from(result, { y: 12, scale: 0.94, autoAlpha: 0, duration: 0.7, ease: "back.out(2)" }, "<0.2");
+              return tl;
+            },
+          });
+
+          // ---------- Ratón ----------
+          // La fila se mueve entera: tarjeta e imagen están pegadas
+          const lift = gsap.quickTo(row, "y", { duration: 0.5, ease: "power3.out" });
+          const zoom = inner ? gsap.quickTo(inner, "scale", { duration: 0.8, ease: "power3.out" }) : null;
+          const enter = () => {
+            lift(-4);
+            gsap.to(row, { "--sh": 1, duration: 0.5, ease: "power2.out" });
+          };
+          const leave = () => {
+            lift(0);
+            gsap.to(row, { "--sh": 0, duration: 0.5, ease: "power2.out" });
+          };
+          row.addEventListener("pointerenter", enter);
+          row.addEventListener("pointerleave", leave);
+          if (media && zoom) {
+            media.addEventListener("pointerenter", () => zoom(1.03));
+            media.addEventListener("pointerleave", () => zoom(1));
+          }
+        });
+
+        // Botones: se hunden al pulsar y vuelven con un pequeño rebote
+        root.querySelectorAll<HTMLElement>("[data-tm-btn]").forEach((btn) => {
+          btn.addEventListener("pointerdown", () => gsap.to(btn, { scale: 0.9, duration: 0.12, ease: "power2.out" }));
+          const up = () => gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+          btn.addEventListener("pointerup", up);
+          btn.addEventListener("pointerleave", up);
+        });
+      }, root);
+
+      return () => ctx?.revert();
+    });
   }
 
-  document.addEventListener("astro:page-load", initCarousel);
+  document.addEventListener("astro:page-load", initTestimonials);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
 </script>

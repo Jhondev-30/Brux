@@ -1,24 +1,110 @@
 ---
-import Button from "../ui/Button.astro";
+import { bookingUrl } from "../../data/site";
 ---
 
-<section id="book" class="bg-stage py-24 sm:py-32" aria-labelledby="book-title">
-  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+<!--
+  Cierre de la portada, centrado, sobre rojo plano.
+-->
+<section id="book" class="bg-stage py-28 sm:py-40" aria-labelledby="book-title" data-cta>
+  <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
     <h2
       id="book-title"
-      class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+2.8vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-paper"
+      class="max-w-[44rem] text-[clamp(2.5rem,1.7rem+3.4vw,4.75rem)] font-extrabold leading-[1.02] tracking-[-0.02em] text-paper"
+      data-cta-title
     >
       Ready for your next stage?
     </h2>
-    <p class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-paper">
+    <p
+      class="mt-7 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-paper"
+      data-cta-lead
+    >
       Tell us your topic and your recent talks, and we'll recommend the plan that fits.
     </p>
     <!-- Sobre rojo, el botón principal pasa a negro para que se vea -->
     <a
-      href="/contact/"
-      class="mt-9 inline-flex min-h-12 items-center justify-center rounded-[3px] bg-ink px-6 text-base font-semibold text-paper transition-[background-color,transform] duration-150 ease-out hover:bg-ink-raised active:translate-y-px"
+      href={bookingUrl}
+      target="_blank"
+      rel="noopener"
+      class="group mt-10 inline-flex min-h-14 items-center justify-center gap-2.5 rounded-[3px] bg-ink px-8 text-base font-semibold text-paper transition-colors duration-200 hover:bg-ink-raised"
+      data-cta-btn
     >
       Book a call
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">
+        <path d="M2.5 8h10M8.5 4l4 4-4 4" />
+      </svg>
     </a>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  /*
+    Variación respecto a las otras secciones:
+    - Título letra a letra, desde el centro hacia fuera, con un pequeño giro 3D que se endereza.
+    - Texto y botón suben detrás; el botón «respira» una vez para pedir el clic.
+    - Ratón: el botón sigue un poco al cursor (efecto imán, máx. 6 px) y se hunde al pulsar.
+  */
+  let mm: gsap.MatchMedia | null = null;
+
+  function initCta() {
+    const root = document.querySelector<HTMLElement>("[data-cta]");
+    if (!root) return;
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const title = root.querySelector<HTMLElement>("[data-cta-title]")!;
+        const lead = root.querySelector<HTMLElement>("[data-cta-lead]")!;
+        const btn = root.querySelector<HTMLElement>("[data-cta-btn]")!;
+
+        SplitText.create(title, {
+          type: "words,chars",
+          mask: "words",
+          autoSplit: true,
+          onSplit: (self) => {
+            const tl = gsap.timeline({
+              scrollTrigger: { trigger: root, start: "top 70%", once: true },
+              defaults: { ease: "expo.out" },
+            });
+            tl.from(
+                self.chars,
+                { yPercent: 110, rotationX: -70, transformPerspective: 600, transformOrigin: "50% 100%", duration: 1, stagger: { each: 0.025, from: "center" } },
+                0.1,
+              )
+              .from(lead, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.55)
+              .from(btn, { y: 24, scale: 0.85, autoAlpha: 0, duration: 0.9, ease: "back.out(1.8)" }, 0.7)
+              .to(btn, { scale: 1.05, duration: 0.35, ease: "power2.out", yoyo: true, repeat: 1 }, ">0.2");
+            return tl;
+          },
+        });
+
+        // Botón imán
+        const bx = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" });
+        const by = gsap.quickTo(btn, "y", { duration: 0.5, ease: "power3.out" });
+        btn.addEventListener("pointermove", (e) => {
+          const r = btn.getBoundingClientRect();
+          bx(((e.clientX - r.left) / r.width - 0.5) * 12);
+          by(((e.clientY - r.top) / r.height - 0.5) * 12);
+        });
+        btn.addEventListener("pointerleave", () => {
+          bx(0);
+          by(0);
+          gsap.to(btn, { scale: 1, duration: 0.4, ease: "back.out(3)" });
+        });
+        btn.addEventListener("pointerdown", () => gsap.to(btn, { scale: 0.95, duration: 0.12, ease: "power2.out" }));
+        btn.addEventListener("pointerup", () => gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" }));
+      }, root);
+      return () => ctx.revert();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initCta);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+</script>

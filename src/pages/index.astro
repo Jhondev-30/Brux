@@ -4,6 +4,7 @@ import MainHero from "../components/MainHero.astro";
 import HowWeBook from "../components/home/HowWeBook.astro";
 import ServicesList from "../components/home/ServicesList.astro";
 import Testimonials from "../components/home/Testimonials.astro";
+import OurWork from "../components/home/OurWork.astro";
 import PricingTeaser from "../components/home/PricingTeaser.astro";
 import Faq from "../components/home/Faq.astro";
 import StatementScene from "../components/home/StatementScene.astro";
@@ -23,10 +24,11 @@ import FinalCta from "../components/home/FinalCta.astro";
 	<!-- 3. Los cuatro servicios, con enlace a cada página -->
 	<ServicesList />
 
-	<!-- 4. Testimonios en carrusel con flechas. Se muestra solo cuando haya archivos en src/content/testimonials/ -->
+	<!-- 4. Testimonios, uno por fila con su foto o vídeo (Dr. Meade y Angie Pichardo). Archivos en src/content/testimonials/ -->
 	<Testimonials />
 
-	<!-- 5. PENDIENTE: casos de éxito («Our work»), cuando estén los datos. Cada caso, con su página en /work/nombre/ -->
+	<!-- 5. Casos: el speaker reel de Philip Chan y la web de Angie Pichardo. Más adelante, cada uno con su página en /work/nombre/ -->
+	<OurWork />
 
 	<!-- 6. Planes y precio: la sección clara del formato Backstage -->
 	<PricingTeaser />

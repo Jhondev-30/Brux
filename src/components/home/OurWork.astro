@@ -1,0 +1,247 @@
+---
+/**
+ * «Our work»: trabajo real para clientes, la prueba de lo que prometen las secciones de arriba.
+ * Caso 1: speaker reel de Philip Jayhawk Chan (MP4 H.264 720p en public/videos/work/, se carga al darle a play).
+ *         Solo MP4: se reproduce en todos los navegadores y el WebM apenas pesaba un 9 % menos.
+ * Caso 2: web de Angie Pichardo, graceafterthegrave.com (captura de la portada, nov 2026).
+ * Cada caso es una tarjeta negra (ink) con un filo fino, sobre el gris de la sección: una superficie plana
+ * que agrupa sin competir. Se probó en rojo (stage-text) y sobraba: Testimonios, justo encima, ya es rojo,
+ * y el cierre también. Aquí el rojo queda solo para lo que lleva acento (etiqueta y botón).
+ * Animaciones al final del archivo. Cuando haya datos de resultados, cada caso tendrá su página en /work/nombre/.
+ */
+import { Image } from "astro:assets";
+import grace from "../../assets/work/grace-after-the-grave.webp";
+
+const site = "https://www.brux.site";
+
+// VideoObject: ayuda a que el reel aparezca en búsquedas de vídeo
+const reelSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: "Philip Jayhawk Chan, keynote speaker reel",
+  description:
+    "Speaker reel for Philip Jayhawk Chan, CEO and President of Lightspeed Investing and keynote speaker, produced by Brux.",
+  thumbnailUrl: `${site}/videos/work/philip-chan-reel-poster.webp`,
+  contentUrl: `${site}/videos/work/philip-chan-reel.mp4`,
+  uploadDate: "2026-11-10",
+  duration: "PT3M0S",
+};
+---
+
+<section id="work" class="overflow-hidden bg-ink-raised py-28 sm:py-36" aria-labelledby="work-title" data-work>
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-[40rem] text-center">
+      <h2
+        id="work-title"
+        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-paper"
+        data-work-title
+      >
+        Work we've done for speakers
+      </h2>
+      <p class="mt-5 text-[clamp(1.0625rem,1rem+0.25vw,1.1875rem)] leading-relaxed text-muted-on-ink" data-work-lead>
+        The reel and the website are what organizers open first. These are two we made for clients.
+      </p>
+    </div>
+
+    <div class="mt-16 grid gap-10 sm:mt-20 lg:gap-14">
+      <!-- Caso 1: speaker reel -->
+      <article
+        class="work-card grid gap-8 rounded-[1.75rem] bg-ink p-3 ring-1 ring-paper/10 sm:p-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:items-center lg:gap-12 lg:pr-12"
+        data-work-card
+      >
+        <div class="overflow-hidden rounded-[1.25rem] bg-ink" data-work-media>
+          <video
+            class="aspect-video w-full object-cover"
+            controls
+            playsinline
+            preload="none"
+            poster="/videos/work/philip-chan-reel-poster.webp"
+            aria-label="Philip Jayhawk Chan's speaker reel"
+            data-work-inner
+          >
+            <source src="/videos/work/philip-chan-reel.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="px-4 pb-6 sm:px-6 lg:px-0 lg:pb-0">
+          <p class="inline-flex items-center gap-2 rounded-full bg-stage/15 px-3.5 py-1.5 text-sm font-semibold text-stage-glow" data-work-tag>
+            <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor" /></svg>
+            Speaker reel
+          </p>
+          <h3 class="mt-5 text-[clamp(1.625rem,1.3rem+1.2vw,2.375rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-paper" data-work-heading>
+            Philip Jayhawk Chan
+          </h3>
+          <p class="mt-2 text-[1.0625rem] text-muted-on-ink" data-work-text>CEO &amp; President, Lightspeed Investing. Keynote speaker.</p>
+          <p class="mt-6 leading-relaxed text-paper/90" data-work-text>
+            Organizers want to see how a speaker sounds on stage before they book. We cut Philip's talks,
+            interviews and his story into one three-minute reel, and it goes out with every pitch.
+          </p>
+        </div>
+      </article>
+
+      <!-- Caso 2: web de speaker -->
+      <article
+        class="work-card grid gap-8 rounded-[1.75rem] bg-ink p-3 ring-1 ring-paper/10 sm:p-4 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:items-center lg:gap-12 lg:pl-12"
+        data-work-card
+      >
+        <div class="lg:order-last">
+          <a
+            href="https://graceafterthegrave.com/"
+            target="_blank"
+            rel="noopener"
+            class="block overflow-hidden rounded-[1.25rem] bg-ink"
+            data-work-media
+          >
+            <Image
+              src={grace}
+              alt="Home page of graceafterthegrave.com: Angie Pichardo, Christian speaker and life coach"
+              widths={[640, 960, 1440]}
+              sizes="(min-width: 1024px) 60vw, 100vw"
+              class="w-full"
+              data-work-inner
+            />
+          </a>
+        </div>
+        <div class="px-4 pb-6 sm:px-6 lg:px-0 lg:pb-0">
+          <p class="inline-flex items-center gap-2 rounded-full bg-stage/15 px-3.5 py-1.5 text-sm font-semibold text-stage-glow" data-work-tag>
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="1.5" y="2.5" width="13" height="11" rx="2" /><path d="M1.5 6h13" />
+            </svg>
+            Speaker website
+          </p>
+          <h3 class="mt-5 text-[clamp(1.625rem,1.3rem+1.2vw,2.375rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-paper" data-work-heading>
+            Angie Pichardo
+          </h3>
+          <p class="mt-2 text-[1.0625rem] text-muted-on-ink" data-work-text>Christian speaker and life coach. English and Spanish.</p>
+          <p class="mt-6 leading-relaxed text-paper/90" data-work-text>
+            One link that answers an organizer's questions: her story, her keynote topics, her A.L.I.G.N.
+            framework and a discovery call. We also ran her social media and edited her videos while we
+            pitched her to events.
+          </p>
+          <!-- El rojo queda solo para la acción: así se lee como el botón de la tarjeta -->
+          <a
+            href="https://graceafterthegrave.com/"
+            target="_blank"
+            rel="noopener"
+            class="group mt-8 inline-flex min-h-12 items-center gap-2 rounded-[3px] bg-stage px-6 font-semibold text-paper transition-colors duration-200 hover:bg-stage-glow"
+            data-work-btn
+          >
+            Visit graceafterthegrave.com
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              <path d="M5 11l6-6M6 5h5v5" />
+            </svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(reelSchema)} />
+</section>
+
+<style>
+  .work-card {
+    box-shadow: 0 30px 60px -40px rgb(0 0 0 / 0.7);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  /*
+    Variación respecto a Testimonios (allí todo sube recto):
+    - Título: palabras que se enderezan desde una leve inclinación, en abanico desde el centro.
+    - Tarjetas: entran inclinadas (izquierda / derecha, alternando) y se asientan; la tarjeta se oscurece
+      desde el gris de la sección, como cuando bajan las luces de la sala.
+    - El vídeo o la captura se descubre de lado, hacia el texto, con zoom de retroceso.
+    - Texto en cascada: etiqueta, nombre y párrafos; el botón entra al final con rebote.
+    - Ratón: la tarjeta sube 4 px, la imagen se acerca un 3 %, el botón se hunde al pulsar.
+    Una sola vez al llegar a cada parte; nada va pegado al scroll. Con «reducir movimiento», todo quieto.
+  */
+  const EASE = "expo.out";
+  let mm: gsap.MatchMedia | null = null;
+
+  function initWork() {
+    const root = document.querySelector<HTMLElement>("[data-work]");
+    if (!root) return;
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const title = root.querySelector<HTMLElement>("[data-work-title]")!;
+        SplitText.create(title, {
+          type: "words",
+          mask: "words",
+          autoSplit: true,
+          onSplit: (self) => {
+            const tl = gsap.timeline({ scrollTrigger: { trigger: title, start: "top 85%", once: true } });
+            tl.from(self.words, {
+              yPercent: 120,
+              rotation: 8,
+              transformOrigin: "0% 100%",
+              duration: 1,
+              ease: EASE,
+              stagger: { each: 0.07, from: "center" },
+            }).from(root.querySelector("[data-work-lead]"), { y: 20, autoAlpha: 0, duration: 0.9, ease: EASE }, 0.35);
+            return tl;
+          },
+        });
+
+        root.querySelectorAll<HTMLElement>("[data-work-card]").forEach((card, i) => {
+          const dir = i % 2 === 0 ? -1 : 1;
+          const media = card.querySelector<HTMLElement>("[data-work-media]")!;
+          const inner = card.querySelector<HTMLElement>("[data-work-inner]")!;
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: card, start: "top 80%", once: true },
+            defaults: { ease: EASE },
+          });
+          tl.from(card, {
+            y: 90,
+            rotation: 2.5 * dir,
+            scale: 0.94,
+            backgroundColor: "#161616", // nace del gris de la sección y se oscurece hasta su negro
+            duration: 1.3,
+            transformOrigin: dir < 0 ? "0% 100%" : "100% 100%",
+            clearProps: "backgroundColor,rotation,scale",
+          })
+            .fromTo(
+              media,
+              { clipPath: dir < 0 ? "inset(0% 100% 0% 0%)" : "inset(0% 0% 0% 100%)" },
+              { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power4.inOut", clearProps: "clipPath" },
+              0.25,
+            )
+            .from(inner, { scale: 1.2, duration: 1.6 }, 0.25)
+            .from(card.querySelector("[data-work-tag]"), { scale: 0.6, autoAlpha: 0, duration: 0.7, ease: "back.out(2.2)" }, 0.6)
+            .from(card.querySelector("[data-work-heading]"), { x: 30 * -dir, autoAlpha: 0, duration: 0.9 }, 0.7)
+            .from(card.querySelectorAll("[data-work-text]"), { y: 18, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, 0.85);
+          const btn = card.querySelector<HTMLElement>("[data-work-btn]");
+          if (btn) tl.from(btn, { y: 16, scale: 0.9, autoAlpha: 0, duration: 0.7, ease: "back.out(2)" }, 1.1);
+
+          // Ratón
+          const lift = gsap.quickTo(card, "y", { duration: 0.5, ease: "power3.out" });
+          const zoom = gsap.quickTo(inner, "scale", { duration: 0.8, ease: "power3.out" });
+          card.addEventListener("pointerenter", () => lift(-4));
+          card.addEventListener("pointerleave", () => lift(0));
+          media.addEventListener("pointerenter", () => zoom(1.03));
+          media.addEventListener("pointerleave", () => zoom(1));
+        });
+
+        root.querySelectorAll<HTMLElement>("[data-work-btn]").forEach((btn) => {
+          btn.addEventListener("pointerdown", () => gsap.to(btn, { scale: 0.95, duration: 0.12, ease: "power2.out" }));
+          const up = () => gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+          btn.addEventListener("pointerup", up);
+          btn.addEventListener("pointerleave", up);
+        });
+      }, root);
+      return () => ctx.revert();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initWork);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+</script>
