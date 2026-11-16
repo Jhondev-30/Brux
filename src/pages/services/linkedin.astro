@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import { bookingUrl } from "../../data/site";
 
 // Datos del PDF de planes del 1 de noviembre de 2026
 const posts = [
@@ -20,7 +21,7 @@ const posts = [
       Before organizers book you, they check your LinkedIn. We make sure what they find backs up
       every pitch, and grow your network with the people who book speakers.
     </p>
-    <a href="/contact/">Book a call</a>
+    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
   </section>
 
   <section>

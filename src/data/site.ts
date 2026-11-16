@@ -3,6 +3,9 @@
  * Precios y cifras: PDF de planes del 1 de noviembre de 2026.
  */
 
+/** Agenda de Google para la llamada de estrategia. Todos los botones «Book a call» llevan aquí. */
+export const bookingUrl = "https://calendar.app.google/HDfbcei5XRa84yeh7";
+
 export const services = [
   {
     href: "/services/booking/",

@@ -26,9 +26,10 @@ const variants = {
   "secondary-light": `${box} text-ink ring-1 ring-ink/30 ring-inset hover:bg-ink/5 hover:ring-ink/60`,
   link: "group/btn inline-flex min-h-12 items-center gap-2 text-base font-semibold text-paper",
 };
+const external = /^https?:\/\//.test(href);
 ---
 
-<a href={href} class:list={[variants[variant], className]}>
+<a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} class:list={[variants[variant], className]}>
   {
     variant === "link" ? (
       <span class="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 ease-out group-hover/btn:bg-[length:100%_1px] group-focus-visible/btn:bg-[length:100%_1px]">

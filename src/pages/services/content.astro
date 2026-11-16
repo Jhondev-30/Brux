@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import { bookingUrl } from "../../data/site";
 ---
 
 <MainLayout
@@ -12,7 +13,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
       Organizers want to see how you sound on stage before they book you. We turn your talks into
       the material that shows it.
     </p>
-    <a href="/contact/">Book a call</a>
+    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
   </section>
 
   <section>

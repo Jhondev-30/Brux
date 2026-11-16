@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import { bookingUrl } from "../../data/site";
 
 // Datos del PDF de planes del 1 de noviembre de 2026
 const pitches = [
@@ -20,7 +21,7 @@ const pitches = [
       We pitch you directly to the organizers who book speakers in your niche. No generic listings:
       every pitch goes to an event that fits your topics.
     </p>
-    <a href="/contact/">Book a call</a>
+    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
   </section>
 
   <section>

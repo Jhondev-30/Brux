@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import { bookingUrl } from "../../data/site";
 
 // Contenido del PDF de servicios del 20 de octubre de 2026.
 // Precio confirmado por Jhon el 14 nov 2026: desde $1,100, pago único; cambia según lo que necesite la web.
@@ -15,7 +16,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
       When an organizer is considering you, they need one link that answers their questions quickly.
       For speakers who don't have a website yet.
     </p>
-    <a href="/contact/">Book a call</a>
+    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
   </section>
 
   <section>

@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import { bookingUrl } from "../../data/site";
 
 const services = [
   {
@@ -55,6 +56,6 @@ const services = [
       Plans go from $500 to $2,500 a month.
     </p>
     <a href="/pricing/">See plans</a>
-    <a href="/contact/">Book a call</a>
+    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
   </section>
 </MainLayout>

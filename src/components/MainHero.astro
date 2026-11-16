@@ -2,6 +2,7 @@
 import LogoBlanco from "../assets/images/brux-logo-blanco-una-tinta.svg";
 import Button from "./ui/Button.astro";
 import CtaButton from "./ui/CtaButton.astro";
+import { bookingUrl } from "../data/site";
 ---
 
 <!--
@@ -90,7 +91,7 @@ import CtaButton from "./ui/CtaButton.astro";
 
       <!-- Una acción principal (rojo, con flecha) y una secundaria como enlace de texto, para que no compitan -->
       <div data-hero-in class="mt-9 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-7">
-        <CtaButton href="/contact/">Book a strategy call</CtaButton>
+        <CtaButton href={bookingUrl}>Book a strategy call</CtaButton>
         <Button href="/pricing/" variant="link" class="justify-center sm:justify-start">Compare plans</Button>
       </div>
 
