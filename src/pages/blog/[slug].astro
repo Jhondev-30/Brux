@@ -1,0 +1,118 @@
+---
+import { getCollection, render } from "astro:content";
+import MainLayout from "../../layouts/MainLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import { bookingUrl } from "../../data/site";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const url = new URL(`/blog/${post.id}/`, Astro.site);
+
+const fmt = (date: Date) => date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+
+// BlogPosting: autor, fecha e imagen para Google y los buscadores con IA
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: d.title,
+  description: d.description,
+  datePublished: d.pubDate.toISOString(),
+  dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+  image: new URL(d.cover.src, Astro.site).href,
+  mainEntityOfPage: url.href,
+  author: { "@type": "Person", name: d.author, ...(d.authorUrl && { url: d.authorUrl }) },
+  publisher: { "@type": "Organization", name: "Brux", url: Astro.site?.href },
+};
+---
+
+<MainLayout title={`${d.title} | Brux`} description={d.description}>
+  <article class="article-top bg-ink pb-24 sm:pb-32">
+    <header class="mx-auto max-w-[46rem] px-4 sm:px-8">
+      <a href="/blog/" class="group -ml-1 inline-flex min-h-11 items-center gap-2 rounded-[3px] px-1 text-sm font-semibold text-muted-on-ink transition-colors duration-150 hover:text-paper">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-150 group-hover:-translate-x-1">
+          <path d="M13.5 8h-10M7.5 4l-4 4 4 4" />
+        </svg>
+        All articles
+      </a>
+      <h1 class="mt-8 text-[clamp(2.25rem,1.6rem+2.8vw,3.75rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-balance text-paper">
+        {d.title}
+      </h1>
+      <p class="mt-6 text-muted-on-ink">
+        By {d.authorUrl ? (
+          <a href={d.authorUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline-offset-4 hover:underline">{d.author}</a>
+        ) : (
+          <span class="font-semibold text-paper">{d.author}</span>
+        )}, co-founder of Brux · <time datetime={d.pubDate.toISOString()}>{fmt(d.pubDate)}</time>
+      </p>
+      <div class="mt-10 h-px bg-paper/10" aria-hidden="true"></div>
+    </header>
+
+    <!-- La portada repite el título, así que aquí no se muestra: va en el índice del blog y en el schema -->
+    <div class="prose-brux mx-auto mt-12 max-w-[46rem] px-4 sm:px-8">
+      <Content />
+    </div>
+
+    <footer class="mx-auto mt-16 max-w-[46rem] px-4 sm:px-8">
+      {d.linkedinUrl && (
+        <p class="border-t border-paper/10 pt-8 text-muted-on-ink">
+          First published in our LinkedIn newsletter,{" "}
+          <a href={d.linkedinUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline underline-offset-4 decoration-paper/30 hover:decoration-paper">
+            How Paid Keynotes Get Booked
+          </a>.
+        </p>
+      )}
+
+      <div class="mt-12 rounded-md bg-ink-raised p-7 sm:p-10">
+        <h2 class="text-[clamp(1.5rem,1.25rem+1vw,2.125rem)] leading-tight font-extrabold tracking-[-0.02em] text-balance text-paper">
+          Want us to pitch you to organizers directly?
+        </h2>
+        <p class="mt-4 max-w-[34rem] leading-relaxed text-muted-on-ink">
+          Every month we write to the organizers who book speakers in your niche. Tell us your topic on a short call.
+        </p>
+        <Button href={bookingUrl} class="mt-8">Book a call</Button>
+      </div>
+    </footer>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</MainLayout>
+
+<style>
+  /* Espacio para el nav fijo (mismo cálculo que el índice del blog) */
+  .article-top {
+    padding-top: max(9rem, calc(4.5rem + 8svh));
+  }
+  /* Texto del artículo: medida de lectura cómoda, sin plugin de tipografía */
+  .prose-brux {
+    color: color-mix(in oklab, var(--color-paper) 88%, transparent);
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.75;
+  }
+  .prose-brux :global(p + p) {
+    margin-top: 1.4em;
+  }
+  .prose-brux :global(h2) {
+    margin-top: 2.4em;
+    margin-bottom: 0.8em;
+    color: var(--color-paper);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .prose-brux :global(a) {
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .prose-brux :global(p:last-child) {
+    color: var(--color-paper);
+    font-weight: 600;
+  }
+</style>
