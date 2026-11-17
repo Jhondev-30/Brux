@@ -22,6 +22,7 @@ const {
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL("https://www.brux.site");
+const gaId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? "").trim();
 const canonicalUrl = canonical
   ? new URL(canonical, siteUrl).href
   : new URL(Astro.url.pathname, siteUrl).href;
@@ -99,6 +100,19 @@ const organizationSchema = {
 	<meta name="twitter:image" content={ogImageUrl} />
 	<meta name="twitter:image:alt" content="Brux: Speaker Booking Agency for Keynote Speakers, 0% Commission" />
 	<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+	{gaId && (
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){window.dataLayer.push(arguments);}
+			gtag("consent", "default", {
+				ad_storage: "denied",
+				ad_user_data: "denied",
+				ad_personalization: "denied",
+				analytics_storage: "denied",
+				wait_for_update: 500
+			});
+		</script>
+	)}
 	<ClientRouter />
 	<slot />
 </head>

@@ -6,7 +6,7 @@ import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import ContentHeroStage from "../../components/services/ContentHeroStage.astro";
 import Button from "../../components/ui/Button.astro";
-import CtaButton from "../../components/ui/CtaButton.astro";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 import { bookingUrl } from "../../data/site";
 import pressKitImg from "../../assets/work/philip-chan-press-kit.png";
 
@@ -211,20 +211,20 @@ const faqSchema = {
               Before sending a single outreach pitch, we design your speaker press kit so organizers have your bio, signature talks, target audiences, and past appearances in one clean page.
             </p>
 
-            <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6">
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+            <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6" data-cp-checklist>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85" data-cp-check-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Custom visual design matched to your speaker brand and headshots</span>
               </li>
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85" data-cp-check-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Speaking topics, signature talk titles, and audience outcomes clearly structured</span>
               </li>
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85" data-cp-check-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Featured stage appearances, video link, and direct booking contact</span>
               </li>
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85" data-cp-check-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Ongoing vertical talk clips included on Growth and Complete</span>
               </li>
@@ -283,7 +283,10 @@ const faqSchema = {
       aria-labelledby="content-pricing-redirect-title"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-        <div class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center">
+        <div
+          class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center"
+          data-cp-band
+        >
           <div class="max-w-[40rem]">
             <h2
               id="content-pricing-redirect-title"
@@ -295,7 +298,7 @@ const faqSchema = {
               See which monthly tiers include ongoing talk video editing for LinkedIn on our Pricing page.
             </p>
           </div>
-          <div class="flex flex-wrap items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4" data-band-actions>
             <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
             <Button href={bookingUrl} variant="secondary">Book a call</Button>
           </div>
@@ -308,6 +311,7 @@ const faqSchema = {
       id="faq"
       class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
       aria-labelledby="content-faq-title"
+      data-cp-faq
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
@@ -318,7 +322,7 @@ const faqSchema = {
             >
               Questions about speaker content
             </h2>
-            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink" data-faq-lead>
               What raw footage we need, what goes into your press kit, and how we use your reel to book events.
             </p>
 
@@ -344,7 +348,7 @@ const faqSchema = {
           </div>
 
           <div class="relative">
-            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true" data-faq-line></span>
             {faqs.map((f) => (
               <details class="group relative border-b border-paper/10">
                 <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
@@ -353,10 +357,12 @@ const faqSchema = {
                     aria-hidden="true"
                     class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
                   >
-                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" data-faq-icon />
                   </span>
                 </summary>
-                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                <div class="overflow-hidden" data-faq-answer>
+                  <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                </div>
               </details>
             ))}
           </div>
@@ -365,91 +371,104 @@ const faqSchema = {
     </section>
 
     <!-- 6. FINAL CTA (bg-stage) -->
-    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="content-cta-title">
-      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
-        <h2
-          id="content-cta-title"
-          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
-        >
-          Turn your talk recordings into a reel that books stages
-        </h2>
-        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
-          Book a 20-minute strategy call. We will review your existing footage and show you how we would cut your reel and press kit.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
-          <a
-            href="/pricing/"
-            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
-          >
-            <span>See pricing</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <StageFinalCta
+      headingId="content-cta-title"
+      title="Turn your talk recordings into a reel that books stages"
+      description="Book a 20-minute strategy call. We will review your existing footage and show you how we would cut your reel and press kit."
+      primaryLabel="Book a strategy call"
+      secondaryLabel="See pricing"
+      secondaryHref="/pricing/"
+    />
   </div>
 </MainLayout>
 
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { wireFaqSection, animateFaqEntrance, animateRedirectBand } from "../../lib/gsap-sections";
 
   gsap.registerPlugin(ScrollTrigger);
 
   let mm: gsap.MatchMedia | null = null;
+  let cleanupFaq: (() => void) | null = null;
 
   function initContentPage() {
     mm?.revert();
     mm = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
 
     const root = document.querySelector<HTMLElement>("[data-content-page-root]");
     if (!root) return;
 
+    const faqSec = root.querySelector<HTMLElement>("[data-cp-faq]");
+    if (faqSec) cleanupFaq = wireFaqSection(faqSec);
+
     mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const ctx = gsap.context(() => {
+        // 1. Dual Cinema Frame Reveal (symmetric opposing horizontal sweep on desktop)
         const samples = root.querySelectorAll<HTMLElement>("[data-cp-sample]");
-        const showcases = root.querySelectorAll<HTMLElement>("[data-cp-showcase]");
-
         if (samples.length) {
-          gsap.from(samples, {
-            y: 22,
-            opacity: 0,
-            duration: 0.78,
-            stagger: 0.1,
-            ease: "expo.out",
-            clearProps: "transform,opacity",
-            scrollTrigger: {
-              trigger: samples[0],
-              start: "top 85%",
-              once: true,
-            },
+          samples.forEach((sample, idx) => {
+            gsap.from(sample, {
+              x: idx === 0 ? -24 : 24,
+              y: 16,
+              autoAlpha: 0,
+              duration: 0.85,
+              ease: "expo.out",
+              clearProps: "transform,opacity,visibility",
+              scrollTrigger: { trigger: sample, start: "top 85%", once: true },
+            });
           });
         }
 
-        showcases.forEach((box) => {
-          gsap.from(box, {
-            y: 24,
-            opacity: 0,
-            duration: 0.82,
-            ease: "expo.out",
-            clearProps: "transform,opacity",
-            scrollTrigger: {
-              trigger: box,
-              start: "top 85%",
-              once: true,
-            },
+        // 2. Press Kit Checklist Cascade + Showcase Folio Lift & Clip Reveal
+        const checkItems = root.querySelectorAll<HTMLElement>("[data-cp-check-item]");
+        if (checkItems.length) {
+          gsap.from(checkItems, {
+            x: -18,
+            autoAlpha: 0,
+            duration: 0.65,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "transform,opacity,visibility",
+            scrollTrigger: { trigger: checkItems[0], start: "top 85%", once: true },
           });
+        }
+
+        const showcases = root.querySelectorAll<HTMLElement>("[data-cp-showcase]");
+        showcases.forEach((box, idx) => {
+          gsap.fromTo(
+            box,
+            idx === 1 ? { clipPath: "inset(10% 0% 0% 0%)", y: 20, autoAlpha: 0 } : { y: 26, scale: 0.96, autoAlpha: 0 },
+            {
+              clipPath: "inset(0% 0% 0% 0%)",
+              y: 0,
+              scale: 1,
+              autoAlpha: 1,
+              duration: 0.9,
+              ease: "expo.out",
+              clearProps: "clipPath,transform,opacity,visibility",
+              scrollTrigger: { trigger: box, start: "top 85%", once: true },
+            },
+          );
         });
+
+        animateRedirectBand(root.querySelector<HTMLElement>("[data-cp-band]"));
+        if (faqSec) animateFaqEntrance(faqSec);
       }, root);
 
       return () => ctx.revert();
     });
   }
 
+  initContentPage();
   document.addEventListener("astro:page-load", initContentPage);
   document.addEventListener("astro:before-swap", () => {
     mm?.revert();
     mm = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
   });
 </script>

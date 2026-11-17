@@ -6,8 +6,7 @@ import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import LinkedInHeroStage from "../../components/services/LinkedInHeroStage.astro";
 import Button from "../../components/ui/Button.astro";
-import CtaButton from "../../components/ui/CtaButton.astro";
-import { bookingUrl } from "../../data/site";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 import { pricingTiers } from "../../data/pricing";
 import reportImg from "../../assets/plans/monthly-report.webp";
 import drMeadePhoto from "../../assets/testimonials/dr-meade.jpg";
@@ -133,8 +132,8 @@ const faqSchema = {
         </div>
 
         <!-- Split 1: Positioning + Network Growth -->
-        <div class="grid gap-10 border-b border-ink/12 py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12">
-          <div class="lg:col-span-5">
+        <div class="grid gap-10 border-b border-ink/12 py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12" data-lp-split-1>
+          <div class="lg:col-span-5" data-lp-s1-copy>
             <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
               Included in every monthly plan
             </span>
@@ -160,7 +159,7 @@ const faqSchema = {
             </ul>
           </div>
 
-          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5" data-lp-s1-media>
             <div class="overflow-hidden rounded-[14px] bg-ink">
               <video
                 class="aspect-video w-full object-cover"
@@ -182,8 +181,8 @@ const faqSchema = {
         </div>
 
         <!-- Split 2: Ghostwriting + Monthly Reporting -->
-        <div class="grid gap-10 pt-14 sm:pt-20 lg:grid-cols-12 lg:items-center lg:gap-12">
-          <div class="lg:col-span-5">
+        <div class="grid gap-10 pt-14 sm:pt-20 lg:grid-cols-12 lg:items-center lg:gap-12" data-lp-split-2>
+          <div class="lg:col-span-5" data-lp-s2-copy>
             <span class="inline-flex items-center rounded-full bg-ink px-3 py-1 text-xs font-bold text-paper">
               2 to 8 posts / month + monthly report
             </span>
@@ -209,7 +208,7 @@ const faqSchema = {
             </ul>
           </div>
 
-          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5" data-lp-s2-media>
             <Image
               src={reportImg}
               alt="Monthly report showing LinkedIn follower growth, post impressions and keynotes booked"
@@ -243,11 +242,11 @@ const faqSchema = {
           <Button href="/pricing/" variant="secondary-light" arrow>See plans &amp; pricing</Button>
         </div>
 
-        <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-lp-tiers>
           {pricingTiers.map((t) => {
             const meta = linkedinTierDetails[t.id];
             return (
-              <li class="flex">
+              <li class="flex" data-lp-tier-card>
                 <a
                   href={`/pricing/#${t.id}`}
                   class:list={[
@@ -270,7 +269,10 @@ const faqSchema = {
                       </span>
                     </div>
 
-                    <p class="mt-6 text-5xl font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums">
+                    <p
+                      class="mt-6 text-5xl font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums"
+                      data-lp-post-count={t.posts}
+                    >
                       {t.posts}
                     </p>
                     <p class="mt-2 text-sm font-semibold text-stage-text">
@@ -301,14 +303,18 @@ const faqSchema = {
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <h2 id="li-proof-title" class="sr-only">LinkedIn management client testimonial</h2>
-        <div class="grid overflow-hidden rounded-[26px] bg-paper text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)] lg:grid-cols-[28rem_minmax(0,1fr)]">
-          <div class="relative aspect-[3/2] bg-ink lg:aspect-auto">
+        <div
+          class="grid overflow-hidden rounded-[26px] bg-paper text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)] lg:grid-cols-[28rem_minmax(0,1fr)]"
+          data-lp-proof
+        >
+          <div class="relative aspect-[3/2] overflow-hidden bg-ink lg:aspect-auto">
             <Image
               src={drMeadeStage}
               alt="Dr. Phillip Meade speaking on stage"
               widths={[480, 832]}
               sizes="(min-width: 1024px) 28rem, 100vw"
               class="absolute inset-0 size-full object-cover object-[40%_30%]"
+              data-lp-proof-photo
             />
           </div>
 
@@ -327,7 +333,7 @@ const faqSchema = {
               </div>
             </figcaption>
 
-            <blockquote class="text-[clamp(1.1875rem,1.05rem+0.5vw,1.4375rem)] leading-relaxed text-ink">
+            <blockquote class="text-[clamp(1.1875rem,1.05rem+0.5vw,1.4375rem)] leading-relaxed text-ink" data-lp-quote>
               “Over the course of our engagement, they've been instrumental in growing my LinkedIn presence and getting me booked for podcasts and speaking engagements I wouldn't have had access to on my own.”
             </blockquote>
 
@@ -357,6 +363,7 @@ const faqSchema = {
       id="faq"
       class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
       aria-labelledby="li-faq-title"
+      data-lp-faq
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
@@ -367,7 +374,7 @@ const faqSchema = {
             >
               Questions about LinkedIn management
             </h2>
-            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink" data-faq-lead>
               How we write in your voice, grow your organizer network, and pair LinkedIn with direct booking pitches.
             </p>
 
@@ -393,7 +400,7 @@ const faqSchema = {
           </div>
 
           <div class="relative">
-            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true" data-faq-line></span>
             {faqs.map((f) => (
               <details class="group relative border-b border-paper/10">
                 <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
@@ -402,10 +409,12 @@ const faqSchema = {
                     aria-hidden="true"
                     class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
                   >
-                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" data-faq-icon />
                   </span>
                 </summary>
-                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                <div class="overflow-hidden" data-faq-answer>
+                  <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                </div>
               </details>
             ))}
           </div>
@@ -414,37 +423,35 @@ const faqSchema = {
     </section>
 
     <!-- 6. FINAL CTA (bg-stage) -->
-    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="li-cta-title">
-      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
-        <h2
-          id="li-cta-title"
-          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
-        >
-          Make your LinkedIn close the stage
-        </h2>
-        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
-          Book a 20-minute call. We will review your current profile and show you how we would position your topics for event organizers.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
-          <a
-            href="/pricing/"
-            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
-          >
-            <span>See pricing</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <StageFinalCta
+      headingId="li-cta-title"
+      title="Make your LinkedIn close the stage"
+      description="Book a 20-minute call. We will review your current profile and show you how we would position your topics for event organizers."
+      primaryLabel="Book a strategy call"
+      secondaryLabel="See pricing"
+      secondaryHref="/pricing/"
+    />
   </div>
 </MainLayout>
 
 <script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { wireFaqSection, animateFaqEntrance } from "../../lib/gsap-sections";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
   let io: IntersectionObserver | null = null;
+  let cleanupFaq: (() => void) | null = null;
 
   function initLinkedInPage() {
+    mm?.revert();
+    mm = null;
     io?.disconnect();
     io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
 
     const root = document.querySelector<HTMLElement>("[data-linkedin-page-root]");
     if (!root) return;
@@ -464,11 +471,92 @@ const faqSchema = {
       );
       thumbs.forEach((v) => io!.observe(v));
     }
+
+    const faqSec = root.querySelector<HTMLElement>("[data-lp-faq]");
+    if (faqSec) cleanupFaq = wireFaqSection(faqSec);
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        // 1. Mirrored Media Curtain on Split 1 & Split 2
+        const s1 = root.querySelector<HTMLElement>("[data-lp-split-1]");
+        if (s1) {
+          const copy = s1.querySelector<HTMLElement>("[data-lp-s1-copy]");
+          const media = s1.querySelector<HTMLElement>("[data-lp-s1-media]");
+          const tl = gsap.timeline({ scrollTrigger: { trigger: s1, start: "top 80%", once: true }, defaults: { ease: "expo.out" } });
+          if (copy) tl.from(copy, { y: 22, autoAlpha: 0, duration: 0.8, clearProps: "transform,opacity,visibility" }, 0);
+          if (media) {
+            tl.fromTo(
+              media,
+              { clipPath: "inset(0 0 0 12%)", scale: 1.04, autoAlpha: 0 },
+              { clipPath: "inset(0 0 0 0%)", scale: 1, autoAlpha: 1, duration: 0.95, clearProps: "clipPath,transform,opacity,visibility" },
+              0.08,
+            );
+          }
+        }
+
+        const s2 = root.querySelector<HTMLElement>("[data-lp-split-2]");
+        if (s2) {
+          const copy = s2.querySelector<HTMLElement>("[data-lp-s2-copy]");
+          const media = s2.querySelector<HTMLElement>("[data-lp-s2-media]");
+          const tl = gsap.timeline({ scrollTrigger: { trigger: s2, start: "top 80%", once: true }, defaults: { ease: "expo.out" } });
+          if (copy) tl.from(copy, { x: -24, autoAlpha: 0, duration: 0.8, clearProps: "transform,opacity,visibility" }, 0);
+          if (media) tl.from(media, { y: 24, scale: 0.96, autoAlpha: 0, duration: 0.9, clearProps: "transform,opacity,visibility" }, 0.1);
+        }
+
+        // 2. Editorial Tier Cards Cascade + Post Count Roll-up
+        const tierList = root.querySelector<HTMLElement>("[data-lp-tiers]");
+        if (tierList) {
+          const cards = tierList.querySelectorAll<HTMLElement>("[data-lp-tier-card]");
+          const counts = tierList.querySelectorAll<HTMLElement>("[data-lp-post-count]");
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: tierList, start: "top 82%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+          tl.from(cards, { y: 26, scale: 0.97, autoAlpha: 0, duration: 0.78, stagger: 0.08, clearProps: "transform,opacity,visibility" });
+          counts.forEach((el, idx) => {
+            const targetVal = Number(el.dataset.lpPostCount || el.textContent || 0);
+            const obj = { val: 0 };
+            tl.to(
+              obj,
+              {
+                val: targetVal,
+                duration: 0.85,
+                ease: "power2.out",
+                onUpdate: () => {
+                  el.textContent = String(Math.round(obj.val));
+                },
+              },
+              0.12 + idx * 0.08,
+            );
+          });
+        }
+
+        // 3. Testimonial Split Curtain (Dr. Phillip Meade)
+        const proof = root.querySelector<HTMLElement>("[data-lp-proof]");
+        if (proof) {
+          const photo = proof.querySelector<HTMLElement>("[data-lp-proof-photo]");
+          const quote = proof.querySelector<HTMLElement>("[data-lp-quote]");
+          const pTl = gsap.timeline({ scrollTrigger: { trigger: proof, start: "top 82%", once: true }, defaults: { ease: "expo.out" } });
+          pTl.from(proof, { y: 26, scale: 0.98, autoAlpha: 0, duration: 0.85, clearProps: "transform,opacity,visibility" });
+          if (photo) pTl.from(photo, { scale: 1.09, duration: 1.1, ease: "power3.out", clearProps: "transform" }, 0.05);
+          if (quote) pTl.from(quote, { y: 14, autoAlpha: 0, duration: 0.75, clearProps: "transform,opacity,visibility" }, 0.22);
+        }
+
+        if (faqSec) animateFaqEntrance(faqSec);
+      }, root);
+      return () => ctx.revert();
+    });
   }
 
+  initLinkedInPage();
   document.addEventListener("astro:page-load", initLinkedInPage);
   document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
     io?.disconnect();
     io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
   });
 </script>

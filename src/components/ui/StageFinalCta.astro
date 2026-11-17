@@ -1,0 +1,251 @@
+---
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+import { bookingUrl } from "../../data/site";
+
+interface Props {
+  id?: string;
+  headingId: string;
+  title: string;
+  description: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+
+const {
+  id,
+  headingId,
+  title,
+  description,
+  primaryLabel = "Book a strategy call",
+  primaryHref = bookingUrl,
+  secondaryLabel,
+  secondaryHref,
+} = Astro.props;
+
+const isExternal = /^https?:\/\//i.test(primaryHref);
+const words = (s: string) => s.trim().split(/\s+/);
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.05em] -mt-[0.06em] -mb-[0.14em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  id={id}
+  class="bg-stage py-24 text-paper sm:py-36"
+  aria-labelledby={headingId}
+  data-stage-cta
+>
+  <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+    <h2
+      id={headingId}
+      class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+    >
+      {words(title).map((w, j, a) => (
+        <>
+          <span class={maskClass}><span class={wordClass} data-scta-word>{w}</span></span>
+          {j < a.length - 1 && " "}
+        </>
+      ))}
+    </h2>
+
+    <p
+      class="mt-6 max-w-[36rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper"
+      data-scta-lead
+    >
+      {description}
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <a
+        href={primaryHref}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener" : undefined}
+        class="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-[3px] bg-ink px-8 text-base font-semibold text-paper transition-colors duration-200 will-change-transform hover:bg-ink-raised focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+        data-scta-btn
+      >
+        <span>{primaryLabel}</span>
+        <span class="inline-flex shrink-0 will-change-transform" data-scta-arrow-wrap>
+          <MorphIcon
+            icon={ArrowRight}
+            size={18}
+            strokeWidth={2}
+            spring="snappy"
+            reducedMotion="user"
+            data-scta-icon
+          />
+        </span>
+      </a>
+
+      {secondaryLabel && secondaryHref && (
+        <a
+          href={secondaryHref}
+          class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          data-scta-sec
+        >
+          <span>{secondaryLabel}</span>
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  let mm: gsap.MatchMedia | null = null;
+  let controller: AbortController | null = null;
+
+  function initStageCtas() {
+    mm?.revert();
+    mm = null;
+    controller?.abort();
+    controller = null;
+
+    const sections = document.querySelectorAll<HTMLElement>("[data-stage-cta]");
+    if (!sections.length) return;
+
+    const ac = new AbortController();
+    controller = ac;
+    const { signal } = ac;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    sections.forEach((root) => {
+      const btn = root.querySelector<HTMLElement>("[data-scta-btn]");
+      if (!btn) return;
+
+      const arrowWrap = btn.querySelector<HTMLElement>("[data-scta-arrow-wrap]");
+      const arrowIcon = btn.querySelector<MorphEl>("[data-scta-icon]");
+      const bx = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" });
+      const by = gsap.quickTo(btn, "y", { duration: 0.5, ease: "power3.out" });
+      const nudgeX = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.24, ease: "power3.out" }) : null;
+
+      btn.addEventListener(
+        "pointerenter",
+        (e) => {
+          if (e.pointerType === "mouse") {
+            arrowIcon?.morphTo?.(ArrowUpRight);
+            if (!reduce.matches) nudgeX?.(3);
+          }
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointermove",
+        (e) => {
+          if (reduce.matches || e.pointerType !== "mouse") return;
+          const r = btn.getBoundingClientRect();
+          bx(((e.clientX - r.left) / r.width - 0.5) * 12);
+          by(((e.clientY - r.top) / r.height - 0.5) * 12);
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointerleave",
+        () => {
+          arrowIcon?.morphTo?.(ArrowRight);
+          if (!reduce.matches) {
+            bx(0);
+            by(0);
+            nudgeX?.(0);
+            gsap.to(btn, { scale: 1, duration: 0.4, ease: "back.out(3)" });
+          }
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "focus",
+        () => {
+          arrowIcon?.morphTo?.(ArrowUpRight);
+          if (!reduce.matches) nudgeX?.(3);
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "blur",
+        () => {
+          arrowIcon?.morphTo?.(ArrowRight);
+          if (!reduce.matches) nudgeX?.(0);
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointerdown",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 0.95, duration: 0.12, ease: "power2.out" });
+        },
+        { signal },
+      );
+      btn.addEventListener(
+        "pointerup",
+        () => {
+          if (!reduce.matches) gsap.to(btn, { scale: 1, duration: 0.5, ease: "back.out(3)" });
+        },
+        { signal },
+      );
+    });
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        sections.forEach((root) => {
+          const titleWords = root.querySelectorAll<HTMLElement>("[data-scta-word]");
+          const lead = root.querySelector<HTMLElement>("[data-scta-lead]");
+          const btn = root.querySelector<HTMLElement>("[data-scta-btn]");
+          const sec = root.querySelector<HTMLElement>("[data-scta-sec]");
+
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: root, start: "top 72%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+
+          if (titleWords.length) {
+            tl.fromTo(
+              titleWords,
+              { yPercent: 115, rotate: 6 },
+              {
+                yPercent: 0,
+                rotate: 0,
+                duration: 1.05,
+                stagger: 0.065,
+                clearProps: "transform",
+              },
+              0.05,
+            );
+          }
+          if (lead) {
+            tl.from(lead, { y: 24, autoAlpha: 0, duration: 0.9, clearProps: "transform,opacity,visibility" }, 0.35);
+          }
+          if (btn) {
+            tl.from(
+              btn,
+              { y: 24, scale: 0.88, autoAlpha: 0, duration: 0.9, ease: "back.out(1.8)", clearProps: "transform,opacity,visibility" },
+              0.52,
+            ).to(btn, { scale: 1.04, duration: 0.35, ease: "power2.out", yoyo: true, repeat: 1 }, ">0.18");
+          }
+          if (sec) {
+            tl.from(sec, { y: 20, autoAlpha: 0, duration: 0.85, clearProps: "transform,opacity,visibility" }, 0.62);
+          }
+        });
+      });
+      return () => ctx.revert();
+    });
+  }
+
+  initStageCtas();
+  document.addEventListener("astro:page-load", initStageCtas);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    controller?.abort();
+    controller = null;
+  });
+</script>

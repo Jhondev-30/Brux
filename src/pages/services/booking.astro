@@ -6,8 +6,7 @@ import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import BookingHeroStage from "../../components/services/BookingHeroStage.astro";
 import Button from "../../components/ui/Button.astro";
-import CtaButton from "../../components/ui/CtaButton.astro";
-import { bookingUrl } from "../../data/site";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 import reportImg from "../../assets/plans/monthly-report.webp";
 
 const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
@@ -141,11 +140,14 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
 
         <ol class="divide-y divide-ink/12">
           {steps.map((s, i) => (
-            <li class="grid grid-cols-[auto_1fr] items-start gap-x-4 gap-y-4 py-8 md:grid-cols-[3rem_minmax(0,22rem)_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[3.5rem_24rem_minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10 lg:py-10">
-              <span class="row-span-3 pt-1 text-base font-extrabold text-stage-text tabular-nums md:row-span-2 lg:row-auto">
+            <li
+              class="grid grid-cols-[auto_1fr] items-start gap-x-4 gap-y-4 py-8 md:grid-cols-[3rem_minmax(0,22rem)_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[3.5rem_24rem_minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10 lg:py-10"
+              data-bp-step
+            >
+              <span class="row-span-3 pt-1 text-base font-extrabold text-stage-text tabular-nums md:row-span-2 lg:row-auto" data-bp-num>
                 {pad(i)}
               </span>
-              <div class="aspect-video overflow-hidden rounded-[16px] bg-ink ring-1 ring-ink/10 md:row-span-2 lg:row-auto">
+              <div class="aspect-video overflow-hidden rounded-[16px] bg-ink ring-1 ring-ink/10 md:row-span-2 lg:row-auto" data-bp-step-media>
                 <video
                   class="size-full object-cover"
                   muted
@@ -160,10 +162,10 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
                   <source src={`${s.video}.mp4`} type="video/mp4" />
                 </video>
               </div>
-              <h3 class="text-xl leading-tight font-extrabold tracking-[-0.02em] text-balance text-ink md:col-start-3 md:self-end lg:self-center lg:text-2xl">
+              <h3 class="text-xl leading-tight font-extrabold tracking-[-0.02em] text-balance text-ink md:col-start-3 md:self-end lg:self-center lg:text-2xl" data-bp-step-copy>
                 {s.title}
               </h3>
-              <p class="leading-relaxed text-pretty text-ink/80 md:col-start-3 md:self-start lg:col-start-4 lg:self-center">
+              <p class="leading-relaxed text-pretty text-ink/80 md:col-start-3 md:self-start lg:col-start-4 lg:self-center" data-bp-step-copy>
                 {s.text}
               </p>
             </li>
@@ -176,6 +178,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
     <section
       class="bg-mist py-20 text-ink sm:py-28"
       aria-labelledby="booking-crm-title"
+      data-bp-crm
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
@@ -191,22 +194,22 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
             </p>
 
             <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6">
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Every conference name, date, and decision-maker logged live</span>
               </li>
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Status of every thread: pitched, followed up, in conversation, or booked</span>
               </li>
-              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                 <span>Post-event follow-ups to turn one stage into referrals and repeat invitations</span>
               </li>
             </ul>
           </div>
 
-          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5" data-bp-crm-img>
             <Image
               src={reportImg}
               alt="Brux monthly report showing keynotes booked, organizer outreach and LinkedIn growth"
@@ -225,7 +228,10 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
       aria-labelledby="booking-pricing-redirect-title"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-        <div class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center">
+        <div
+          class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center"
+          data-bp-band
+        >
           <div class="max-w-[40rem]">
             <h2
               id="booking-pricing-redirect-title"
@@ -237,7 +243,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
               Every plan includes your press kit, demo reel, live CRM access, LinkedIn positioning, and 0% commission. Compare exact monthly pitch tiers on our Pricing page.
             </p>
           </div>
-          <div class="flex flex-wrap items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4" data-band-actions>
             <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
             <Button href="/blog/why-calls-for-speakers-dont-lead-to-paid-stages/" variant="secondary">Why direct pitches work</Button>
           </div>
@@ -250,6 +256,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
       id="faq"
       class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
       aria-labelledby="booking-faq-title"
+      data-bp-faq
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
@@ -260,7 +267,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
             >
               Questions about speaker booking
             </h2>
-            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink" data-faq-lead>
               How we select events, track replies, and pair outreach with your LinkedIn and demo reel.
             </p>
 
@@ -286,7 +293,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
           </div>
 
           <div class="relative">
-            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true" data-faq-line></span>
             {faqs.map((f) => (
               <details class="group relative border-b border-paper/10">
                 <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
@@ -295,10 +302,12 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
                     aria-hidden="true"
                     class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
                   >
-                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" data-faq-icon />
                   </span>
                 </summary>
-                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                <div class="overflow-hidden" data-faq-answer>
+                  <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+                </div>
               </details>
             ))}
           </div>
@@ -307,37 +316,35 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
     </section>
 
     <!-- 6. FINAL CTA (bg-stage) -->
-    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="booking-cta-title">
-      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
-        <h2
-          id="booking-cta-title"
-          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
-        >
-          Put your talk in front of the organizers who pay
-        </h2>
-        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
-          Book a 20-minute strategy call. We will review your speaking topics and show you the conferences we would pitch first.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
-          <a
-            href="/pricing/"
-            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
-          >
-            <span>See pricing</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <StageFinalCta
+      headingId="booking-cta-title"
+      title="Put your talk in front of the organizers who pay"
+      description="Book a 20-minute strategy call. We will review your speaking topics and show you the conferences we would pitch first."
+      primaryLabel="Book a strategy call"
+      secondaryLabel="See pricing"
+      secondaryHref="/pricing/"
+    />
   </div>
 </MainLayout>
 
 <script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { wireFaqSection, animateFaqEntrance, animateRedirectBand } from "../../lib/gsap-sections";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
   let io: IntersectionObserver | null = null;
+  let cleanupFaq: (() => void) | null = null;
 
   function initBookingPage() {
+    mm?.revert();
+    mm = null;
     io?.disconnect();
     io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
 
     const root = document.querySelector<HTMLElement>("[data-booking-page-root]");
     if (!root) return;
@@ -357,11 +364,75 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
       );
       thumbs.forEach((v) => io!.observe(v));
     }
+
+    const faqSec = root.querySelector<HTMLElement>("[data-bp-faq]");
+    if (faqSec) cleanupFaq = wireFaqSection(faqSec);
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        // 1. Sequential Process Unfold: horizontal wipe on video + staggered copy
+        root.querySelectorAll<HTMLElement>("[data-bp-step]").forEach((step) => {
+          const num = step.querySelector<HTMLElement>("[data-bp-num]");
+          const media = step.querySelector<HTMLElement>("[data-bp-step-media]");
+          const copy = step.querySelectorAll<HTMLElement>("[data-bp-step-copy]");
+
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: step, start: "top 84%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+
+          if (num) tl.from(num, { scale: 0.7, autoAlpha: 0, duration: 0.5, ease: "back.out(1.7)", clearProps: "transform,opacity,visibility" }, 0);
+          if (media) {
+            tl.fromTo(
+              media,
+              { clipPath: "inset(0 14% 0 0)", x: -12, autoAlpha: 0 },
+              { clipPath: "inset(0 0% 0 0)", x: 0, autoAlpha: 1, duration: 0.9, clearProps: "clipPath,transform,opacity,visibility" },
+              0.06,
+            );
+          }
+          if (copy.length) {
+            tl.from(copy, { y: 16, autoAlpha: 0, duration: 0.72, stagger: 0.08, clearProps: "transform,opacity,visibility" }, 0.16);
+          }
+        });
+
+        // 2. CRM Split Focus Slide
+        const crm = root.querySelector<HTMLElement>("[data-bp-crm]");
+        if (crm) {
+          const items = crm.querySelectorAll<HTMLElement>("[data-bp-crm-item]");
+          const img = crm.querySelector<HTMLElement>("[data-bp-crm-img]");
+
+          const cTl = gsap.timeline({
+            scrollTrigger: { trigger: crm, start: "top 80%", once: true },
+            defaults: { ease: "power3.out" },
+          });
+
+          if (items.length) {
+            cTl.from(items, { x: -20, autoAlpha: 0, duration: 0.65, stagger: 0.08, clearProps: "transform,opacity,visibility" }, 0.1);
+          }
+          if (img) {
+            cTl.from(img, { scale: 0.94, y: 22, autoAlpha: 0, duration: 0.9, ease: "expo.out", clearProps: "transform,opacity,visibility" }, 0.05);
+          }
+        }
+
+        // 3. Pricing Redirect Band
+        animateRedirectBand(root.querySelector<HTMLElement>("[data-bp-band]"));
+
+        // 4. FAQ Accordion + Entrance
+        if (faqSec) animateFaqEntrance(faqSec);
+      }, root);
+      return () => ctx.revert();
+    });
   }
 
+  initBookingPage();
   document.addEventListener("astro:page-load", initBookingPage);
   document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
     io?.disconnect();
     io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
   });
 </script>

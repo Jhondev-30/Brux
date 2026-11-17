@@ -1,12 +1,9 @@
 ---
 import { Check, X } from "@lucide/astro";
-import { ArrowRight } from "lucide";
-import MorphIcon from "morphicons/astro";
 import MainLayout from "../layouts/MainLayout.astro";
 import AboutHeroStage from "../components/about/AboutHeroStage.astro";
 import MeetTheTeam from "../components/home/MeetTheTeam.astro";
-import CtaButton from "../components/ui/CtaButton.astro";
-import { bookingUrl } from "../data/site";
+import StageFinalCta from "../components/ui/StageFinalCta.astro";
 
 const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
 
@@ -121,10 +118,11 @@ const industryContrasts = [
       id="mission"
       class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28 lg:py-32"
       aria-labelledby="mission-title"
+      data-about-mission
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
-          <div class="lg:col-span-5">
+          <div class="lg:col-span-5" data-about-mission-thesis>
             <h2
               id="mission-title"
               class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
@@ -138,7 +136,7 @@ const industryContrasts = [
 
           <div class="lg:col-span-7">
             <div class="divide-y divide-ink/12 border-t border-b border-ink/12">
-              <article class="pt-8 pb-7">
+              <article class="pt-8 pb-7" data-about-pillar>
                 <h3 class="text-xl font-extrabold tracking-[-0.015em] text-balance text-ink sm:text-2xl">
                   Our Mission: Consistent, niche-matched bookings
                 </h3>
@@ -147,7 +145,7 @@ const industryContrasts = [
                 </p>
               </article>
 
-              <article class="pt-8 pb-7">
+              <article class="pt-8 pb-7" data-about-pillar>
                 <h3 class="text-xl font-extrabold tracking-[-0.015em] text-balance text-ink sm:text-2xl">
                   Our Vision: Stages earned on craft, not bureau fees
                 </h3>
@@ -166,9 +164,10 @@ const industryContrasts = [
       id="why-brux"
       class="scroll-mt-24 bg-ink-raised py-20 text-paper sm:py-28 lg:py-32"
       aria-labelledby="why-brux-title"
+      data-about-ledger
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-        <div class="grid gap-6 pb-12 lg:grid-cols-12 lg:items-end lg:pb-14">
+        <div class="grid gap-6 pb-12 lg:grid-cols-12 lg:items-end lg:pb-14" data-about-ledger-head>
           <h2
             id="why-brux-title"
             class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-paper lg:col-span-7"
@@ -190,6 +189,7 @@ const industryContrasts = [
                   idx === 1 && "lg:px-8",
                   idx === 2 && "lg:pr-0 lg:pl-8",
                 ]}
+                data-about-col
               >
                 <div class="flex items-start gap-3 border-b border-paper/10 pb-6 lg:min-h-[4.5rem]">
                   <span
@@ -209,6 +209,7 @@ const industryContrasts = [
                     <span
                       class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-stage-glow/40 bg-stage/15 text-stage-glow transition-colors duration-200 group-hover:border-stage-glow/75 group-hover:bg-stage/25"
                       aria-hidden="true"
+                      data-about-check
                     >
                       <Check class="size-3.5" stroke-width={2.25} />
                     </span>
@@ -232,28 +233,75 @@ const industryContrasts = [
     <MeetTheTeam />
 
     <!-- 5. CLOSING CTA (bg-stage) -->
-    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="about-cta-title">
-      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
-        <h2
-          id="about-cta-title"
-          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
-        >
-          Ready to work with our backstage team?
-        </h2>
-        <p class="mt-6 max-w-[36rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper">
-          Tell us your keynote topics and where you want to speak next. We'll walk you through our plans and the events in your niche.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
-          <a
-            href="/pricing/"
-            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
-          >
-            <span>See plans &amp; pricing</span>
-            <MorphIcon icon={ArrowRight} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
-          </a>
-        </div>
-      </div>
-    </section>
+    <StageFinalCta
+      headingId="about-cta-title"
+      title="Ready to work with our backstage team?"
+      description="Tell us your keynote topics and where you want to speak next. We'll walk you through our plans and the events in your niche."
+      primaryLabel="Book a strategy call"
+      secondaryLabel="See plans & pricing"
+      secondaryHref="/pricing/"
+    />
   </div>
 </MainLayout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
+
+  function initAboutPage() {
+    mm?.revert();
+    mm = null;
+
+    const root = document.querySelector<HTMLElement>("[data-about-page]");
+    if (!root) return;
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        // 1. Mission & Vision: Left thesis vs right editorial divider slide
+        const mission = root.querySelector<HTMLElement>("[data-about-mission]");
+        if (mission) {
+          const thesis = mission.querySelector<HTMLElement>("[data-about-mission-thesis]");
+          const pillars = mission.querySelectorAll<HTMLElement>("[data-about-pillar]");
+          const mTl = gsap.timeline({
+            scrollTrigger: { trigger: mission, start: "top 80%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+          if (thesis) mTl.from(thesis, { y: 20, autoAlpha: 0, duration: 0.8, clearProps: "transform,opacity,visibility" }, 0);
+          if (pillars.length) {
+            mTl.from(pillars, { x: 26, autoAlpha: 0, duration: 0.85, stagger: 0.14, clearProps: "transform,opacity,visibility" }, 0.12);
+          }
+        }
+
+        // 2. Why Old Model Fails: Three-column ledger cascade + Check badge micro-pop
+        const ledger = root.querySelector<HTMLElement>("[data-about-ledger]");
+        if (ledger) {
+          const head = ledger.querySelector<HTMLElement>("[data-about-ledger-head]");
+          const cols = ledger.querySelectorAll<HTMLElement>("[data-about-col]");
+          const checks = ledger.querySelectorAll<HTMLElement>("[data-about-check]");
+          const lTl = gsap.timeline({
+            scrollTrigger: { trigger: ledger, start: "top 80%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+          if (head) lTl.from(head, { y: 20, autoAlpha: 0, duration: 0.78, clearProps: "transform,opacity,visibility" }, 0);
+          if (cols.length) lTl.from(cols, { y: 26, autoAlpha: 0, duration: 0.85, stagger: 0.1, clearProps: "transform,opacity,visibility" }, 0.12);
+          if (checks.length) {
+            lTl.from(checks, { scale: 0.6, autoAlpha: 0, duration: 0.45, stagger: 0.1, ease: "back.out(2.2)", clearProps: "transform,opacity,visibility" }, 0.34);
+          }
+        }
+      }, root);
+      return () => ctx.revert();
+    });
+  }
+
+  initAboutPage();
+  document.addEventListener("astro:page-load", initAboutPage);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+</script>

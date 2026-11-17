@@ -6,8 +6,7 @@ import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import ServicesPortalHero from "../../components/services/ServicesPortalHero.astro";
 import Button from "../../components/ui/Button.astro";
-import CtaButton from "../../components/ui/CtaButton.astro";
-import { bookingUrl } from "../../data/site";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 import pressKitImg from "../../assets/work/philip-chan-press-kit.png";
 import graceImg from "../../assets/work/grace-after-the-grave.webp";
 
@@ -259,13 +258,13 @@ const conversionChain = [
         </div>
 
         <div class="divide-y divide-ink/12">
-          {serviceChapters.map((s) => (
+          {serviceChapters.map((s, idx) => (
             <article
               id={s.id}
               class="scroll-mt-24 grid gap-10 py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12"
-              data-hub-chapter
+              data-hub-chapter={idx % 2 === 0 ? "left" : "right"}
             >
-              <div class="lg:col-span-5">
+              <div class="lg:col-span-5" data-hub-copy>
                 <div class="flex flex-wrap items-center gap-3">
                   <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
                     {s.tag}
@@ -284,7 +283,7 @@ const conversionChain = [
 
                 <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
                   {s.bullets.map((b) => (
-                    <li class="flex items-start gap-2.5 text-[0.9375rem] leading-snug text-ink/85">
+                    <li class="flex items-start gap-2.5 text-[0.9375rem] leading-snug text-ink/85" data-hub-bullet>
                       <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
                       <span>{b}</span>
                     </li>
@@ -298,7 +297,7 @@ const conversionChain = [
                 </div>
               </div>
 
-              <div class="lg:col-span-7">
+              <div class="lg:col-span-7" data-hub-media>
                 {s.kind === "unboxed-presskit" ? (
                   /* Sin card: el press kit de Philip Chan directamente, más grande y legible */
                   <a
@@ -359,58 +358,65 @@ const conversionChain = [
       </div>
     </section>
 
-    <!-- 3. WHY ALL FOUR OUTPERFORM COLD PITCHING (bg-mist) — Diseño editorial taste-skill: diagrama estático + índice con filetes, sin cards repetitivas -->
+    <!-- 3. WHY ALL FOUR OUTPERFORM COLD PITCHING (bg-mist) -->
     <section
       id="system"
       class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28 lg:py-32"
       aria-labelledby="hub-system-title"
+      data-hub-system
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
         <div class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
-          <!-- Columna izquierda: tesis + diagrama de flujo estático -->
+          <!-- Columna izquierda: tesis + diagrama de flujo -->
           <div class="lg:col-span-5">
             <h2
               id="hub-system-title"
               class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+              data-hub-sys-title
             >
               Why running all four together outperforms cold pitching alone
             </h2>
-            <p class="mt-5 max-w-[34rem] text-base leading-relaxed text-muted sm:text-lg">
+            <p class="mt-5 max-w-[34rem] text-base leading-relaxed text-muted sm:text-lg" data-hub-sys-lead>
               Cold outreach fails when the organizer looks up your name and finds an inactive feed, no stage clip, or a scattered site. Each service removes one friction point from the committee's decision.
             </p>
 
-            <!-- Diagrama still node-and-line (criterio diagrams.md para service: limpio, sin pulso ni adornos) -->
-            <div class="mt-10 rounded-[20px] border border-ink/12 bg-paper p-6 sm:p-7" role="img" aria-label="Flow showing how direct pitch leads to LinkedIn verification, reel and press kit review, and website booking">
+            <!-- Diagrama node-and-line -->
+            <div
+              class="mt-10 rounded-[20px] border border-ink/12 bg-paper p-6 sm:p-7"
+              role="img"
+              aria-label="Flow showing how direct pitch leads to LinkedIn verification, reel and press kit review, and website booking"
+              data-hub-diagram
+            >
               <div class="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2">
-                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">1</span>
-                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper" data-diagram-node>1</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5" data-diagram-row>
                   <span class="text-sm font-extrabold text-ink">Direct Organizer Pitch</span>
                   <span class="text-xs font-semibold text-muted">Inbox</span>
                 </div>
 
-                <span class="mx-auto h-5 w-px bg-ink/20" aria-hidden="true"></span>
+                <span class="mx-auto h-5 w-px origin-top bg-ink/20" aria-hidden="true" data-diagram-link></span>
                 <span></span>
 
-                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">2</span>
-                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper" data-diagram-node>2</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5" data-diagram-row>
                   <span class="text-sm font-extrabold text-ink">LinkedIn Verification</span>
                   <span class="text-xs font-semibold text-muted">5-sec check</span>
                 </div>
 
-                <span class="mx-auto h-5 w-px bg-ink/20" aria-hidden="true"></span>
+                <span class="mx-auto h-5 w-px origin-top bg-ink/20" aria-hidden="true" data-diagram-link></span>
                 <span></span>
 
-                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">3</span>
-                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper" data-diagram-node>3</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5" data-diagram-row>
                   <span class="text-sm font-extrabold text-ink">Demo Reel &amp; One-Sheet</span>
                   <span class="text-xs font-semibold text-muted">Committee proof</span>
                 </div>
 
-                <span class="mx-auto h-5 w-px bg-stage-text/50" aria-hidden="true"></span>
+                <span class="mx-auto h-5 w-px origin-top bg-stage-text/50" aria-hidden="true" data-diagram-link></span>
                 <span></span>
 
-                <span class="grid size-8 place-items-center rounded-full bg-stage-text text-xs font-extrabold text-paper">4</span>
-                <div class="flex items-center justify-between">
+                <span class="grid size-8 place-items-center rounded-full bg-stage-text text-xs font-extrabold text-paper" data-diagram-node>4</span>
+                <div class="flex items-center justify-between" data-diagram-row>
                   <span class="text-sm font-extrabold text-ink">Speaker Site &amp; Booking</span>
                   <span class="text-xs font-bold text-stage-text">Stage closed</span>
                 </div>
@@ -418,11 +424,11 @@ const conversionChain = [
             </div>
           </div>
 
-          <!-- Columna derecha: índice editorial con filetes (sin 3 cards repetitivas) -->
+          <!-- Columna derecha: índice editorial con filetes -->
           <div class="lg:col-span-7">
             <ol class="divide-y divide-ink/14 border-t border-b border-ink/14">
               {conversionChain.map((row) => (
-                <li class="group py-7 transition-colors sm:py-8">
+                <li class="group py-7 transition-colors sm:py-8" data-hub-chain-row>
                   <a
                     href={row.href}
                     class="grid gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:items-start sm:gap-6"
@@ -468,13 +474,13 @@ const conversionChain = [
           >
             Questions about our speaker services
           </h2>
-          <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+          <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink" data-faq-lead>
             How our four services fit together, how standalone builds work, and where to compare monthly retainers.
           </p>
         </div>
 
         <div class="relative">
-          <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+          <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true" data-faq-line></span>
           {faqs.map((f) => (
             <details class="group relative border-b border-paper/10">
               <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
@@ -483,52 +489,156 @@ const conversionChain = [
                   aria-hidden="true"
                   class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
                 >
-                  <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" data-faq-icon />
                 </span>
               </summary>
-              <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              <div class="overflow-hidden" data-faq-answer>
+                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              </div>
             </details>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- 6. FINAL CTA (bg-stage) -->
-    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="hub-cta-title">
-      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
-        <h2
-          id="hub-cta-title"
-          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
-        >
-          Ready for your next paid stage?
-        </h2>
-        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
-          Tell us your niche and recent talks on a 20-minute call, and we will show you the events we would pitch first.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
-          <a
-            href="/pricing/"
-            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
-          >
-            <span>See pricing</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <!-- 5. FINAL CTA (bg-stage) -->
+    <StageFinalCta
+      headingId="hub-cta-title"
+      title="Ready for your next paid stage?"
+      description="Tell us your niche and recent talks on a 20-minute call, and we will show you the events we would pitch first."
+      primaryLabel="Book a strategy call"
+      secondaryLabel="See pricing"
+      secondaryHref="/pricing/"
+    />
   </div>
 </MainLayout>
 
 <script>
-  function initHubVideos() {
-    const videos = document.querySelectorAll<HTMLVideoElement>("[data-hub-video]");
-    if (!videos.length) return;
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { wireFaqSection, animateFaqEntrance } from "../../lib/gsap-sections";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
+  let io: IntersectionObserver | null = null;
+  let cleanupFaq: (() => void) | null = null;
+
+  function initServicesHub() {
+    mm?.revert();
+    mm = null;
+    io?.disconnect();
+    io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
+
+    const root = document.querySelector<HTMLElement>("[data-services-hub-root]");
+    if (!root) return;
+
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    videos.forEach((v) => {
-      if (reduce) v.pause();
-      else v.play().catch(() => {});
+    const videos = root.querySelectorAll<HTMLVideoElement>("[data-hub-video]");
+    if (videos.length && !reduce) {
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const v = e.target as HTMLVideoElement;
+            if (e.isIntersecting) v.play().catch(() => {});
+            else v.pause();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      videos.forEach((v) => io!.observe(v));
+    }
+
+    const faqSec = root.querySelector<HTMLElement>("[data-hub-faq]");
+    if (faqSec) cleanupFaq = wireFaqSection(faqSec);
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        // 1. Alternating Editorial Chapters + vertical clip-path wipe on media
+        root.querySelectorAll<HTMLElement>("[data-hub-chapter]").forEach((chapter) => {
+          const isEven = chapter.dataset.hubChapter === "left";
+          const copy = chapter.querySelector<HTMLElement>("[data-hub-copy]");
+          const media = chapter.querySelector<HTMLElement>("[data-hub-media]");
+          const bullets = chapter.querySelectorAll<HTMLElement>("[data-hub-bullet]");
+
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: chapter, start: "top 80%", once: true },
+            defaults: { ease: "expo.out" },
+          });
+
+          if (copy) {
+            tl.from(
+              copy,
+              { x: isEven ? -28 : 28, autoAlpha: 0, duration: 0.85, clearProps: "transform,opacity,visibility" },
+              0,
+            );
+          }
+          if (bullets.length) {
+            tl.from(
+              bullets,
+              { y: 12, autoAlpha: 0, duration: 0.55, stagger: 0.05, clearProps: "transform,opacity,visibility" },
+              0.2,
+            );
+          }
+          if (media) {
+            tl.fromTo(
+              media,
+              { clipPath: "inset(10% 0% 0% 0%)", y: 18, autoAlpha: 0 },
+              { clipPath: "inset(0% 0% 0% 0%)", y: 0, autoAlpha: 1, duration: 0.95, clearProps: "clipPath,transform,opacity,visibility" },
+              0.08,
+            );
+          }
+        });
+
+        // 2. System Diagram Build-up + Ledger Chain Sweep
+        const systemSec = root.querySelector<HTMLElement>("[data-hub-system]");
+        if (systemSec) {
+          const diagram = systemSec.querySelector<HTMLElement>("[data-hub-diagram]");
+          const nodes = systemSec.querySelectorAll<HTMLElement>("[data-diagram-node]");
+          const links = systemSec.querySelectorAll<HTMLElement>("[data-diagram-link]");
+          const dRows = systemSec.querySelectorAll<HTMLElement>("[data-diagram-row]");
+          const chainRows = systemSec.querySelectorAll<HTMLElement>("[data-hub-chain-row]");
+
+          if (diagram) {
+            const dTl = gsap.timeline({
+              scrollTrigger: { trigger: diagram, start: "top 82%", once: true },
+              defaults: { ease: "power3.out" },
+            });
+            dTl.from(nodes, { scale: 0.72, autoAlpha: 0, duration: 0.55, stagger: 0.11, ease: "back.out(1.9)", clearProps: "transform,opacity,visibility" }, 0)
+              .from(dRows, { x: 16, autoAlpha: 0, duration: 0.55, stagger: 0.11, clearProps: "transform,opacity,visibility" }, 0.05)
+              .from(links, { scaleY: 0, duration: 0.45, stagger: 0.11, ease: "power2.inOut", clearProps: "transform" }, 0.12);
+          }
+
+          if (chainRows.length) {
+            gsap.from(chainRows, {
+              x: 26,
+              autoAlpha: 0,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: "expo.out",
+              clearProps: "transform,opacity,visibility",
+              scrollTrigger: { trigger: chainRows[0], start: "top 82%", once: true },
+            });
+          }
+        }
+
+        if (faqSec) animateFaqEntrance(faqSec);
+      }, root);
+      return () => ctx.revert();
     });
   }
 
-  document.addEventListener("astro:page-load", initHubVideos);
+  initServicesHub();
+  document.addEventListener("astro:page-load", initServicesHub);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    io?.disconnect();
+    io = null;
+    cleanupFaq?.();
+    cleanupFaq = null;
+  });
 </script>

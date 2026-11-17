@@ -2,6 +2,7 @@
 import MainHead from "../components/MainHead.astro";
 import Nav from "../components/Nav.astro";
 import MainFooter from "../components/MainFooter.astro";
+import CookieConsent from "../components/CookieConsent.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -32,6 +33,7 @@ const { title, description, canonical, ogType, noindex } = Astro.props;
             <slot />
         </main>
         <MainFooter />
+        <CookieConsent transition:persist="cookie-consent" />
 
 	<script>
         import { gsap } from "gsap";

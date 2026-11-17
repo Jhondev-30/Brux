@@ -1,0 +1,218 @@
+---
+/**
+ * Cookie Consent + Google Analytics 4 (Consent Mode v2).
+ *
+ * - Default consent stays "denied" until the visitor explicitly clicks Accept.
+ * - Stores user preference in the `brux_consent` first-party cookie (`SameSite=Lax`)
+ *   and `localStorage` fallback so Astro ClientRouter transitions stay seamless.
+ * - Loads GA4 lazily only when consent is "granted" and `PUBLIC_GA_MEASUREMENT_ID` is set.
+ * - Tracks `page_view` across Astro view transitions plus conversion clicks
+ *   on strategy call links (`book_call_click`) and pricing links (`view_pricing_click`).
+ */
+const gaId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? "").trim();
+---
+
+<aside
+  id="cookie-consent"
+  role="region"
+  aria-label="Cookie consent"
+  data-cookie-banner
+  data-ga-id={gaId}
+  hidden
+  class="fixed right-4 bottom-4 left-4 z-50 rounded-[14px] border border-paper/16 bg-ink-raised/96 p-5 text-paper shadow-[0_24px_48px_-14px_rgba(0,0,0,0.85)] backdrop-blur-md sm:right-6 sm:bottom-6 sm:left-auto sm:w-full sm:max-w-[26rem]"
+>
+  <p class="text-sm font-extrabold tracking-[-0.01em] text-paper">
+    Cookies &amp; site analytics
+  </p>
+  <p class="mt-1.5 text-xs leading-relaxed text-pretty text-muted-on-ink">
+    We use an essential cookie to save your choice and optional analytics cookies to understand which pages help speakers book strategy calls. No ad tracking.
+  </p>
+  <div class="mt-4 flex flex-wrap items-center justify-end gap-2.5">
+    <button
+      type="button"
+      data-cookie-decline
+      class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[3px] border border-paper/18 px-4 text-xs font-semibold text-paper/90 transition-colors duration-150 hover:border-paper/35 hover:bg-paper/8 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage"
+    >
+      Decline
+    </button>
+    <button
+      type="button"
+      data-cookie-accept
+      class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[3px] bg-stage px-5 text-xs font-semibold text-paper transition-colors duration-150 hover:bg-stage-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+    >
+      Accept analytics
+    </button>
+  </div>
+</aside>
+
+<script>
+  type ConsentState = "granted" | "denied";
+
+  declare global {
+    interface Window {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+      __bruxGaLoaded?: boolean;
+      __bruxAnalyticsBound?: boolean;
+    }
+  }
+
+  const COOKIE_NAME = "brux_consent";
+  const STORAGE_KEY = "brux-consent";
+  const MAX_AGE_SEC = 60 * 60 * 24 * 180; // 180 days
+
+  function readConsent(): ConsentState | null {
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=(granted|denied)(?:;|$)`));
+    if (match?.[1] === "granted" || match?.[1] === "denied") return match[1];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "granted" || stored === "denied") return stored;
+    } catch {
+      // Ignore storage access errors in restricted browsing modes
+    }
+    return null;
+  }
+
+  function writeConsent(value: ConsentState) {
+    const secure = location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${COOKIE_NAME}=${value}; Path=/; Max-Age=${MAX_AGE_SEC}; SameSite=Lax${secure}`;
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      // Ignore storage errors
+    }
+  }
+
+  function clearGaCookies() {
+    const domain = location.hostname.replace(/^www\./, "");
+    document.cookie
+      .split(";")
+      .map((c) => c.trim().split("=")[0])
+      .filter((name) => name === "_ga" || name.startsWith("_ga_") || name === "_gid" || name === "_gat")
+      .forEach((name) => {
+        document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`;
+        document.cookie = `${name}=; Path=/; Domain=.${domain}; Max-Age=0; SameSite=Lax`;
+      });
+  }
+
+  function ensureGtag(gaId: string) {
+    if (!gaId) return;
+    window.dataLayer = window.dataLayer || [];
+    if (!window.gtag) {
+      window.gtag = function () {
+        // eslint-disable-next-line prefer-rest-params
+        window.dataLayer?.push(arguments);
+      };
+    }
+
+    if (!window.__bruxGaLoaded) {
+      window.__bruxGaLoaded = true;
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`;
+      document.head.appendChild(s);
+
+      window.gtag("js", new Date());
+      window.gtag("config", gaId, {
+        anonymize_ip: true,
+        send_page_view: false,
+      });
+    }
+  }
+
+  function trackPageView(gaId: string) {
+    if (!gaId || readConsent() !== "granted" || !window.gtag) return;
+    window.gtag("event", "page_view", {
+      page_location: location.href,
+      page_path: location.pathname + location.search,
+      page_title: document.title,
+    });
+  }
+
+  function applyConsent(state: ConsentState, gaId: string, sendInitialView: boolean) {
+    window.dataLayer = window.dataLayer || [];
+    if (window.gtag) {
+      window.gtag("consent", "update", {
+        analytics_storage: state,
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+      });
+    }
+
+    if (state === "granted" && gaId) {
+      ensureGtag(gaId);
+      if (sendInitialView) trackPageView(gaId);
+    } else if (state === "denied") {
+      clearGaCookies();
+    }
+  }
+
+  function syncCookieBanner() {
+    const banner = document.querySelector<HTMLElement>("[data-cookie-banner]");
+    if (!banner) return;
+    const gaId = (banner.dataset.gaId ?? "").trim();
+    const saved = readConsent();
+
+    if (saved) {
+      banner.hidden = true;
+      if (saved === "granted" && gaId) {
+        applyConsent("granted", gaId, true);
+      }
+    } else {
+      banner.hidden = false;
+    }
+
+    if (banner.dataset.bound !== "1") {
+      banner.dataset.bound = "1";
+
+      banner.querySelector("[data-cookie-accept]")?.addEventListener("click", () => {
+        writeConsent("granted");
+        banner.hidden = true;
+        applyConsent("granted", gaId, true);
+      });
+
+      banner.querySelector("[data-cookie-decline]")?.addEventListener("click", () => {
+        writeConsent("denied");
+        banner.hidden = true;
+        applyConsent("denied", gaId, false);
+      });
+    }
+
+    if (!window.__bruxAnalyticsBound) {
+      window.__bruxAnalyticsBound = true;
+
+      document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+
+        // Reopen preferences from footer button
+        if (target.closest("[data-cookie-open]")) {
+          const b = document.querySelector<HTMLElement>("[data-cookie-banner]");
+          if (b) {
+            b.hidden = false;
+            b.querySelector<HTMLButtonElement>("[data-cookie-accept]")?.focus();
+          }
+          return;
+        }
+
+        const link = target.closest<HTMLAnchorElement>("a[href]");
+        if (!link || readConsent() !== "granted" || !window.gtag || !gaId) return;
+
+        const href = link.getAttribute("href") ?? "";
+        if (href.includes("calendar.app.google")) {
+          window.gtag("event", "book_call_click", {
+            page_path: location.pathname,
+            cta_text: (link.textContent ?? "").trim().slice(0, 60),
+          });
+        } else if (href === "/pricing/" || href.startsWith("/pricing/#")) {
+          window.gtag("event", "view_pricing_click", {
+            page_path: location.pathname,
+          });
+        }
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", syncCookieBanner);
+</script>
