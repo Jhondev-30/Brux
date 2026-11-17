@@ -2,9 +2,8 @@
 import { getCollection, render } from "astro:content";
 import { ArrowLeft } from "lucide";
 import MorphIcon from "morphicons/astro";
-import Button from "../../components/ui/Button.astro";
-import { bookingUrl } from "../../data/site";
 import MainLayout from "../../layouts/MainLayout.astro";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -67,60 +66,72 @@ const jsonLd = {
         </span>
         <span>All articles</span>
       </a>
-      <h1 class="mt-8 text-[clamp(2.25rem,1.6rem+2.8vw,3.75rem)] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance text-paper">
+      <h1 class="mt-8 text-[clamp(2.25rem,1.6rem+2.8vw,3.75rem)] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance text-paper" data-post-title>
         {d.title}
       </h1>
-      <p class="mt-6 text-muted-on-ink">
+      <p class="mt-6 text-muted-on-ink" data-post-meta>
         By {d.authorUrl ? (
           <a href={d.authorUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline-offset-4 hover:underline">{d.author}</a>
         ) : (
           <span class="font-semibold text-paper">{d.author}</span>
         )}, co-founder of Brux · <time datetime={d.pubDate.toISOString()}>{fmt(d.pubDate)}</time>
       </p>
-      <div class="mt-10 h-px bg-paper/10" aria-hidden="true"></div>
+      <div class="mt-10 h-px origin-left bg-paper/10" aria-hidden="true" data-post-rule></div>
     </header>
 
     <!-- La portada repite el título, así que aquí no se muestra: va en el índice del blog y en el schema -->
     <div
       class="mx-auto mt-12 max-w-[46rem] px-4 text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-[1.75] text-paper/88 sm:px-8 [&_a]:text-paper [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-[2.4em] [&_h2]:mb-[0.8em] [&_h2]:text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] [&_h2]:leading-[1.15] [&_h2]:font-extrabold [&_h2]:tracking-[-0.02em] [&_h2]:text-paper [&_p+p]:mt-[1.4em] [&_p:last-child]:font-semibold [&_p:last-child]:text-paper"
+      data-post-body
     >
       <Content />
     </div>
 
-    <footer class="mx-auto mt-16 max-w-[46rem] px-4 sm:px-8">
-      {d.linkedinUrl && (
+    {d.linkedinUrl && (
+      <footer class="mx-auto mt-16 max-w-[46rem] px-4 sm:px-8">
         <p class="border-t border-paper/10 pt-8 text-muted-on-ink">
           First published in our LinkedIn newsletter,{" "}
           <a href={d.linkedinUrl} target="_blank" rel="noopener" class="font-semibold text-paper underline decoration-paper/30 underline-offset-4 hover:decoration-paper">
             How Paid Keynotes Get Booked
           </a>.
         </p>
-      )}
-
-      <div class="mt-12 rounded-md bg-ink-raised p-7 sm:p-10">
-        <h2 class="text-[clamp(1.5rem,1.25rem+1vw,2.125rem)] leading-tight font-extrabold tracking-[-0.02em] text-balance text-paper">
-          Want us to pitch you to organizers directly?
-        </h2>
-        <p class="mt-4 max-w-[34rem] leading-relaxed text-muted-on-ink">
-          Every month we write to the organizers who book speakers in your niche. Tell us your topic on a short call.
-        </p>
-        <Button href={bookingUrl} class="mt-8">Book a call</Button>
-      </div>
-    </footer>
+      </footer>
+    )}
   </article>
+
+  <!-- CLOSING CTA (bg-stage) -->
+  <StageFinalCta
+    headingId="post-cta-title"
+    title="Want us to pitch you to organizers directly?"
+    description="Every month we write to the organizers who book speakers in your niche. Tell us your topic on a short call."
+    primaryLabel="Book a call"
+    secondaryLabel="See all articles"
+    secondaryHref="/blog/"
+  />
 </MainLayout>
 
 <script>
   import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
   import { ArrowLeft, ChevronLeft, type IconNode } from "lucide";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
   let cleanup: (() => void) | null = null;
+  let mm: gsap.MatchMedia | null = null;
 
   function initBlogPost() {
+    mm?.revert();
+    mm = null;
+    cleanup?.();
+    cleanup = null;
+
+    const article = document.querySelector<HTMLElement>("[data-blog-post]");
     const back = document.querySelector<HTMLElement>("[data-blog-back]");
-    if (!back) return;
+    if (!article || !back) return;
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -144,10 +155,54 @@ const jsonLd = {
     back.addEventListener("blur", onLeave, { signal });
 
     cleanup = () => controller.abort();
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const title = article.querySelector<HTMLElement>("[data-post-title]");
+        const meta = article.querySelector<HTMLElement>("[data-post-meta]");
+        const rule = article.querySelector<HTMLElement>("[data-post-rule]");
+        const body = article.querySelector<HTMLElement>("[data-post-body]");
+
+        if (title) {
+          SplitText.create(title, {
+            type: "words",
+            mask: "words",
+            autoSplit: true,
+            onSplit: (self) => {
+              const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+              tl.from(back, { x: -14, autoAlpha: 0, duration: 0.55, clearProps: "transform,opacity,visibility" }, 0)
+                .from(self.words, { yPercent: 112, rotation: 5, transformOrigin: "0% 100%", duration: 0.9, stagger: 0.04 }, 0.06);
+              if (meta) tl.from(meta, { y: 12, autoAlpha: 0, duration: 0.7, clearProps: "transform,opacity,visibility" }, 0.25);
+              if (rule) tl.from(rule, { scaleX: 0, duration: 0.85, ease: "power3.inOut", clearProps: "transform" }, 0.28);
+              return tl;
+            },
+          });
+        }
+
+        if (body) {
+          body.querySelectorAll<HTMLElement>("h2").forEach((h2) => {
+            gsap.from(h2, {
+              x: -18,
+              autoAlpha: 0,
+              duration: 0.72,
+              ease: "expo.out",
+              clearProps: "transform,opacity,visibility",
+              scrollTrigger: { trigger: h2, start: "top 86%", once: true },
+            });
+          });
+        }
+      }, article);
+
+      return () => ctx.revert();
+    });
   }
 
+  initBlogPost();
   document.addEventListener("astro:page-load", initBlogPost);
   document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
     cleanup?.();
     cleanup = null;
   });

@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import { ArrowRight } from "lucide";
 import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import StageFinalCta from "../../components/ui/StageFinalCta.astro";
 
 // Artículos de src/content/blog/, del más reciente al más antiguo.
 // El más reciente va destacado a todo el ancho; los demás, en dos columnas debajo.
@@ -112,13 +113,14 @@ const blogCollectionSchema = {
       )}
 
       {rest.length > 0 && (
-        <ul class="mt-20 grid gap-12 border-t border-paper/10 pt-12 md:grid-cols-2">
+        <ul class="mt-20 grid gap-12 border-t border-paper/10 pt-12 md:grid-cols-2" data-blog-rest>
           {rest.map((post) => (
             <li>
               <a
                 href={`/blog/${post.id}/`}
                 class="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
                 data-blog-card
+                data-blog-rest-card
               >
                 <div class="overflow-hidden rounded-md ring-1 ring-paper/10" data-blog-media>
                   <Image
@@ -144,14 +146,25 @@ const blogCollectionSchema = {
       )}
     </div>
   </section>
+
+  <!-- CLOSING CTA (bg-stage) -->
+  <StageFinalCta
+    headingId="blog-cta-title"
+    title="Ready to pitch paid stages directly?"
+    description="Tell us your keynote topics and recent talks on a 20-minute call, and we will map the organizers in your niche."
+    primaryLabel="Book a strategy call"
+    secondaryLabel="See plans & pricing"
+    secondaryHref="/pricing/"
+  />
 </MainLayout>
 
 <script>
   import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { SplitText } from "gsap/SplitText";
   import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
 
-  gsap.registerPlugin(SplitText);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
@@ -201,7 +214,8 @@ const blogCollectionSchema = {
       const ctx = gsap.context(() => {
         const title = root.querySelector<HTMLElement>("[data-blog-title]");
         const lead = root.querySelector<HTMLElement>("[data-blog-lead]");
-        const cards = root.querySelectorAll<HTMLElement>("[data-blog-card]");
+        const cards = root.querySelectorAll<HTMLElement>("[data-blog-card]:not([data-blog-rest-card])");
+        const restCards = root.querySelectorAll<HTMLElement>("[data-blog-rest-card]");
 
         if (title) {
           SplitText.create(title, {
@@ -223,6 +237,18 @@ const blogCollectionSchema = {
               }
               return tl;
             },
+          });
+        }
+
+        if (restCards.length) {
+          gsap.from(restCards, {
+            y: 28,
+            autoAlpha: 0,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: "expo.out",
+            clearProps: "transform,opacity,visibility",
+            scrollTrigger: { trigger: restCards[0], start: "top 84%", once: true },
           });
         }
       }, root);
