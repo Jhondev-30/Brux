@@ -1,0 +1,8 @@
+# 301 redirects from legacy Brux URLs (Google Search Console cleanup)
+/audit /services 301
+/apply /pricing 301
+/terms /pricing 301
+/privacy /about 301
+/blog/sample-post /blog 301
+/blog/keynote-speaker-marketing /blog 301
+/blog/keynote-speaker-marketing.html /blog 301
