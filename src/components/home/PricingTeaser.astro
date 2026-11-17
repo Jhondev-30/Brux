@@ -304,6 +304,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { SplitText } from "gsap/SplitText";
   import { ArrowRight, ArrowUpRight, Check, Plus, type IconNode } from "lucide";
+  import { deferSectionInit } from "../../lib/defer-section";
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -326,6 +327,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 
   let mm: gsap.MatchMedia | null = null;
   let cleanupInteractions: (() => void) | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   function initPlans() {
     const root = document.querySelector<HTMLElement>("[data-plans]");
@@ -532,8 +534,13 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     };
   }
 
-  document.addEventListener("astro:page-load", initPlans);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-plans]", initPlans);
+  });
   document.addEventListener("astro:before-swap", () => {
+    cancelDefer?.();
+    cancelDefer = null;
     mm?.revert();
     mm = null;
     cleanupInteractions?.();

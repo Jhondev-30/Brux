@@ -200,6 +200,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { ArrowUpRight, type IconNode } from "lucide";
+  import { deferSectionInit } from "../../lib/defer-section";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -234,6 +235,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   let mm: gsap.MatchMedia | null = null;
   let cleanupInteractions: (() => void) | null = null;
   let cleanupUniverse: (() => void) | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   function initUniverse(root: HTMLElement) {
     const canvas = root.querySelector<HTMLCanvasElement>("[data-team-universe]");
@@ -780,8 +782,13 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     cleanupInteractions = () => controller.abort();
   }
 
-  document.addEventListener("astro:page-load", initTeam);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-team]", initTeam);
+  });
   document.addEventListener("astro:before-swap", () => {
+    cancelDefer?.();
+    cancelDefer = null;
     mm?.revert();
     mm = null;
     cleanupInteractions?.();

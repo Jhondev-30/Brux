@@ -159,6 +159,7 @@ const reelSchema = {
   import { ArrowRight, ArrowUpRight, Clapperboard, Globe, LayoutTemplate, Play, type IconNode } from "lucide";
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
+  import { deferSectionInit } from "../../lib/defer-section";
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
@@ -174,6 +175,7 @@ const reelSchema = {
   const EASE = "expo.out";
   let mm: gsap.MatchMedia | null = null;
   let cleanupInteractions: (() => void) | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   function initWork() {
     const root = document.querySelector<HTMLElement>("[data-work]");
@@ -323,8 +325,13 @@ const reelSchema = {
     });
   }
 
-  document.addEventListener("astro:page-load", initWork);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-work]", initWork);
+  });
   document.addEventListener("astro:before-swap", () => {
+    cancelDefer?.();
+    cancelDefer = null;
     mm?.revert();
     mm = null;
     cleanupInteractions?.();

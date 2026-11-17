@@ -60,6 +60,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { SplitText } from "gsap/SplitText";
   import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+  import { deferSectionInit } from "../../lib/defer-section";
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -73,6 +74,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   */
   let mm: gsap.MatchMedia | null = null;
   let cleanupBtn: (() => void) | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   function initCta() {
     const root = document.querySelector<HTMLElement>("[data-cta]");
@@ -185,8 +187,13 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     });
   }
 
-  document.addEventListener("astro:page-load", initCta);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-cta]", initCta);
+  });
   document.addEventListener("astro:before-swap", () => {
+    cancelDefer?.();
+    cancelDefer = null;
     mm?.revert();
     mm = null;
     cleanupBtn?.();

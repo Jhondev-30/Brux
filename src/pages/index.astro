@@ -17,6 +17,9 @@ import FinalCta from "../components/home/FinalCta.astro";
 	description="Brux pitches keynote speakers to niche events monthly and builds LinkedIn authority. Plans from $500/mo with 0% commission on speaking fees."
 	canonical="/"
 >
+	<Fragment slot="head">
+		<link rel="preload" as="image" href="/videos/brux-curtain-poster.webp" fetchpriority="high" />
+	</Fragment>
 	<!-- 1. La respuesta corta: qué hacemos y para quién (h1) -->
 	<MainHero />
 

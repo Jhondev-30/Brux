@@ -108,7 +108,7 @@ const navBtnClass =
               muted
               playsinline
               disablepictureinpicture
-              preload={i === 0 ? "auto" : "metadata"}
+              preload="none"
               poster={`${s.video}-poster.webp`}
               aria-label={s.label}
             >
@@ -306,6 +306,7 @@ const navBtnClass =
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { deferSectionInit } from "../../lib/defer-section";
   import {
     ArrowLeft,
     ArrowRight,
@@ -338,6 +339,7 @@ const navBtnClass =
   const SETTLE_MS = 700; // tras mostrar un paso, un empujón no lo cambia hasta pasado este tiempo
 
   let teardown: (() => void) | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   const setNavHidden = (hidden: boolean) => {
     const root = document.documentElement;
@@ -355,6 +357,9 @@ const navBtnClass =
     const card = $<HTMLElement>("[data-how-card]");
     const slides = $$<HTMLElement>("[data-how-slide]");
     const videos = slides.map((s) => s.querySelector("video")!);
+    videos.forEach((v, i) => {
+      v.preload = i === 0 ? "auto" : "metadata";
+    });
     const durations = slides.map((s) => Number(s.dataset.duration) || 12);
     const stepsEls = $$<HTMLElement>("[data-how-step]");
     const headWords = $$<HTMLElement>("[data-head-word]");
@@ -882,10 +887,15 @@ const navBtnClass =
   }
 
   function destroyHow() {
+    cancelDefer?.();
+    cancelDefer = null;
     teardown?.();
     teardown = null;
   }
 
-  document.addEventListener("astro:page-load", initHow);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-how]", initHow);
+  });
   document.addEventListener("astro:before-swap", destroyHow);
 </script>

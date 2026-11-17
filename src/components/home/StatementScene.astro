@@ -82,10 +82,12 @@ const maskClass = "inline-block overflow-clip pt-[0.06em] pb-[0.14em] -mt-[0.06e
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { deferSectionInit } from "../../lib/defer-section";
 
   gsap.registerPlugin(ScrollTrigger);
 
   let mm: gsap.MatchMedia | null = null;
+  let cancelDefer: (() => void) | null = null;
 
   function initStatement() {
     const section = document.querySelector<HTMLElement>("[data-statement]");
@@ -156,11 +158,16 @@ const maskClass = "inline-block overflow-clip pt-[0.06em] pb-[0.14em] -mt-[0.06e
   }
 
   function destroyStatement() {
+    cancelDefer?.();
+    cancelDefer = null;
     mm?.revert();
     mm = null;
     document.querySelector("[data-statement]")?.classList.remove("is-live");
   }
 
-  document.addEventListener("astro:page-load", initStatement);
+  document.addEventListener("astro:page-load", () => {
+    cancelDefer?.();
+    cancelDefer = deferSectionInit("[data-statement]", initStatement);
+  });
   document.addEventListener("astro:before-swap", destroyStatement);
 </script>

@@ -76,7 +76,7 @@ import CtaButton from "./ui/CtaButton.astro";
     muted
     loop
     playsinline
-    preload="auto"
+    preload="none"
     poster="/videos/brux-stage-poster.webp"
     aria-hidden="true"
   >
@@ -196,7 +196,10 @@ import CtaButton from "./ui/CtaButton.astro";
       return;
     }
 
-    const playLoop = () => loop?.play().catch(() => {});
+    const playLoop = () => {
+      if (loop && loop.preload !== "auto") loop.preload = "auto";
+      loop?.play().catch(() => {});
+    };
 
     ctx = gsap.context(() => {
       const heroIntro = () =>
