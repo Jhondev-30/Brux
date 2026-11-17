@@ -70,7 +70,7 @@ const navBtnClass =
       ))}
     </h2>
     <p class="mx-auto mt-5 max-w-[38rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.3125rem)] leading-normal text-pretty" data-head-lead>
-      Every month we pitch you directly to the organizers who book speakers in your niche.
+      Every month our speaker booking agency pitches you directly to the organizers who book keynote speakers in your niche.
     </p>
   </header>
 
@@ -173,26 +173,8 @@ const navBtnClass =
       </div>
     </div>
 
-    <!-- La línea: una onda regular a lo ancho; el trazo negro avanza con el vídeo de cada paso -->
-    <svg
-      class="mt-4 block h-11 w-full flex-none overflow-visible lg:mt-[clamp(1rem,3svh,2rem)] lg:h-14"
-      aria-hidden="true"
-      data-how-line
-    >
-      <path
-        data-how-trackline
-        class="stroke-ink/10 stroke-[6] [shape-rendering:geometricPrecision] [stroke-linecap:round] [stroke-linejoin:round] [vector-effect:non-scaling-stroke] lg:stroke-[7]"
-        fill="none"
-      />
-      <path
-        data-how-curve
-        class="stroke-ink stroke-[6] [shape-rendering:geometricPrecision] [stroke-linecap:round] [stroke-linejoin:round] [vector-effect:non-scaling-stroke] lg:stroke-[7]"
-        fill="none"
-      />
-    </svg>
-
     <!-- Los pasos se apilan en la misma celda: el bloque mide lo que mide el paso más largo -->
-    <ol class="mt-3 grid flex-none text-center lg:mt-[clamp(0.5rem,1.5svh,1rem)]" data-how-steps>
+    <ol class="mt-[4.5rem] grid flex-none text-center lg:mt-[calc(3.5rem+clamp(1.5rem,4.5svh,3rem))]" data-how-steps>
       {steps.map((s) => (
         <li class="col-start-1 row-start-1 flex flex-col justify-center" data-how-step>
           <h3
@@ -323,7 +305,6 @@ const navBtnClass =
 
 <script>
   import { gsap } from "gsap";
-  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import {
     ArrowLeft,
@@ -337,7 +318,7 @@ const navBtnClass =
     type IconNode,
   } from "lucide";
 
-  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+  gsap.registerPlugin(ScrollTrigger);
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
@@ -365,7 +346,7 @@ const navBtnClass =
   };
 
   function initHow() {
-    const section = document.querySelector<HTMLElement>("[data-how]");
+    const section = document.querySelector<HTMLElement>("[data-how]")!;
     if (!section) return;
 
     const $ = <T extends Element>(sel: string) => section.querySelector<T>(sel)!;
@@ -376,9 +357,6 @@ const navBtnClass =
     const videos = slides.map((s) => s.querySelector("video")!);
     const durations = slides.map((s) => Number(s.dataset.duration) || 12);
     const stepsEls = $$<HTMLElement>("[data-how-step]");
-    const svg = $<SVGSVGElement>("[data-how-line]");
-    const trackLine = svg.querySelector<SVGPathElement>("[data-how-trackline]")!;
-    const curve = svg.querySelector<SVGPathElement>("[data-how-curve]")!;
     const headWords = $$<HTMLElement>("[data-head-word]");
     const headLead = $$<HTMLElement>("[data-head-lead]");
     const prev = $<HTMLButtonElement>("[data-how-prev]");
@@ -447,35 +425,6 @@ const navBtnClass =
       let autoTween: gsap.core.Tween | null = null; // scroll que hace el script (avance automático, botones)
       let modeTween: gsap.core.Animation | null = null; // transición suave entre «Watch» y «See all steps»
       const done = new Array(n).fill(false);
-
-      // ---------- La línea: una onda regular (senoide) a lo ancho, con un paso en cada cresta ----------
-      const layoutCurve = () => {
-        const box = svg.getBoundingClientRect();
-        const w = Math.max(1, Math.round(box.width));
-        const h = Math.max(1, Math.round(box.height));
-        svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-        svg.setAttribute("width", String(w));
-        svg.setAttribute("height", String(h));
-        const padX = 8;
-        const mid = h / 2;
-        const amp = h * 0.3;
-        const half = (w - padX * 2) / n;
-        const q = (half / 2) * 0.3642;
-        let d = `M ${padX} ${mid}`;
-        for (let i = 0; i < n; i++) {
-          const x0 = padX + half * i;
-          const x1 = x0 + half;
-          const xm = x0 + half / 2;
-          const dir = i % 2 === 0 ? -1 : 1;
-          const peakY = mid + dir * amp;
-          d += ` C ${x0 + q} ${mid + dir * amp * 0.57}, ${xm - q} ${peakY}, ${xm} ${peakY}`;
-          d += ` C ${xm + q} ${peakY}, ${x1 - q} ${mid + dir * amp * 0.57}, ${x1} ${mid}`;
-        }
-        trackLine.setAttribute("d", d);
-        curve.setAttribute("d", d);
-      };
-      layoutCurve();
-      gsap.set(curve, { drawSVG: "0%" });
 
       // ---------- Texto: un paso nunca se monta sobre otro ----------
       const wordsOf = (i: number) => stepsEls[i].querySelectorAll<HTMLElement>("[data-how-word]");
@@ -670,7 +619,7 @@ const navBtnClass =
       const scrollToStep = (k: number) => {
         k = Math.max(0, Math.min(n - 1, k));
         anchor = k;
-        if (!pinST.enabled) return setStep(k);
+        if (!(pinST as any).enabled) return setStep(k);
         const y = Math.round(pinST.start + LEAD + stepPx() * k);
         autoTween?.kill();
         const proxy = { y: scrollY };
@@ -764,7 +713,7 @@ const navBtnClass =
         if (m === "list") {
           videos.forEach((v) => v.pause());
           pinST.disable();
-          section.classList.add("show-all");
+          section?.classList.add("show-all");
           setNavHidden(false);
           ScrollTrigger.refresh();
 
@@ -795,10 +744,9 @@ const navBtnClass =
           modeTween = tl;
         } else {
           gsap.set(allBox, { clearProps: "opacity,visibility,transform" });
-          section.classList.remove("show-all");
+          section?.classList.remove("show-all");
           pinST.enable();
           ScrollTrigger.refresh();
-          layoutCurve();
           const k = Math.max(0, current);
           current = -1;
           anchor = k;
@@ -874,7 +822,7 @@ const navBtnClass =
         { signal: ls },
       );
 
-      // ---------- Cada fotograma: avance, línea y barritas ----------
+      // ---------- Cada fotograma: avance y barritas ----------
       const tick = () => {
         if (mode !== "watch" || current < 0) return;
         const now = performance.now();
@@ -890,7 +838,6 @@ const navBtnClass =
           if (atEnd || stalled) finishCurrent();
           else if (v.paused && now - lastPlayTry > 1000) playCurrent();
         }
-        gsap.set(curve, { drawSVG: `0% ${((current + p) / n) * 100}%` });
         segFills.forEach((f, i) => {
           f.style.transform = `scaleX(${i < current ? 1 : i === current ? p : 0})`;
         });
@@ -908,12 +855,8 @@ const navBtnClass =
       );
       stageIO.observe(stage);
 
-      const onRefreshInit = () => layoutCurve();
-      ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
-
       return () => {
         live.abort();
-        ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
         gsap.ticker.remove(tick);
         stageIO.disconnect();
         cancelAuto();

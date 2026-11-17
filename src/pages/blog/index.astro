@@ -13,12 +13,45 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 const [latest, ...rest] = posts;
 
 const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+const blogTitle = "Paid Keynotes Blog for Keynote Speakers | Brux";
+const blogDescription =
+  "Learn how event organizers book keynote speakers, why calls for speakers fail, and how direct outreach and LinkedIn win paid stages.";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog/` },
+  ],
+};
+
+const blogCollectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "@id": `${siteUrl}/blog/#blog`,
+  url: `${siteUrl}/blog/`,
+  name: blogTitle,
+  description: blogDescription,
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  publisher: { "@id": `${siteUrl}/#organization` },
+  blogPost: posts.map((p) => ({
+    "@type": "BlogPosting",
+    headline: p.data.title,
+    url: `${siteUrl}/blog/${p.id}/`,
+    datePublished: p.data.pubDate.toISOString(),
+    author: { "@type": "Person", name: p.data.author },
+  })),
+};
 ---
 
-<MainLayout
-  title="How Paid Keynotes Get Booked: Blog for Keynote Speakers | Brux"
-  description="What event organizers ask for when we pitch keynote speakers, and what gets them booked. A new article every other week."
->
+<MainLayout title={blogTitle} description={blogDescription} canonical="/blog/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(blogCollectionSchema)} />
+  </Fragment>
   <section
     class="bg-ink pt-[max(9rem,calc(4.5rem+8svh))] pb-24 sm:pb-32"
     aria-labelledby="blog-title"
@@ -45,7 +78,7 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
           <div class="overflow-hidden rounded-md ring-1 ring-paper/10" data-blog-media>
             <Image
               src={latest.data.cover}
-              alt=""
+              alt={latest.data.title}
               widths={[640, 960, 1280]}
               sizes="(min-width: 1024px) 58vw, 100vw"
               loading="eager"
@@ -90,7 +123,7 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { year: "numeric", month:
                 <div class="overflow-hidden rounded-md ring-1 ring-paper/10" data-blog-media>
                   <Image
                     src={post.data.cover}
-                    alt=""
+                    alt={post.data.title}
                     widths={[640, 960]}
                     sizes="(min-width: 768px) 50vw, 100vw"
                     class="w-full will-change-transform"

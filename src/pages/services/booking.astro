@@ -1,52 +1,367 @@
 ---
+import { Image } from "astro:assets";
+import { Check as LucideCheck } from "@lucide/astro";
+import { Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import BookingHeroStage from "../../components/services/BookingHeroStage.astro";
+import Button from "../../components/ui/Button.astro";
+import CtaButton from "../../components/ui/CtaButton.astro";
 import { bookingUrl } from "../../data/site";
+import reportImg from "../../assets/plans/monthly-report.webp";
 
-// Datos del PDF de planes del 1 de noviembre de 2026
-const pitches = [
-  { plan: "Founder", value: "60" },
-  { plan: "Foundation", value: "60" },
-  { plan: "Growth", value: "110" },
-  { plan: "Complete", value: "160+" },
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "Keynote Speaker Booking & Organizer Outreach | Brux",
+  description:
+    "Targeted keynote speaker outreach pitching you directly to event planners every month. Full CRM visibility, custom pitch angles, and 0% commission.",
+  canonical: "/services/booking/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+    { "@type": "ListItem", position: 3, name: "Speaker Booking", item: `${siteUrl}/services/booking/` },
+  ],
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteUrl}/services/booking/#service`,
+  name: "Keynote Speaker Booking & Event Outreach",
+  serviceType: "Keynote Speaker Booking Agency",
+  provider: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+  },
+  url: `${siteUrl}/services/booking/`,
+  description:
+    "Brux manually researches and pitches keynote speakers directly to event organizers and corporate conference committees with full CRM visibility and 0% commission on speaking fees.",
+};
+
+const faqs = [
+  {
+    q: "How do you select which events and conferences to pitch?",
+    a: "We research events mapped to your industry, speaking topics, and audience outcomes. Every pitch goes to an industry association, corporate summit, or conference committee that books external speakers — never to generic call-for-speaker directories.",
+  },
+  {
+    q: "Do you take a percentage or commission on the speaking fee?",
+    a: "No. Traditional speaker bureaus take 20% to 30% of your speaking fee on every contract. Brux charges a flat monthly rate and takes 0% commission. You keep 100% of every dollar negotiated.",
+  },
+  {
+    q: "How do I track which organizers have been contacted?",
+    a: "Every client gets live access to our CRM. You see the company, event name, organizer contact, pitch date, follow-up stage, and incoming replies in real time.",
+  },
+  {
+    q: "Who handles contract terms and event dates?",
+    a: "We run the outreach, send your press kit and demo reel, follow up, and bring the organizer to the table. When an organizer asks for dates or a discovery call, we coordinate the introduction straight to your calendar so you finalize the fee directly.",
+  },
 ];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
+const steps = [
+  {
+    title: "We define your niche and target events",
+    text: "We agree on your keynote topics and the conferences, summits, and associations that pay for them. You approve the event categories before a single message goes out.",
+    video: "/videos/how/step-1",
+    label: "Animation: a speaker's niche connects only to matching events, and the speaker approves which ones to pitch.",
+  },
+  {
+    title: "We package your press kit and demo reel",
+    text: "Event committees want to hear how you command a room before they reply. Every pitch carries your press kit and a three-minute demo reel of your best moments on stage.",
+    video: "/videos/how/step-2",
+    label: "Animation: a press kit opens and Philip Chan's demo reel plays, then lands as an attachment in an email.",
+  },
+  {
+    title: "We pitch organizers directly every month",
+    text: "Our team writes and sends personal pitches directly to the conference chair or event director — by email and direct message — with timed follow-ups on every thread.",
+    video: "/videos/how/step-3",
+    label: "Animation: a personal note to an event organizer is sent by direct message and email.",
+  },
+  {
+    title: "We track replies in your CRM and keep your calendar",
+    text: "You see every organizer contacted in our shared CRM, plus calendar coordination, post-event follow-up for repeat bookings, and a monthly performance report.",
+    video: "/videos/how/step-4",
+    label: "Animation: organizers move through the CRM until keynotes land on the calendar, followed by the monthly report.",
+  },
+];
+
+const pad = (i: number) => String(i + 1).padStart(2, "0");
 ---
 
 <MainLayout
-  title="Speaker Booking Service: Pitches to Event Organizers | Brux"
-  description="We pitch you every month to the organizers of events in your niche, with press kit, CRM access and post-event follow-up. No commission on your fees."
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
 >
-  <section>
-    <h1>Speaker booking that goes after paid stages</h1>
-    <p>
-      We pitch you directly to the organizers who book speakers in your niche. No generic listings:
-      every pitch goes to an event that fits your topics.
-    </p>
-    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
-  </section>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-  <section>
-    <h2>Pitches to event organizers every month</h2>
-    <ul>
-      {pitches.map((p) => (
-        <li><strong>{p.value}</strong> pitches a month on the {p.plan} plan</li>
-      ))}
-    </ul>
-  </section>
+  <div data-booking-page-root>
+    <!-- 1. HERO (bg-ink) 3D Direct Pitch Stage Orbit + GSAP particles -->
+    <BookingHeroStage />
 
-  <section>
-    <h2>Included in every plan</h2>
-    <ul>
-      <li>Pitches to event organizers in your niche</li>
-      <li>Press kit and demo reel to back every pitch</li>
-      <li>Access to our CRM, with a record of every organizer we contact</li>
-      <li>Post-event follow-up and an organized calendar</li>
-      <li>A monthly report</li>
-    </ul>
-  </section>
+    <!-- 2. THE 4 OUTREACH STEPS WITH LIVE MOTION VIDEOS (bg-paper) -->
+    <section
+      id="process"
+      class="bg-paper py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="booking-steps-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-6 border-b border-ink/12 pb-10 lg:grid-cols-12 lg:items-end">
+          <h2
+            id="booking-steps-title"
+            class="lg:col-span-7 text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+          >
+            How our outreach engine books your calendar
+          </h2>
+          <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
+            No mass blast lists or unpaid call-for-speakers forms. Every step is built around how conference committees actually select paid keynotes.
+          </p>
+        </div>
 
-  <section>
-    <h2>Your fee is yours</h2>
-    <p>We take no commission on your speaking fees.</p>
-    <a href="/pricing/">See plans</a>
-  </section>
+        <ol class="divide-y divide-ink/12">
+          {steps.map((s, i) => (
+            <li class="grid grid-cols-[auto_1fr] items-start gap-x-4 gap-y-4 py-8 md:grid-cols-[3rem_minmax(0,22rem)_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[3.5rem_24rem_minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10 lg:py-10">
+              <span class="row-span-3 pt-1 text-base font-extrabold text-stage-text tabular-nums md:row-span-2 lg:row-auto">
+                {pad(i)}
+              </span>
+              <div class="aspect-video overflow-hidden rounded-[16px] bg-ink ring-1 ring-ink/10 md:row-span-2 lg:row-auto">
+                <video
+                  class="size-full object-cover"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  poster={`${s.video}-poster.webp`}
+                  aria-label={s.label}
+                  data-bp-thumb
+                >
+                  <source src={`${s.video}.webm`} type="video/webm" />
+                  <source src={`${s.video}.mp4`} type="video/mp4" />
+                </video>
+              </div>
+              <h3 class="text-xl leading-tight font-extrabold tracking-[-0.02em] text-balance text-ink md:col-start-3 md:self-end lg:self-center lg:text-2xl">
+                {s.title}
+              </h3>
+              <p class="leading-relaxed text-pretty text-ink/80 md:col-start-3 md:self-start lg:col-start-4 lg:self-center">
+                {s.text}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3. TRANSPARENT CRM & MONTHLY REPORT (bg-mist) -->
+    <section
+      class="bg-mist py-20 text-ink sm:py-28"
+      aria-labelledby="booking-crm-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+          <div class="lg:col-span-5">
+            <h2
+              id="booking-crm-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,2.75rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              You see every organizer we contact in real time
+            </h2>
+            <p class="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+              Most agencies hide behind vague monthly summaries. With Brux, you get direct access to your outreach CRM and a clear monthly report.
+            </p>
+
+            <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Every conference name, date, and decision-maker logged live</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Status of every thread: pitched, followed up, in conversation, or booked</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Post-event follow-ups to turn one stage into referrals and repeat invitations</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+            <Image
+              src={reportImg}
+              alt="Brux monthly report showing keynotes booked, organizer outreach and LinkedIn growth"
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1024px) 56vw, 94vw"
+              class="aspect-video w-full rounded-[14px] object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CLEAN PRICING REDIRECT BAND (bg-ink-raised) -->
+    <section
+      class="bg-ink-raised py-20 text-paper sm:py-24"
+      aria-labelledby="booking-pricing-redirect-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center">
+          <div class="max-w-[40rem]">
+            <h2
+              id="booking-pricing-redirect-title"
+              class="text-[clamp(1.75rem,1.35rem+1.6vw,2.75rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Pick the monthly pitch volume that fits your calendar
+            </h2>
+            <p class="mt-4 text-base leading-relaxed text-muted-on-ink sm:text-lg">
+              Every plan includes your press kit, demo reel, live CRM access, LinkedIn positioning, and 0% commission. Compare exact monthly pitch tiers on our Pricing page.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
+            <Button href="/blog/why-calls-for-speakers-dont-lead-to-paid-stages/" variant="secondary">Why direct pitches work</Button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ + SIBLING SERVICES (bg-ink) -->
+    <section
+      id="faq"
+      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      aria-labelledby="booking-faq-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+          <div>
+            <h2
+              id="booking-faq-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Questions about speaker booking
+            </h2>
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+              How we select events, track replies, and pair outreach with your LinkedIn and demo reel.
+            </p>
+
+            <div class="mt-10 space-y-4 border-t border-paper/10 pt-8">
+              <p class="text-sm font-bold text-paper">Paired with every booking engagement:</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a
+                  href="/services/linkedin/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">LinkedIn management →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">So organizers see an active authority profile when they look you up.</p>
+                </a>
+                <a
+                  href="/services/content/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker content &amp; reels →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Your demo reel and press kit attached to every pitch we send.</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            {faqs.map((f) => (
+              <details class="group relative border-b border-paper/10">
+                <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+                  <h3 class="text-pretty">{f.q}</h3>
+                  <span
+                    aria-hidden="true"
+                    class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
+                  >
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  </span>
+                </summary>
+                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FINAL CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="booking-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="booking-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Put your talk in front of the organizers who pay
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+          Book a 20-minute strategy call. We will review your speaking topics and show you the conferences we would pitch first.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See pricing</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </MainLayout>
+
+<script>
+  let io: IntersectionObserver | null = null;
+
+  function initBookingPage() {
+    io?.disconnect();
+    io = null;
+
+    const root = document.querySelector<HTMLElement>("[data-booking-page-root]");
+    if (!root) return;
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const thumbs = root.querySelectorAll<HTMLVideoElement>("[data-bp-thumb]");
+    if (thumbs.length && !reduce) {
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const v = e.target as HTMLVideoElement;
+            if (e.isIntersecting) v.play().catch(() => {});
+            else v.pause();
+          }
+        },
+        { threshold: 0.35 },
+      );
+      thumbs.forEach((v) => io!.observe(v));
+    }
+  }
+
+  document.addEventListener("astro:page-load", initBookingPage);
+  document.addEventListener("astro:before-swap", () => {
+    io?.disconnect();
+    io = null;
+  });
+</script>

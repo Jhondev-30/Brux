@@ -1,0 +1,748 @@
+---
+import { Award, Compass, ShieldCheck } from "@lucide/astro";
+import Button from "../ui/Button.astro";
+import CtaButton from "../ui/CtaButton.astro";
+import { bookingUrl } from "../../data/site";
+
+const words = (text: string) => text.trim().split(/\s+/);
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.04em] -mt-[0.06em] -mb-[0.14em] -mx-[0.04em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  class="about-hero relative isolate overflow-hidden bg-ink pt-[max(8.5rem,calc(4.5rem+6svh))] pb-20 text-paper sm:pb-24 lg:pb-28"
+  aria-labelledby="about-hero-title"
+  data-about-hero
+>
+  <!-- Ambient stage spotlight glow -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-20"
+    style="background:
+      radial-gradient(ellipse 56% 64% at 74% 48%, rgba(229, 12, 19, 0.16) 0%, rgba(229, 12, 19, 0.05) 42%, transparent 76%),
+      radial-gradient(ellipse 38% 42% at 22% 76%, rgba(229, 12, 19, 0.06) 0%, transparent 70%);"
+  ></div>
+
+  <canvas
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-10 size-full"
+    data-ah-canvas
+  ></canvas>
+
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <nav aria-label="Breadcrumb" class="text-sm text-muted-on-ink" data-ah-crumb>
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a
+            href="/"
+            class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Home
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-paper/35">/</li>
+        <li aria-current="page" class="font-semibold text-paper">About</li>
+      </ol>
+    </nav>
+
+    <div class="mt-6 grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+      <!-- Left column: clean, uncluttered editorial copy -->
+      <div class="relative z-10 lg:col-span-6">
+        <h1
+          id="about-hero-title"
+          class="text-[clamp(2.25rem,1.5rem+3.1vw,4.15rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-paper"
+          data-ah-title
+        >
+          {
+            words("Built to fix how keynote speakers get booked").map((w, j, a) => (
+              <>
+                <span class={maskClass}>
+                  <span class={wordClass} data-ah-word>
+                    {w}
+                  </span>
+                </span>
+                {j < a.length - 1 && " "}
+              </>
+            ))
+          }
+        </h1>
+
+        <p
+          class="mt-6 max-w-[36rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-relaxed text-pretty text-paper/86"
+          data-ah-lead
+        >
+          Too many platforms pitch speakers to random, unpaid rooms while bureaus take steep commissions. We founded Brux so keynote speakers build real authority, land niche stages consistently, and keep <strong class="font-semibold text-paper">100% of their fees</strong>.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6" data-ah-ctas>
+          <CtaButton href={bookingUrl}>Book a strategy call</CtaButton>
+          <Button href="/services/" variant="link" class="justify-center sm:justify-start">
+            Explore our services
+          </Button>
+        </div>
+      </div>
+
+      <!-- Right column: 3D GSAP + MotionPathPlugin Backstage-to-Stage spatial rig -->
+      <div class="relative lg:col-span-6" aria-hidden="true" data-ah-visual>
+        <div
+          class="ah-perspective relative mx-auto flex aspect-[4/3] w-full max-w-[36rem] items-center justify-center sm:aspect-[11/9]"
+          data-ah-stage
+        >
+          <div
+            class="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-64 sm:w-64"
+            style="background: radial-gradient(circle, rgba(229, 12, 19, 0.3) 0%, rgba(229, 12, 19, 0.08) 54%, transparent 78%);"
+            data-ah-aura
+          ></div>
+
+          <div class="ah-3d-rig relative size-full" data-ah-rig>
+            <!-- Subtle architectural site plane behind the studio office -->
+            <div class="ah-planes pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div
+                class="ah-plane-back h-[70%] w-[76%] rounded-[24px] border border-paper/10 bg-paper/[0.015]"
+                data-ah-plane
+              ></div>
+            </div>
+
+            <!-- 3D tilted concentric stage rings below the office building -->
+            <div class="ah-rings pointer-events-none absolute inset-x-0 bottom-[8%] flex h-[32%] items-center justify-center">
+              <div
+                class="ah-ring-outer h-48 w-48 rounded-full border border-paper/15 sm:h-56 sm:w-56"
+                data-ah-ring
+              ></div>
+              <div
+                class="ah-ring-mid absolute h-34 w-34 rounded-full border border-stage-glow/40 sm:h-40 sm:w-40"
+                data-ah-ring
+              ></div>
+              <div
+                class="ah-ring-inner absolute h-22 w-22 rounded-full border border-stage-glow/75 bg-stage/12 shadow-[0_18px_36px_-14px_rgba(0,0,0,0.8)]"
+                data-ah-ring
+              ></div>
+            </div>
+
+            <!-- 3D Office Building (main tower + side studio annex in true CSS preserve-3d) -->
+            <div
+              class="ah-building-anchor pointer-events-none absolute left-1/2 top-[50%] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center scale-[0.82] sm:scale-100"
+              data-ah-building
+            >
+              <div class="ah-building-iso relative">
+                <!-- Left stepped annex wing -->
+                <div class="ah-annex">
+                  <div class="ah-face ah-annex-front border border-paper/16 bg-[#131317]/95 p-2">
+                    <div class="grid h-full grid-cols-2 grid-rows-4 gap-1.5">
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/15 bg-paper/[0.2]" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.05]"></span>
+                      <span class="rounded-[2px] border border-stage-glow/35 bg-stage/35" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.06]"></span>
+                      <span class="col-span-2 rounded-[2px] border border-paper/14 bg-paper/[0.08]"></span>
+                    </div>
+                  </div>
+                  <div class="ah-face ah-annex-left border border-paper/10 bg-[#0d0d10]/95"></div>
+                  <div class="ah-face ah-annex-roof border border-paper/20 bg-[#1d1d22]/95"></div>
+                </div>
+
+                <!-- Main office tower -->
+                <div class="ah-tower relative">
+                  <!-- Front glass facade -->
+                  <div class="ah-face ah-tower-front flex flex-col justify-between border border-paper/20 bg-[#141418]/96 p-2.5 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]">
+                    <div class="flex items-center justify-between border-b border-paper/12 pb-1.5">
+                      <span class="h-1 w-8 rounded-full bg-paper/25"></span>
+                      <span class="size-1.5 rounded-full bg-stage-glow"></span>
+                    </div>
+                    <div class="my-2 grid flex-1 grid-cols-4 grid-rows-5 gap-1.5">
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/18 bg-paper/[0.24]" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.07]"></span>
+
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.05]"></span>
+                      <span class="rounded-[2px] border border-stage-glow/40 bg-stage/40" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+
+                      <span class="rounded-[2px] border border-paper/18 bg-paper/[0.22]" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/16 bg-paper/[0.16]"></span>
+
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.05]"></span>
+                      <span class="rounded-[2px] border border-stage-glow/35 bg-stage/32" data-ah-win-lit></span>
+
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/15 bg-paper/[0.18]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                      <span class="rounded-[2px] border border-paper/12 bg-paper/[0.06]"></span>
+                    </div>
+                    <!-- Ground floor lobby entrance -->
+                    <div class="grid h-6 grid-cols-3 gap-1.5 border-t border-paper/14 pt-1.5">
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.05]"></span>
+                      <span class="rounded-[2px] border border-paper/24 bg-paper/[0.18]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.05]"></span>
+                    </div>
+                  </div>
+
+                  <!-- Right depth facade -->
+                  <div class="ah-face ah-tower-right flex flex-col justify-between border border-paper/14 bg-[#0d0d11]/96 p-2">
+                    <div class="h-1 w-full border-b border-paper/10 pb-1"></div>
+                    <div class="my-2 grid flex-1 grid-cols-2 grid-rows-5 gap-1.5">
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                      <span class="rounded-[2px] border border-paper/14 bg-paper/[0.15]" data-ah-win-lit></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                      <span class="rounded-[2px] border border-paper/14 bg-paper/[0.16]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                      <span class="rounded-[2px] border border-stage-glow/30 bg-stage/28"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.05]"></span>
+                      <span class="rounded-[2px] border border-paper/10 bg-paper/[0.04]"></span>
+                    </div>
+                    <div class="h-5 rounded-[2px] border border-paper/10 bg-paper/[0.04]"></div>
+                  </div>
+
+                  <!-- Left & back structural closure -->
+                  <div class="ah-face ah-tower-left border border-paper/10 bg-[#0b0b0e]/95"></div>
+                  <div class="ah-face ah-tower-back border border-paper/10 bg-[#09090b]/95"></div>
+
+                  <!-- Roof terrace -->
+                  <div class="ah-face ah-tower-roof flex items-center justify-center border border-paper/22 bg-[#1c1c22]/96">
+                    <div class="flex h-10 w-16 items-center justify-center rounded-[4px] border border-paper/18 bg-[#121216]">
+                      <span class="size-2 rounded-full bg-stage"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG orbital curves + MotionPath light packets -->
+            <svg
+              class="pointer-events-none absolute inset-0 size-full overflow-visible"
+              viewBox="0 0 560 440"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="ah-arc-red" x1="280" y1="205" x2="450" y2="120" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF4D47" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#E50C13" stop-opacity="0.18" />
+                </linearGradient>
+                <linearGradient id="ah-arc-soft" x1="280" y1="205" x2="112" y2="128" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.45" />
+                  <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06" />
+                </linearGradient>
+              </defs>
+
+              <path
+                id="ah-path-0"
+                d="M280 205 C 218 150, 166 132, 108 120"
+                stroke="url(#ah-arc-soft)"
+                stroke-width="1.3"
+                stroke-dasharray="4 6"
+                data-ah-arc
+              />
+              <path
+                id="ah-path-1"
+                d="M280 205 C 344 146, 396 128, 452 114"
+                stroke="url(#ah-arc-red)"
+                stroke-width="1.6"
+                data-ah-arc
+              />
+              <path
+                id="ah-path-2"
+                d="M280 205 C 348 262, 396 292, 446 312"
+                stroke="url(#ah-arc-red)"
+                stroke-width="1.6"
+                data-ah-arc
+              />
+
+              <circle r="3.2" fill="#FFFFFF" fill-opacity="0.88" data-ah-packet="0" />
+              <circle r="3.8" fill="#FF4D47" data-ah-packet="1" />
+              <circle r="3.8" fill="#FF4D47" data-ah-packet="2" />
+            </svg>
+
+            <!-- Central 3D BRUX X Crest (naked in 3D space, without dark square box) -->
+            <div
+              class="ah-core pointer-events-none absolute left-1/2 top-[43%] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center"
+              data-ah-core
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 740 686"
+                class="h-14 w-auto drop-shadow-[0_14px_26px_rgba(0,0,0,0.75)] sm:h-18"
+              >
+                <path
+                  fill="#FFFFFF"
+                  fill-rule="evenodd"
+                  transform="translate(0 686)"
+                  d="M740 -686 L620 -686 L384.8 -425.8 L498.2 -300.3ZM0 0 L310 0 L357 -75 L238.6 -264Z"
+                />
+                <path
+                  fill="#E50C13"
+                  fill-rule="evenodd"
+                  transform="translate(0 686)"
+                  d="M0 -686 L120 -686 L740 0 L430 0Z"
+                />
+              </svg>
+            </div>
+
+            <span class="ah-studio-tag pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2 rounded-full border border-paper/16 bg-ink/88 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-paper uppercase backdrop-blur-xs">
+              Backstage Studio
+            </span>
+
+            <!-- 3 floating Z-depth nodes -->
+            <div
+              class="ah-node ah-node-tl absolute left-[2%] top-[14%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/84 px-3.5 py-2 backdrop-blur-md sm:left-[4%] sm:top-[16%]"
+              data-ah-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper">
+                <Compass class="size-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Niche-Matched</p>
+                <p class="text-[10px] text-muted-on-ink">Events that fit</p>
+              </div>
+            </div>
+
+            <div
+              class="ah-node ah-node-tr absolute right-[2%] top-[12%] flex items-center gap-2.5 rounded-full border border-stage-glow/40 bg-ink/92 px-3.5 py-2 shadow-[0_18px_36px_-14px_rgba(0,0,0,0.8)] backdrop-blur-md sm:right-[4%] sm:top-[14%]"
+              data-ah-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-stage/25 text-paper">
+                <ShieldCheck class="size-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">0% Commission</p>
+                <p class="text-[10px] font-medium text-cream/90">100% your fee</p>
+              </div>
+            </div>
+
+            <div
+              class="ah-node ah-node-br absolute bottom-[16%] right-[2%] flex items-center gap-2.5 rounded-full border border-stage-glow/60 bg-ink-raised/94 px-4 py-2.5 shadow-[0_20px_40px_-14px_rgba(0,0,0,0.85)] backdrop-blur-md sm:bottom-[18%] sm:right-[4%]"
+              data-ah-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-stage text-paper">
+                <Award class="size-3.5" stroke-width={2.25} />
+              </span>
+              <div class="leading-tight">
+                <p class="text-xs font-bold text-paper">Stage Authority</p>
+                <p class="text-[10px] font-medium text-cream/90">Consistent bookings</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ah-perspective {
+    perspective: 1100px;
+  }
+
+  .ah-3d-rig {
+    transform-style: preserve-3d;
+  }
+
+  .ah-planes {
+    transform-style: preserve-3d;
+    transform: rotateX(18deg) rotateY(-14deg) rotateZ(-4deg);
+  }
+
+  .ah-plane-back {
+    transform: translateZ(-56px);
+  }
+
+  .ah-rings {
+    transform-style: preserve-3d;
+    transform: rotateX(68deg);
+  }
+
+  .ah-ring-outer {
+    transform: translateZ(-12px);
+  }
+
+  .ah-ring-mid {
+    transform: translateZ(2px);
+  }
+
+  .ah-ring-inner {
+    transform: translateZ(16px);
+  }
+
+  /* True CSS preserve-3d Office Building */
+  .ah-building-anchor {
+    transform-style: preserve-3d;
+    transform: translateZ(12px);
+  }
+
+  .ah-building-iso {
+    transform-style: preserve-3d;
+    transform: rotateX(-16deg) rotateY(-28deg);
+  }
+
+  .ah-tower {
+    width: 132px;
+    height: 192px;
+    transform-style: preserve-3d;
+  }
+
+  .ah-face {
+    position: absolute;
+    backface-visibility: hidden;
+  }
+
+  .ah-tower-front {
+    width: 132px;
+    height: 192px;
+    left: 0;
+    top: 0;
+    transform: translateZ(44px);
+  }
+
+  .ah-tower-back {
+    width: 132px;
+    height: 192px;
+    left: 0;
+    top: 0;
+    transform: rotateY(180deg) translateZ(44px);
+  }
+
+  .ah-tower-right {
+    width: 88px;
+    height: 192px;
+    left: 22px;
+    top: 0;
+    transform: rotateY(90deg) translateZ(66px);
+  }
+
+  .ah-tower-left {
+    width: 88px;
+    height: 192px;
+    left: 22px;
+    top: 0;
+    transform: rotateY(-90deg) translateZ(66px);
+  }
+
+  .ah-tower-roof {
+    width: 132px;
+    height: 88px;
+    left: 0;
+    top: 52px;
+    transform: rotateX(90deg) translateZ(96px);
+  }
+
+  .ah-annex {
+    position: absolute;
+    left: -72px;
+    bottom: 0;
+    width: 72px;
+    height: 118px;
+    transform-style: preserve-3d;
+    transform: translateZ(-8px);
+  }
+
+  .ah-annex-front {
+    width: 72px;
+    height: 118px;
+    left: 0;
+    top: 0;
+    transform: translateZ(36px);
+  }
+
+  .ah-annex-left {
+    width: 72px;
+    height: 118px;
+    left: 0;
+    top: 0;
+    transform: rotateY(-90deg) translateZ(36px);
+  }
+
+  .ah-annex-roof {
+    width: 72px;
+    height: 72px;
+    left: 0;
+    top: 23px;
+    transform: rotateX(90deg) translateZ(59px);
+  }
+
+  .ah-core {
+    transform: translateZ(104px);
+  }
+
+  .ah-studio-tag {
+    transform: translateZ(84px);
+  }
+
+  .ah-node-tl {
+    transform: translateZ(26px);
+  }
+
+  .ah-node-tr {
+    transform: translateZ(48px);
+  }
+
+  .ah-node-br {
+    transform: translateZ(62px);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+  gsap.registerPlugin(MotionPathPlugin);
+
+  interface AmbientDot {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    r: number;
+    alpha: number;
+    red: boolean;
+  }
+
+  let cleanupAboutHero: (() => void) | null = null;
+
+  function initAboutHero() {
+    cleanupAboutHero?.();
+    cleanupAboutHero = null;
+
+    const root = document.querySelector<HTMLElement>("[data-about-hero]");
+    if (!root) return;
+
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-ah-canvas]");
+    const rig = root.querySelector<HTMLElement>("[data-ah-rig]");
+    const stage = root.querySelector<HTMLElement>("[data-ah-stage]");
+    const aura = root.querySelector<HTMLElement>("[data-ah-aura]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    let rafTick: (() => void) | null = null;
+    let ro: ResizeObserver | null = null;
+    let io: IntersectionObserver | null = null;
+    let mm: gsap.MatchMedia | null = null;
+    let removePointer: (() => void) | null = null;
+
+    // 1. Subtle stage-dust canvas (lightweight & viewport-gated)
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        let w = 0;
+        let h = 0;
+        let dpr = 1;
+        let inView = true;
+        const dots: AmbientDot[] = [];
+
+        const build = () => {
+          dots.length = 0;
+          const count = gsap.utils.clamp(22, 46, Math.round((w * h) / 24000));
+          for (let i = 0; i < count; i++) {
+            dots.push({
+              x: Math.random(),
+              y: Math.random(),
+              vx: (Math.random() - 0.5) * 0.00035,
+              vy: (Math.random() - 0.5) * 0.00035,
+              r: gsap.utils.random(1.1, 2.2),
+              alpha: gsap.utils.random(0.16, 0.42),
+              red: i % 2 === 0,
+            });
+          }
+        };
+
+        const resize = () => {
+          const rect = root.getBoundingClientRect();
+          w = Math.max(1, rect.width);
+          h = Math.max(1, rect.height);
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          build();
+        };
+
+        const draw = () => {
+          ctx.clearRect(0, 0, w, h);
+          for (const d of dots) {
+            if (!reduce.matches) {
+              d.x += d.vx;
+              d.y += d.vy;
+              if (d.x < 0 || d.x > 1) d.vx *= -1;
+              if (d.y < 0 || d.y > 1) d.vy *= -1;
+            }
+            ctx.beginPath();
+            ctx.arc(d.x * w, d.y * h, d.r, 0, Math.PI * 2);
+            ctx.fillStyle = d.red
+              ? `rgba(255, 77, 71, ${d.alpha.toFixed(3)})`
+              : `rgba(255, 255, 255, ${(d.alpha * 0.48).toFixed(3)})`;
+            ctx.fill();
+          }
+        };
+
+        resize();
+        draw();
+
+        ro = new ResizeObserver(() => {
+          resize();
+          draw();
+        });
+        ro.observe(root);
+
+        if (!reduce.matches) {
+          const tick = () => {
+            if (!inView || document.hidden) return;
+            draw();
+          };
+          rafTick = tick;
+          gsap.ticker.add(tick);
+
+          io = new IntersectionObserver(
+            ([entry]) => {
+              inView = Boolean(entry?.isIntersecting);
+            },
+            { threshold: 0.05 },
+          );
+          io.observe(root);
+        }
+      }
+    }
+
+    // 2. GSAP + MotionPathPlugin 3D choreography (TasteSkill: visible at rest, masked headline, smooth 3D pointer tilt)
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const words = root.querySelectorAll<HTMLElement>("[data-ah-word]");
+        const lead = root.querySelector<HTMLElement>("[data-ah-lead]");
+        const ctas = root.querySelector<HTMLElement>("[data-ah-ctas]");
+        const planes = root.querySelectorAll<HTMLElement>("[data-ah-plane]");
+        const rings = root.querySelectorAll<HTMLElement>("[data-ah-ring]");
+        const building = root.querySelector<HTMLElement>("[data-ah-building]");
+        const litWindows = root.querySelectorAll<HTMLElement>("[data-ah-win-lit]");
+        const core = root.querySelector<HTMLElement>("[data-ah-core]");
+        const nodes = root.querySelectorAll<HTMLElement>("[data-ah-node]");
+
+        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+        if (words.length) {
+          intro.fromTo(
+            words,
+            { yPercent: 105 },
+            { yPercent: 0, duration: 0.85, stagger: 0.04, clearProps: "transform" },
+            0,
+          );
+        }
+        if (lead) intro.from(lead, { y: 12, duration: 0.65, ease: "power3.out", clearProps: "transform" }, 0.14);
+        if (ctas) intro.from(ctas, { y: 12, duration: 0.65, ease: "power3.out", clearProps: "transform" }, 0.22);
+        if (planes.length) intro.from(planes, { scale: 0.9, duration: 0.9, stagger: 0.08, clearProps: "scale" }, 0.1);
+        if (rings.length) intro.from(rings, { scale: 0.85, duration: 0.9, stagger: 0.08, clearProps: "scale" }, 0.12);
+        if (building) intro.from(building, { y: 16, scale: 0.9, duration: 0.95, clearProps: "y,scale" }, 0.14);
+        if (core) intro.from(core, { scale: 0.88, duration: 0.85, clearProps: "scale" }, 0.18);
+        if (nodes.length) intro.from(nodes, { y: 14, duration: 0.75, stagger: 0.08, clearProps: "transform" }, 0.24);
+
+        if (litWindows.length) {
+          gsap.to(litWindows, {
+            opacity: 0.52,
+            duration: 2.2,
+            stagger: { each: 0.35, from: "random", repeat: -1, yoyo: true },
+            ease: "sine.inOut",
+          });
+        }
+
+        if (aura) {
+          gsap.to(aura, {
+            scale: 1.1,
+            opacity: 0.88,
+            duration: 3.4,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        nodes.forEach((node, idx) => {
+          gsap.to(node, {
+            y: idx % 2 === 0 ? -5 : 5,
+            duration: 3 + idx * 0.45,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        });
+
+        // MotionPathPlugin packets traveling along curved 3D stage paths
+        const paths = ["#ah-path-0", "#ah-path-1", "#ah-path-2"];
+        paths.forEach((pathSel, idx) => {
+          const packet = root.querySelector<SVGCircleElement>(`[data-ah-packet="${idx}"]`);
+          const pathEl = root.querySelector<SVGPathElement>(pathSel);
+          if (!packet || !pathEl) return;
+
+          gsap
+            .timeline({ repeat: -1, delay: idx * 0.65, repeatDelay: 0.4 })
+            .fromTo(packet, { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "none" }, 0)
+            .to(
+              packet,
+              {
+                motionPath: {
+                  path: pathEl,
+                  align: pathEl,
+                  alignOrigin: [0.5, 0.5],
+                },
+                duration: 1.9,
+                ease: "power2.inOut",
+              },
+              0,
+            )
+            .to(packet, { opacity: 0, duration: 0.25, ease: "none" }, "-=0.25");
+        });
+
+        if (rig && stage) {
+          const rxTo = gsap.quickTo(rig, "rotationX", { duration: 0.9, ease: "power3.out" });
+          const ryTo = gsap.quickTo(rig, "rotationY", { duration: 0.9, ease: "power3.out" });
+          const xTo = gsap.quickTo(rig, "x", { duration: 0.9, ease: "power3.out" });
+          const yTo = gsap.quickTo(rig, "y", { duration: 0.9, ease: "power3.out" });
+
+          const onPointerMove = (e: PointerEvent) => {
+            if (e.pointerType !== "mouse") return;
+            const r = root.getBoundingClientRect();
+            const nx = (e.clientX - r.left) / Math.max(1, r.width) - 0.5;
+            const ny = (e.clientY - r.top) / Math.max(1, r.height) - 0.5;
+            ryTo(nx * 10);
+            rxTo(-ny * 8);
+            xTo(nx * 10);
+            yTo(ny * 8);
+          };
+          const onPointerLeave = () => {
+            rxTo(0);
+            ryTo(0);
+            xTo(0);
+            yTo(0);
+          };
+
+          root.addEventListener("pointermove", onPointerMove, { passive: true });
+          root.addEventListener("pointerleave", onPointerLeave, { passive: true });
+          removePointer = () => {
+            root.removeEventListener("pointermove", onPointerMove);
+            root.removeEventListener("pointerleave", onPointerLeave);
+          };
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    cleanupAboutHero = () => {
+      if (rafTick) gsap.ticker.remove(rafTick);
+      ro?.disconnect();
+      io?.disconnect();
+      removePointer?.();
+      mm?.revert();
+    };
+  }
+
+  document.addEventListener("astro:page-load", initAboutHero);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupAboutHero?.();
+    cleanupAboutHero = null;
+  });
+</script>

@@ -19,21 +19,29 @@ const toneBadge = {
   data-deliverables
 >
   <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-    <div class="max-w-[44rem]">
-      <h2
-        id="included-title"
-        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div class="max-w-[44rem]">
+        <h2
+          id="included-title"
+          class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+        >
+          What's inside every plan — explained
+        </h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-on-ink sm:text-lg">
+          No vague agency retainers. Here is exactly what our team builds, sends, and tracks for you every month.
+        </p>
+      </div>
+      <a
+        href="#compare"
+        class="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-stage-glow transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
       >
-        What's inside every plan — explained
-      </h2>
-      <p class="mt-4 text-base leading-relaxed text-muted-on-ink sm:text-lg">
-        No vague agency retainers. Here is exactly what our team builds, sends, and tracks for you every month.
-      </p>
+        <span>Compare plans side by side</span>
+      </a>
     </div>
 
-    <div class="mt-14 grid gap-x-10 gap-y-12 border-t border-paper/10 pt-12 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-16">
+    <div class="mt-14 grid gap-x-10 gap-y-14 border-t border-paper/10 pt-12 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-16">
       {deliverableExplainers.map((item) => (
-        <article class="flex flex-col" id={item.id}>
+        <article class="flex flex-col scroll-mt-28" id={item.id} data-deliv-card>
           <div class="flex flex-wrap items-center justify-between gap-3">
             <h3 class="text-[clamp(1.25rem,1.1rem+0.6vw,1.625rem)] leading-tight font-extrabold tracking-[-0.02em] text-paper">
               {item.title}
@@ -111,8 +119,15 @@ const toneBadge = {
                 data-deliv-link
               >
                 <span>{item.linkLabel}</span>
-                <span class="inline-flex shrink-0 transition-transform duration-150 group-hover/dlink:translate-x-0.5" aria-hidden="true">
-                  <MorphIcon icon={ArrowRight} size={15} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                <span class="inline-flex shrink-0 will-change-transform" data-deliv-arrow-wrap>
+                  <MorphIcon
+                    icon={ArrowRight}
+                    size={15}
+                    strokeWidth={2}
+                    spring="snappy"
+                    reducedMotion="user"
+                    data-deliv-arrow
+                  />
                 </span>
               </a>
             </div>
@@ -126,12 +141,17 @@ const toneBadge = {
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
 
   gsap.registerPlugin(ScrollTrigger);
 
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
   let mm: gsap.MatchMedia | null = null;
+  let cleanupLinks: (() => void) | null = null;
 
   function initDeliverables() {
+    cleanupLinks?.();
     const root = document.querySelector<HTMLElement>("[data-deliverables]");
     if (!root) return;
 
@@ -146,21 +166,55 @@ const toneBadge = {
           tl.fromTo(
             frame,
             { clipPath: "inset(0% 100% 0% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", duration: 1.0, ease: "power4.inOut", clearProps: "clipPath" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "power4.inOut", clearProps: "clipPath" },
           );
           if (img) {
-            tl.from(img, { scale: 1.08, duration: 1.25, ease: "expo.out", clearProps: "scale" }, 0);
+            tl.from(img, { scale: 1.07, duration: 1.15, ease: "expo.out", clearProps: "scale" }, 0);
           }
         });
       }, root);
 
       return () => ctx.revert();
     });
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLElement>("[data-deliv-visual]").forEach((frame) => {
+      const img = frame.querySelector<HTMLElement>("[data-deliv-img]");
+      if (!img) return;
+      const zoom = gsap.quickTo(img, "scale", { duration: 0.55, ease: "power3.out" });
+      frame.addEventListener("pointerenter", (e) => !reduce.matches && e.pointerType === "mouse" && zoom(1.025), { signal });
+      frame.addEventListener("pointerleave", (e) => !reduce.matches && e.pointerType === "mouse" && zoom(1), { signal });
+    });
+
+    root.querySelectorAll<HTMLAnchorElement>("[data-deliv-link]").forEach((link) => {
+      const wrap = link.querySelector<HTMLElement>("[data-deliv-arrow-wrap]");
+      const icon = link.querySelector<MorphEl>("[data-deliv-arrow]");
+      const nudge = wrap ? gsap.quickTo(wrap, "x", { duration: 0.22, ease: "power3.out" }) : null;
+      const enter = () => {
+        icon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) nudge?.(3);
+      };
+      const leave = () => {
+        icon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) nudge?.(0);
+      };
+      link.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && enter(), { signal });
+      link.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && leave(), { signal });
+      link.addEventListener("focus", enter, { signal });
+      link.addEventListener("blur", leave, { signal });
+    });
+
+    cleanupLinks = () => controller.abort();
   }
 
   document.addEventListener("astro:page-load", initDeliverables);
   document.addEventListener("astro:before-swap", () => {
     mm?.revert();
     mm = null;
+    cleanupLinks?.();
+    cleanupLinks = null;
   });
 </script>

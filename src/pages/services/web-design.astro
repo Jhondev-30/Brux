@@ -1,46 +1,572 @@
 ---
+import { Image } from "astro:assets";
+import { Check as LucideCheck } from "@lucide/astro";
+import { Globe, Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import WebDesignHeroStage from "../../components/services/WebDesignHeroStage.astro";
+import Button from "../../components/ui/Button.astro";
+import CtaButton from "../../components/ui/CtaButton.astro";
 import { bookingUrl } from "../../data/site";
+import graceImg from "../../assets/work/grace-after-the-grave.webp";
 
-// Contenido del PDF de servicios del 20 de octubre de 2026.
-// Precio confirmado por Jhon el 14 nov 2026: desde $1,100, pago único; cambia según lo que necesite la web.
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "Speaker Website Design & Brand Direction | Brux",
+  description:
+    "Custom speaker websites scoped by complexity with full brand direction included: palette, typography, logos, demo reel, and direct booking inquiry.",
+  canonical: "/services/web-design/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+    { "@type": "ListItem", position: 3, name: "Speaker Websites", item: `${siteUrl}/services/web-design/` },
+  ],
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteUrl}/services/web-design/#service`,
+  name: "Keynote Speaker Website Design & Brand Direction",
+  serviceType: "Speaker Website Design",
+  provider: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+  },
+  url: `${siteUrl}/services/web-design/`,
+  description:
+    "Brux designs and develops custom speaker websites scoped to project complexity, always including full brand direction (color palette, typography, logo refinement, and visual assets).",
+  offers: {
+    "@type": "Offer",
+    price: "1100",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+    url: `${siteUrl}/services/web-design/`,
+  },
+};
+
+const faqs = [
+  {
+    q: "Why do keynote speakers need a dedicated website instead of a corporate consulting site?",
+    a: "Event organizers review speakers under tight deadlines. A consulting site buries your keynote topics, demo reel, and stage requirements beneath unrelated service pages. A dedicated speaker website puts everything an event committee needs in one fast link.",
+  },
+  {
+    q: "How do you decide the timeline and scope of a speaker website?",
+    a: "After a short discovery call, we prepare a written build plan tailored to your site's complexity. A focused single-page speaker site starts from $1,100 one-time and typically launches in 14 days, while multi-page platforms for books, workshops, or bilingual media are scoped with a matching timeline.",
+  },
+  {
+    q: "Does every website project include branding?",
+    a: "Yes. Every website plan includes visual brand direction: selecting your color palette, pairing your typography, refining your logo or wordmark, and preparing custom visual assets so your website, one-sheet, and LinkedIn look unmistakably yours.",
+  },
+  {
+    q: "Can the site connect directly to my booking calendar?",
+    a: "Yes. We connect your inquiry form and calendar tool (Google Calendar, Calendly, or HubSpot) so event organizers can request dates or book a discovery call immediately.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
+const siteRows = [
+  {
+    title: "Your bio and keynote topics, clearly structured",
+    detail: "Each talk title paired with audience takeaways, session format (keynote, workshop, panel), and who the talk is built for.",
+  },
+  {
+    title: "Embedded speaker demo reel and stage clips",
+    detail: "Fast-loading video player near the top of the page so event committees hear your stage presence without leaving your site.",
+  },
+  {
+    title: "Past events, podcasts, and organizer quotes",
+    detail: "Stage photos, conference names, and client testimonials arranged so decision-makers see immediate social proof.",
+  },
+  {
+    title: "Downloadable PDF speaker one-sheet",
+    detail: "One-click download for event planners who need to share your bio, topics, and stage requirements with their selection board.",
+  },
+  {
+    title: "Direct inquiry form and calendar booking",
+    detail: "Simple event inquiry form and calendar link so organizers can check your availability in under a minute.",
+  },
+];
+
+const buildPlanIncludes = [
+  {
+    title: "Custom scope & timeline plan",
+    detail: "Delivered as a clear roadmap before build starts — timeline adapts to single-page vs multi-page complexity.",
+  },
+  {
+    title: "Color palette & visual direction",
+    detail: "Intentional contrast, surface hierarchy, and stage-ready palette built around your positioning.",
+  },
+  {
+    title: "Typography & editorial hierarchy",
+    detail: "Display and body typefaces paired for fast organizer scanning across desktop and mobile.",
+  },
+  {
+    title: "Logo, wordmark & custom assets",
+    detail: "Clean logo or wordmark treatment, favicon, reel framing, and visual assets aligned with your one-sheet.",
+  },
+];
+
 ---
 
 <MainLayout
-  title="Speaker Website Design | Brux"
-  description="A speaker website organizers can check in one link: bio, topics, demo reel, past events and a way to book you. From $1,100, one-time."
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
 >
-  <section>
-    <h1>Speaker website design</h1>
-    <p>
-      When an organizer is considering you, they need one link that answers their questions quickly.
-      For speakers who don't have a website yet.
-    </p>
-    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
-  </section>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-  <section>
-    <h2>What your speaker website includes</h2>
-    <ul>
-      <li>Your bio and speaking topics, clearly stated</li>
-      <li>Your best clips and video of you on stage</li>
-      <li>Events and podcasts you've been on, and what people said</li>
-      <li>A downloadable one-sheet or speaker kit</li>
-      <li>A simple way for organizers to contact you</li>
-    </ul>
-  </section>
+  <div data-web-page-root>
+    <!-- 1. HERO (bg-ink) 3D Brand & Speaker Site Blueprint Layers + GSAP particles -->
+    <WebDesignHeroStage />
 
-  <section>
-    <h2>The link behind every pitch</h2>
-    <p>It's the link we use in every post, message and pitch we send for you.</p>
-  </section>
+    <!-- 2. HOW WE BUILD IT + CONNECTED STEP CARDS (bg-paper) -->
+    <section
+      class="bg-paper py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="web-includes-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-3xl text-center">
+          <h2
+            id="web-includes-title"
+            class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+          >
+            Built around what event organizers check first
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+            From scoping complexity and defining your brand palette to launching the live site we drop into every outreach pitch and LinkedIn Featured card.
+          </p>
+        </div>
 
-  <section>
-    <h2>Pricing</h2>
-    <p>
-      From <strong>$1,100</strong>, one-time. The final price depends on what your site needs;
-      we quote it after a short call.
-    </p>
-    <a href="/contact/">Get a quote</a>
-  </section>
+        <!-- Centered panoramic HyperFrames build-process video -->
+        <div
+          class="mx-auto mt-10 max-w-5xl overflow-hidden rounded-[24px] border border-ink/12 bg-ink p-2.5 shadow-[0_28px_60px_-28px_rgb(10_10_10/0.35)] sm:p-4"
+          data-wp-video-wrap
+        >
+          <div class="overflow-hidden rounded-[16px] bg-ink">
+            <video
+              class="aspect-video w-full object-cover"
+              autoplay
+              muted
+              loop
+              playsinline
+              disablepictureinpicture
+              preload="metadata"
+              poster="/videos/services/web-build-process-poster.webp"
+              aria-label="Motion graphic showing how Brux scopes a website plan by complexity, builds your brand system, and launches your speaker site"
+              data-wp-video
+            >
+              <source src="/videos/services/web-build-process.webm" type="video/webm" />
+              <source src="/videos/services/web-build-process.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2 px-2 py-1 text-xs text-muted-on-ink">
+            <span class="font-semibold text-paper">Scope by complexity · Brand system included</span>
+            <span class="font-bold text-stage-glow">5 core stages before launch</span>
+          </div>
+        </div>
+
+        <!-- Connected sequential build cards joined by GSAP scroll-scrubbed spine -->
+        <div class="relative mx-auto mt-16 max-w-4xl" data-wp-track>
+          <!-- Continuous vertical connector track -->
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute top-7 bottom-7 left-[1.1875rem] w-px bg-ink/14 sm:left-[1.4375rem]"
+          >
+            <div
+              class="h-full w-full origin-top scale-y-0 bg-stage"
+              data-wp-line
+            ></div>
+          </div>
+
+          <ol class="space-y-6 sm:space-y-7">
+            {siteRows.map((row, idx) => (
+              <li class="relative flex items-start gap-4 sm:gap-7" data-wp-step>
+                <!-- Milestone node on the connector spine -->
+                <div class="relative z-10 flex shrink-0 items-center pt-5 sm:pt-6">
+                  <span
+                    class="flex size-10 items-center justify-center rounded-full border border-ink/20 bg-paper text-sm font-extrabold text-stage-text shadow-[0_6px_16px_-8px_rgb(10_10_10/0.25)] transition-colors duration-300 sm:size-12"
+                    data-wp-node
+                  >
+                    0{idx + 1}
+                  </span>
+                  <span aria-hidden="true" class="hidden h-px w-5 bg-ink/15 sm:block"></span>
+                </div>
+
+                <!-- Connected step card -->
+                <div
+                  class="flex-1 rounded-[20px] border border-ink/12 bg-mist/55 p-6 shadow-[0_14px_34px_-26px_rgb(10_10_10/0.28)] transition-colors duration-300 hover:border-ink/28 sm:p-7"
+                  data-wp-card
+                >
+                  <h3 class="text-lg font-extrabold tracking-[-0.015em] text-ink sm:text-xl">
+                    {row.title}
+                  </h3>
+                  <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink/80 sm:text-base">
+                    {row.detail}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. LIVE CLIENT SITE SHOWCASE: ANGIE PICHARDO (bg-ink) -->
+    <section
+      id="client-site"
+      class="scroll-mt-24 bg-ink py-20 text-paper sm:py-28 lg:py-32"
+      aria-labelledby="web-client-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-2xl">
+            <h2
+              id="web-client-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Live speaker site built with this system
+            </h2>
+            <p class="mt-3 text-base leading-relaxed text-muted-on-ink sm:text-lg">
+              Custom bilingual positioning, brand direction, keynote topics, and direct stage inquiry built for Angie Pichardo.
+            </p>
+          </div>
+          <Button href="https://graceafterthegrave.com/" variant="secondary" arrow>
+            Visit graceafterthegrave.com
+          </Button>
+        </div>
+
+        <div
+          class="mt-10 overflow-hidden rounded-[26px] border border-paper/15 bg-ink-raised p-3 shadow-[0_32px_64px_-32px_rgb(0_0_0/0.85)] sm:p-5"
+          data-wp-stage
+        >
+          <a
+            href="https://graceafterthegrave.com/"
+            target="_blank"
+            rel="noopener"
+            class="group/site block overflow-hidden rounded-[18px] bg-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            <Image
+              src={graceImg}
+              alt="Home page of graceafterthegrave.com: Angie Pichardo speaker website designed by Brux"
+              widths={[640, 1024, 1440]}
+              sizes="(min-width: 1280px) 1200px, 95vw"
+              class="w-full object-cover transition-transform duration-500 ease-out group-hover/site:scale-[1.015]"
+            />
+          </a>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-4 px-2 pt-1 text-sm">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-stage/20 px-3 py-1 text-xs font-bold text-stage-glow">
+                <MorphIcon icon={Globe} size={12} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                Live speaker website
+              </span>
+              <span class="font-bold text-paper">Angie Pichardo</span>
+              <span class="text-muted-on-ink">· Christian speaker, author &amp; life coach (EN / ES)</span>
+            </div>
+            <a
+              href="https://graceafterthegrave.com/"
+              target="_blank"
+              rel="noopener"
+              class="font-semibold text-stage-glow hover:underline"
+            >
+              Visit graceafterthegrave.com ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CUSTOM BUILD PLAN BY COMPLEXITY + BRANDING INCLUDED (bg-mist) -->
+    <section
+      id="build-plan"
+      class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28"
+      aria-labelledby="web-plan-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-10 rounded-[26px] border border-ink/10 bg-paper p-7 sm:p-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-14">
+          <div class="lg:col-span-7">
+            <h2
+              id="web-plan-title"
+              class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              A custom build plan scaled to your site complexity — branding always included
+            </h2>
+            <p class="mt-4 max-w-[40rem] text-base leading-relaxed text-muted sm:text-lg">
+              Before writing a line of code, we deliver a tailored project plan defining timeline and milestones based on complexity: a focused single-page speaker site (from $1,100, typically 14 days) or a multi-page platform for books, workshops, and media.
+            </p>
+
+            <div class="mt-8 grid gap-5 sm:grid-cols-2">
+              {buildPlanIncludes.map((item) => (
+                <div class="border-t border-ink/12 pt-4">
+                  <h3 class="flex items-center gap-2 text-base font-extrabold text-ink">
+                    <LucideCheck class="size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                    <span>{item.title}</span>
+                  </h3>
+                  <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-between rounded-[22px] bg-ink p-7 text-paper sm:p-9 lg:col-span-5">
+            <div>
+              <p class="text-sm font-bold text-stage-glow">Standalone Website Build</p>
+              <p class="mt-2 text-[clamp(2.25rem,1.9rem+1.2vw,3rem)] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">
+                From $1,100
+              </p>
+              <p class="mt-2 text-sm text-muted-on-ink">
+                One-time build · Timeline scoped to complexity · Full brand direction included
+              </p>
+            </div>
+
+            <div class="mt-8 flex flex-col gap-3">
+              <Button href={bookingUrl} arrow>Book a call for your build plan</Button>
+              <Button href="/pricing/" variant="secondary" arrow>Compare monthly retainers</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FAQ + SIBLING SERVICES (bg-ink) -->
+    <section
+      id="faq"
+      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      aria-labelledby="web-faq-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+          <div>
+            <h2
+              id="web-faq-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Questions about speaker websites
+            </h2>
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+              How we scope timeline by complexity, what branding assets are included, and how your new site supports outreach.
+            </p>
+
+            <div class="mt-10 space-y-4 border-t border-paper/10 pt-8">
+              <p class="text-sm font-bold text-paper">Put your new website to work:</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a
+                  href="/services/content/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker demo reels →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Cut a three-minute stage reel and press kit to feature on your site.</p>
+                </a>
+                <a
+                  href="/services/booking/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Send your new site link directly to event organizers in your niche.</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            {faqs.map((f) => (
+              <details class="group relative border-b border-paper/10">
+                <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+                  <h3 class="text-pretty">{f.q}</h3>
+                  <span
+                    aria-hidden="true"
+                    class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
+                  >
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  </span>
+                </summary>
+                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FINAL CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="web-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="web-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Give event organizers one link that closes the stage
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+          Book a 20-minute call. We will review your current bio and talk footage and prepare a tailored website &amp; brand plan.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Request a website plan</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See pricing</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </MainLayout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
+  let io: IntersectionObserver | null = null;
+
+  function initWebDesignPage() {
+    mm?.revert();
+    mm = null;
+    io?.disconnect();
+    io = null;
+
+    const root = document.querySelector<HTMLElement>("[data-web-page-root]");
+    if (!root) return;
+
+    const video = root.querySelector<HTMLVideoElement>("[data-wp-video]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (video && !reduce) {
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) video.play().catch(() => {});
+            else video.pause();
+          }
+        },
+        { threshold: 0.3 },
+      );
+      io.observe(video);
+    }
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const videoWrap = root.querySelector<HTMLElement>("[data-wp-video-wrap]");
+        const track = root.querySelector<HTMLElement>("[data-wp-track]");
+        const line = root.querySelector<HTMLElement>("[data-wp-line]");
+        const steps = root.querySelectorAll<HTMLElement>("[data-wp-step]");
+        const stage = root.querySelector<HTMLElement>("[data-wp-stage]");
+
+        if (videoWrap) {
+          gsap.from(videoWrap, {
+            y: 26,
+            opacity: 0,
+            duration: 0.85,
+            ease: "expo.out",
+            clearProps: "transform,opacity",
+            scrollTrigger: {
+              trigger: videoWrap,
+              start: "top 84%",
+              once: true,
+            },
+          });
+        }
+
+        if (track && line) {
+          gsap.to(line, {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: track,
+              start: "top 70%",
+              end: "bottom 75%",
+              scrub: 0.35,
+            },
+          });
+        }
+
+        steps.forEach((step, idx) => {
+          const card = step.querySelector<HTMLElement>("[data-wp-card]");
+          const node = step.querySelector<HTMLElement>("[data-wp-node]");
+          if (card) {
+            gsap.from(card, {
+              y: 22,
+              opacity: 0,
+              duration: 0.72,
+              delay: idx * 0.04,
+              ease: "expo.out",
+              clearProps: "transform,opacity",
+              scrollTrigger: {
+                trigger: step,
+                start: "top 86%",
+                once: true,
+              },
+            });
+          }
+          if (node) {
+            ScrollTrigger.create({
+              trigger: step,
+              start: "top 72%",
+              onEnter: () => {
+                node.classList.add("border-stage-text", "bg-stage-text", "text-paper");
+                node.classList.remove("border-ink/20", "bg-paper", "text-stage-text");
+              },
+              onLeaveBack: () => {
+                node.classList.remove("border-stage-text", "bg-stage-text", "text-paper");
+                node.classList.add("border-ink/20", "bg-paper", "text-stage-text");
+              },
+            });
+          }
+        });
+
+        if (stage) {
+          gsap.from(stage, {
+            y: 26,
+            opacity: 0,
+            duration: 0.85,
+            ease: "expo.out",
+            clearProps: "transform,opacity",
+            scrollTrigger: {
+              trigger: stage,
+              start: "top 84%",
+              once: true,
+            },
+          });
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initWebDesignPage);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    io?.disconnect();
+    io = null;
+  });
+</script>

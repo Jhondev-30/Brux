@@ -1,0 +1,619 @@
+---
+import { FileText, MessageSquare, UserCheck, Users, Film } from "@lucide/astro";
+import Button from "../ui/Button.astro";
+import CtaButton from "../ui/CtaButton.astro";
+import { bookingUrl } from "../../data/site";
+
+const words = (text: string) => text.trim().split(/\s+/);
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.04em] -mt-[0.06em] -mb-[0.14em] -mx-[0.04em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  class="linkedin-hero relative isolate overflow-hidden bg-ink pt-[max(8.5rem,calc(4.5rem+6svh))] pb-20 text-paper sm:pb-24 lg:pb-28"
+  aria-labelledby="linkedin-hero-title"
+  data-linkedin-hero
+>
+  <!-- Full-hero ambient crimson glow & GSAP network particle canvas -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-20"
+    style="background:
+      radial-gradient(ellipse 58% 64% at 74% 48%, rgba(229, 12, 19, 0.16) 0%, rgba(229, 12, 19, 0.05) 42%, transparent 74%),
+      radial-gradient(ellipse 40% 45% at 20% 74%, rgba(229, 12, 19, 0.06) 0%, transparent 70%);"
+  ></div>
+
+  <canvas
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-10 h-full w-full"
+    data-lh-canvas
+  ></canvas>
+
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <nav aria-label="Breadcrumb" class="text-sm text-muted-on-ink" data-lh-crumb>
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a
+            href="/"
+            class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Home
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-paper/35">/</li>
+        <li>
+          <a
+            href="/services/"
+            class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Services
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-paper/35">/</li>
+        <li aria-current="page" class="font-semibold text-paper">LinkedIn Management</li>
+      </ol>
+    </nav>
+
+    <div class="mt-6 grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+      <!-- Copy column -->
+      <div class="relative z-10 lg:col-span-6">
+        <h1
+          id="linkedin-hero-title"
+          class="text-[clamp(2.25rem,1.5rem+3.1vw,4rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-paper"
+          data-lh-title
+        >
+          {words("A LinkedIn profile and feed that back up every speaker pitch").map((w, j, a) => (
+            <>
+              <span class={maskClass}><span class={wordClass} data-lh-word>{w}</span></span>
+              {j < a.length - 1 && " "}
+            </>
+          ))}
+        </h1>
+
+        <p
+          class="mt-6 max-w-[38rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-relaxed text-pretty text-muted-on-ink"
+          data-lh-lead
+        >
+          Before event organizers book you, they look up your LinkedIn. Brux rewrites your profile for conference buyers, publishes 2 to 8 posts a month in your voice, and grows your network with decision-makers in your niche.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6" data-lh-ctas>
+          <CtaButton href={bookingUrl}>Book a strategy call</CtaButton>
+          <Button href="/pricing/" variant="link" class="justify-center sm:justify-start">
+            See plans &amp; pricing
+          </Button>
+        </div>
+      </div>
+
+      <!-- 3D Speaker Authority & Organizer Network Mesh (seamless bg-ink spatial scene) -->
+      <div class="relative lg:col-span-6" aria-hidden="true" data-lh-visual>
+        <div
+          class="lh-perspective relative mx-auto flex aspect-[4/3] w-full max-w-[36rem] items-center justify-center sm:aspect-[11/9]"
+          data-lh-stage
+        >
+          <!-- Soft crimson stage bloom behind the authority hub -->
+          <div
+            class="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-64 sm:w-64"
+            style="background: radial-gradient(circle, rgba(229, 12, 19, 0.32) 0%, rgba(229, 12, 19, 0.08) 54%, transparent 78%);"
+            data-lh-aura
+          ></div>
+
+          <div class="lh-3d-rig relative h-full w-full" data-lh-rig>
+            <!-- Angled architectural 3D profile/feed planes (hairline depth without boxy containers) -->
+            <div class="lh-planes pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div
+                class="lh-plane-back h-[64%] w-[68%] rounded-[22px] border border-paper/10 bg-paper/[0.015]"
+                data-lh-plane="back"
+              ></div>
+              <div
+                class="lh-plane-front absolute h-[50%] w-[52%] rounded-[18px] border border-stage-glow/28 bg-stage/[0.025]"
+                data-lh-plane="front"
+              ></div>
+            </div>
+
+            <!-- SVG curved connection paths from central authority hub to LinkedIn pillars -->
+            <svg
+              class="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+              viewBox="0 0 560 440"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="lh-arc-red" x1="280" y1="220" x2="454" y2="322" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF4D47" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#E50C13" stop-opacity="0.2" />
+                </linearGradient>
+                <linearGradient id="lh-arc-soft" x1="280" y1="220" x2="108" y2="112" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.42" />
+                  <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06" />
+                </linearGradient>
+              </defs>
+
+              <path
+                d="M280 220 C 215 155, 165 130, 108 112"
+                stroke="url(#lh-arc-soft)"
+                stroke-width="1.3"
+                stroke-dasharray="4 6"
+                data-lh-arc
+              />
+              <path
+                d="M280 220 C 345 148, 396 126, 450 108"
+                stroke="url(#lh-arc-red)"
+                stroke-width="1.5"
+                data-lh-arc
+              />
+              <path
+                d="M280 220 C 208 280, 158 308, 104 326"
+                stroke="url(#lh-arc-soft)"
+                stroke-width="1.3"
+                stroke-dasharray="4 6"
+                data-lh-arc
+              />
+              <path
+                d="M280 220 C 350 286, 400 310, 456 328"
+                stroke="url(#lh-arc-red)"
+                stroke-width="1.75"
+                data-lh-arc
+              />
+
+              <!-- Flowing connection & content signal packets -->
+              <circle r="3" fill="#FFFFFF" fill-opacity="0.82" data-lh-packet="0" />
+              <circle r="3.4" fill="#FF4D47" data-lh-packet="1" />
+              <circle r="3" fill="#FFFFFF" fill-opacity="0.78" data-lh-packet="2" />
+              <circle r="4" fill="#FF4D47" data-lh-packet="3" />
+            </svg>
+
+            <!-- Central 3D Authority Hub (open glowing badge, no dark disc) -->
+            <div
+              class="lh-core absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2.5"
+              data-lh-core
+            >
+              <div class="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-stage/25 text-paper ring-1 ring-stage-glow/65 shadow-[0_0_40px_rgba(229,12,19,0.7)] backdrop-blur-xs sm:h-16 sm:w-16">
+                <div class="pointer-events-none absolute inset-[-10px] rounded-[22px] border border-stage-glow/45" data-lh-pulse></div>
+                <UserCheck class="h-6 w-6 text-paper" stroke-width={2} />
+              </div>
+              <span class="rounded-full bg-ink/60 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.14em] text-paper/90 uppercase backdrop-blur-xs">
+                Speaker Authority
+              </span>
+            </div>
+
+            <!-- Node 1: Top-left (Profile Makeover) -->
+            <div
+              class="lh-node lh-node-tl absolute left-[2%] top-[13%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/82 px-3.5 py-2 backdrop-blur-md sm:left-[4%] sm:top-[15%]"
+              data-lh-node="0"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper/85">
+                <FileText class="h-3.5 w-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Profile Makeover</p>
+                <p class="text-[10px] text-muted-on-ink">Keynote positioning</p>
+              </div>
+            </div>
+
+            <!-- Node 2: Top-right (Ghostwritten Voice Posts) -->
+            <div
+              class="lh-node lh-node-tr absolute right-[2%] top-[11%] flex items-center gap-2.5 rounded-full border border-stage-glow/32 bg-ink/82 px-3.5 py-2 shadow-[0_12px_28px_-14px_rgba(229,12,19,0.45)] backdrop-blur-md sm:right-[4%] sm:top-[13%]"
+              data-lh-node="1"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stage/22 text-stage-glow">
+                <MessageSquare class="h-3.5 w-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Voice Posts &amp; Comments</p>
+                <p class="text-[10px] text-stage-glow">2 to 8 monthly drafts</p>
+              </div>
+            </div>
+
+            <!-- Node 3: Bottom-left (Captioned Talk Clips) -->
+            <div
+              class="lh-node lh-node-bl absolute bottom-[14%] left-[2%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/82 px-3.5 py-2 backdrop-blur-md sm:bottom-[15%] sm:left-[3%]"
+              data-lh-node="2"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper/85">
+                <Film class="h-3.5 w-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Stage Video Clips</p>
+                <p class="text-[10px] text-muted-on-ink">Proof in the feed</p>
+              </div>
+            </div>
+
+            <!-- Node 4: Bottom-right (Organizer Network Growth) -->
+            <div
+              class="lh-node lh-node-br absolute bottom-[11%] right-[1%] flex items-center gap-2.5 rounded-full border border-stage-glow/55 bg-stage/18 px-4 py-2.5 shadow-[0_16px_38px_-12px_rgba(229,12,19,0.65)] backdrop-blur-md sm:bottom-[13%] sm:right-[3%]"
+              data-lh-node="3"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stage text-paper">
+                <Users class="h-3.5 w-3.5" stroke-width={2.25} />
+              </span>
+              <div class="leading-tight">
+                <p class="text-xs font-bold text-paper">Organizer Network</p>
+                <p class="text-[10px] font-semibold text-stage-glow">Decision-makers connected</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lh-perspective {
+    perspective: 1100px;
+  }
+
+  .lh-3d-rig {
+    transform-style: preserve-3d;
+  }
+
+  .lh-planes {
+    transform-style: preserve-3d;
+    transform: rotateX(18deg) rotateY(-14deg) rotateZ(-4deg);
+  }
+
+  .lh-plane-back {
+    transform: translateZ(-26px);
+  }
+
+  .lh-plane-front {
+    transform: translateZ(14px);
+    box-shadow: inset 0 0 36px rgba(229, 12, 19, 0.12);
+  }
+
+  .lh-core {
+    transform: translateZ(34px);
+  }
+
+  .lh-node-tl {
+    transform: translateZ(20px);
+  }
+
+  .lh-node-tr {
+    transform: translateZ(44px);
+  }
+
+  .lh-node-bl {
+    transform: translateZ(16px);
+  }
+
+  .lh-node-br {
+    transform: translateZ(56px);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  interface NetworkDot {
+    xRatio: number;
+    yRatio: number;
+    vx: number;
+    vy: number;
+    size: number;
+    alpha: number;
+    crimson: boolean;
+  }
+
+  let cleanupLinkedInHero: (() => void) | null = null;
+
+  function initLinkedInHero() {
+    cleanupLinkedInHero?.();
+    cleanupLinkedInHero = null;
+
+    const root = document.querySelector<HTMLElement>("[data-linkedin-hero]");
+    if (!root) return;
+
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-lh-canvas]");
+    const rig = root.querySelector<HTMLElement>("[data-lh-rig]");
+    const stage = root.querySelector<HTMLElement>("[data-lh-stage]");
+    const aura = root.querySelector<HTMLElement>("[data-lh-aura]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let rafTick: (() => void) | null = null;
+    let ro: ResizeObserver | null = null;
+    let io: IntersectionObserver | null = null;
+    let mm: gsap.MatchMedia | null = null;
+    let removePointer: (() => void) | null = null;
+
+    // 1. GSAP-driven network constellation particle canvas
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        let w = 0;
+        let h = 0;
+        let dpr = 1;
+        let inView = true;
+        const pointer = { x: -9999, y: -9999 };
+        const dots: NetworkDot[] = [];
+
+        const buildDots = () => {
+          dots.length = 0;
+          const count = Math.min(54, Math.max(24, Math.round((w * h) / 21000)));
+          for (let i = 0; i < count; i++) {
+            dots.push({
+              xRatio: Math.random(),
+              yRatio: Math.random(),
+              vx: (Math.random() - 0.5) * 0.00045,
+              vy: (Math.random() - 0.5) * 0.00045,
+              size: 1.2 + Math.random() * 1.8,
+              alpha: 0.22 + Math.random() * 0.45,
+              crimson: i % 2 === 0,
+            });
+          }
+        };
+
+        const resize = () => {
+          const rect = root.getBoundingClientRect();
+          w = rect.width;
+          h = rect.height;
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.max(1, Math.floor(w * dpr));
+          canvas.height = Math.max(1, Math.floor(h * dpr));
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          buildDots();
+        };
+
+        resize();
+        ro = new ResizeObserver(resize);
+        ro.observe(root);
+
+        const linkDist = 115;
+
+        const draw = () => {
+          ctx.clearRect(0, 0, w, h);
+
+          const coords: Array<{ x: number; y: number; dot: NetworkDot }> = [];
+          for (const d of dots) {
+            if (!reduce) {
+              d.xRatio += d.vx;
+              d.yRatio += d.vy;
+              if (d.xRatio < 0 || d.xRatio > 1) d.vx *= -1;
+              if (d.yRatio < 0 || d.yRatio > 1) d.vy *= -1;
+              d.xRatio = Math.max(0, Math.min(1, d.xRatio));
+              d.yRatio = Math.max(0, Math.min(1, d.yRatio));
+            }
+
+            let px = d.xRatio * w;
+            let py = d.yRatio * h;
+
+            const dx = px - pointer.x;
+            const dy = py - pointer.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 130 && dist > 0.1) {
+              const push = ((130 - dist) / 130) * 14;
+              px += (dx / dist) * push;
+              py += (dy / dist) * push;
+            }
+
+            coords.push({ x: px, y: py, dot: d });
+          }
+
+          // Subtle network edge connections between nearby dots on the right visual half
+          for (let i = 0; i < coords.length; i++) {
+            const a = coords[i];
+            for (let j = i + 1; j < coords.length; j++) {
+              const b = coords[j];
+              const d = Math.hypot(a.x - b.x, a.y - b.y);
+              if (d < linkDist) {
+                const lineAlpha = (1 - d / linkDist) * 0.14;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle =
+                  a.dot.crimson || b.dot.crimson
+                    ? `rgba(255, 77, 71, ${lineAlpha.toFixed(3)})`
+                    : `rgba(255, 255, 255, ${(lineAlpha * 0.7).toFixed(3)})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+              }
+            }
+          }
+
+          for (const { x, y, dot } of coords) {
+            ctx.beginPath();
+            ctx.arc(x, y, dot.size, 0, Math.PI * 2);
+            ctx.fillStyle = dot.crimson
+              ? `rgba(255, 77, 71, ${dot.alpha.toFixed(3)})`
+              : `rgba(255, 255, 255, ${(dot.alpha * 0.52).toFixed(3)})`;
+            ctx.fill();
+          }
+        };
+
+        draw();
+
+        if (!reduce) {
+          const tick = () => {
+            if (!inView) return;
+            draw();
+          };
+          rafTick = tick;
+          gsap.ticker.add(tick);
+
+          io = new IntersectionObserver(
+            ([entry]) => {
+              inView = Boolean(entry?.isIntersecting);
+            },
+            { threshold: 0.05 },
+          );
+          io.observe(root);
+
+          const onMove = (e: PointerEvent) => {
+            const rect = root.getBoundingClientRect();
+            pointer.x = e.clientX - rect.left;
+            pointer.y = e.clientY - rect.top;
+          };
+          const onLeave = () => {
+            pointer.x = -9999;
+            pointer.y = -9999;
+          };
+          root.addEventListener("pointermove", onMove, { passive: true });
+          root.addEventListener("pointerleave", onLeave, { passive: true });
+          removePointer = () => {
+            root.removeEventListener("pointermove", onMove);
+            root.removeEventListener("pointerleave", onLeave);
+          };
+        }
+      }
+    }
+
+    // 2. Bang Motion entrance, continuous subtle network float, packet travel & subtle pointer parallax
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const crumb = root.querySelector("[data-lh-crumb]");
+        const wordEls = root.querySelectorAll("[data-lh-word]");
+        const lead = root.querySelector("[data-lh-lead]");
+        const ctas = root.querySelector("[data-lh-ctas]");
+        const planes = root.querySelectorAll("[data-lh-plane]");
+        const core = root.querySelector("[data-lh-core]");
+        const nodes = root.querySelectorAll("[data-lh-node]");
+        const arcs = root.querySelectorAll("[data-lh-arc]");
+        const pulse = root.querySelector("[data-lh-pulse]");
+
+        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+        tl.from(crumb, { y: 12, opacity: 0, duration: 0.5, clearProps: "transform,opacity" })
+          .fromTo(
+            wordEls,
+            { yPercent: 112, rotate: 5 },
+            { yPercent: 0, rotate: 0, duration: 0.95, stagger: 0.045, clearProps: "transform" },
+            0.05,
+          )
+          .from(lead, { y: 18, opacity: 0, duration: 0.7, clearProps: "transform,opacity" }, 0.25)
+          .from(ctas, { y: 16, opacity: 0, duration: 0.65, clearProps: "transform,opacity" }, 0.34)
+          .from(
+            planes,
+            { scale: 0.86, opacity: 0, duration: 0.95, stagger: 0.1, ease: "power3.out" },
+            0.14,
+          )
+          .from(core, { scale: 0.82, opacity: 0, duration: 0.85 }, 0.2)
+          .from(arcs, { opacity: 0, duration: 0.8, stagger: 0.07 }, 0.28)
+          .from(nodes, { y: 16, scale: 0.92, opacity: 0, duration: 0.75, stagger: 0.08 }, 0.32);
+
+        if (pulse) {
+          gsap.fromTo(
+            pulse,
+            { scale: 0.94, opacity: 0.62 },
+            {
+              scale: 1.52,
+              opacity: 0,
+              duration: 2.6,
+              repeat: -1,
+              ease: "power2.out",
+            },
+          );
+        }
+
+        if (aura) {
+          gsap.to(aura, {
+            scale: 1.12,
+            opacity: 0.9,
+            duration: 3.4,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        nodes.forEach((node, idx) => {
+          gsap.to(node, {
+            y: idx % 2 === 0 ? -6 : 6,
+            duration: 2.9 + idx * 0.45,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        });
+
+        // Animate signal packets along cubic Bezier network curves
+        const cubicCurves: Array<[number, number, number, number, number, number, number, number]> = [
+          [280, 220, 215, 155, 165, 130, 108, 112],
+          [280, 220, 345, 148, 396, 126, 450, 108],
+          [280, 220, 208, 280, 158, 308, 104, 326],
+          [280, 220, 350, 286, 400, 310, 456, 328],
+        ];
+        cubicCurves.forEach((pts, idx) => {
+          const el = root.querySelector<SVGCircleElement>(`[data-lh-packet="${idx}"]`);
+          if (!el) return;
+          const [x0, y0, x1, y1, x2, y2, x3, y3] = pts;
+          const proxy = { t: 0 };
+          gsap.set(el, { attr: { cx: x0, cy: y0 }, opacity: 0 });
+          gsap
+            .timeline({ repeat: -1, delay: idx * 0.55, repeatDelay: 0.45 })
+            .to(el, { opacity: 1, duration: 0.15, ease: "none" })
+            .to(
+              proxy,
+              {
+                t: 1,
+                duration: 1.8,
+                ease: "power2.inOut",
+                onUpdate: () => {
+                  const t = proxy.t;
+                  const u = 1 - t;
+                  const tt = t * t;
+                  const uu = u * u;
+                  const uuu = uu * u;
+                  const ttt = tt * t;
+                  const px = uuu * x0 + 3 * uu * t * x1 + 3 * u * tt * x2 + ttt * x3;
+                  const py = uuu * y0 + 3 * uu * t * y1 + 3 * u * tt * y2 + ttt * y3;
+                  el.setAttribute("cx", px.toFixed(1));
+                  el.setAttribute("cy", py.toFixed(1));
+                },
+              },
+              0,
+            )
+            .to(el, { opacity: 0, duration: 0.22, ease: "none" }, "-=0.22");
+        });
+
+        if (rig && stage) {
+          const rxTo = gsap.quickTo(rig, "rotationX", { duration: 0.9, ease: "power3.out" });
+          const ryTo = gsap.quickTo(rig, "rotationY", { duration: 0.9, ease: "power3.out" });
+          const xTo = gsap.quickTo(rig, "x", { duration: 0.9, ease: "power3.out" });
+          const yTo = gsap.quickTo(rig, "y", { duration: 0.9, ease: "power3.out" });
+
+          const onHeroPointer = (e: PointerEvent) => {
+            if (e.pointerType !== "mouse") return;
+            const rect = root.getBoundingClientRect();
+            const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+            const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+            ryTo(nx * 10);
+            rxTo(-ny * 8);
+            xTo(nx * 10);
+            yTo(ny * 8);
+          };
+          const onHeroLeave = () => {
+            rxTo(0);
+            ryTo(0);
+            xTo(0);
+            yTo(0);
+          };
+
+          root.addEventListener("pointermove", onHeroPointer, { passive: true });
+          root.addEventListener("pointerleave", onHeroLeave, { passive: true });
+          return () => {
+            root.removeEventListener("pointermove", onHeroPointer);
+            root.removeEventListener("pointerleave", onHeroLeave);
+          };
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    cleanupLinkedInHero = () => {
+      if (rafTick) gsap.ticker.remove(rafTick);
+      ro?.disconnect();
+      io?.disconnect();
+      removePointer?.();
+      mm?.revert();
+    };
+  }
+
+  initLinkedInHero();
+  document.addEventListener("astro:page-load", initLinkedInHero);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupLinkedInHero?.();
+    cleanupLinkedInHero = null;
+  });
+</script>

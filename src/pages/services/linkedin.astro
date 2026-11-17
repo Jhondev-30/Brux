@@ -1,53 +1,474 @@
 ---
+import { Image } from "astro:assets";
+import { Check as LucideCheck } from "@lucide/astro";
+import { ArrowRight, Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import LinkedInHeroStage from "../../components/services/LinkedInHeroStage.astro";
+import Button from "../../components/ui/Button.astro";
+import CtaButton from "../../components/ui/CtaButton.astro";
 import { bookingUrl } from "../../data/site";
+import { pricingTiers } from "../../data/pricing";
+import reportImg from "../../assets/plans/monthly-report.webp";
+import drMeadePhoto from "../../assets/testimonials/dr-meade.jpg";
+import drMeadeStage from "../../assets/testimonials/dr-meade-stage.webp";
 
-// Datos del PDF de planes del 1 de noviembre de 2026
-const posts = [
-  { plan: "Founder", value: "2" },
-  { plan: "Foundation", value: "2" },
-  { plan: "Growth", value: "4" },
-  { plan: "Complete", value: "8" },
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "LinkedIn Management for Keynote Speakers | Brux",
+  description:
+    "Executive LinkedIn management for keynote speakers: profile positioning, 2 to 8 ghostwritten posts monthly, and organizer network growth.",
+  canonical: "/services/linkedin/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+    { "@type": "ListItem", position: 3, name: "LinkedIn Management", item: `${siteUrl}/services/linkedin/` },
+  ],
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteUrl}/services/linkedin/#service`,
+  name: "Keynote Speaker LinkedIn Management & Personal Branding",
+  serviceType: "Executive LinkedIn Ghostwriting and Network Expansion",
+  provider: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+  },
+  url: `${siteUrl}/services/linkedin/`,
+  description:
+    "Brux optimizes keynote speakers' LinkedIn profiles, ghostwrites thought-leadership content, expands their network with event organizers, and tracks performance monthly.",
+};
+
+const linkedinTierDetails: Record<string, { tag: string; detail: string }> = {
+  founder: {
+    tag: "Founder tier",
+    detail: "Profile makeover, Featured proof setup, and weekly organizer connections.",
+  },
+  foundation: {
+    tag: "Core cadence",
+    detail: "Full positioning, organizer network growth, and consistent monthly authority posts.",
+  },
+  growth: {
+    tag: "Recommended",
+    detail: "Higher posting cadence plus captioned vertical clips edited from your stage talks.",
+  },
+  complete: {
+    tag: "Full scale",
+    detail: "Maximum post cadence, strategic comments, and direct outreach to organizers in your name.",
+  },
+};
+
+const faqs = [
+  {
+    q: "How does LinkedIn help a keynote speaker get booked for events?",
+    a: "Before replying to a pitch or signing a speaking agreement, event organizers search for the speaker on LinkedIn to check real audience engagement, topic clarity, and stage proof. An active, well-positioned profile turns cold pitches into warm replies.",
+  },
+  {
+    q: "How does the ghostwriting process keep my authentic voice?",
+    a: "We extract your core stories, frameworks, and talk takeaways during onboarding and from your existing recordings. We never publish generic platitudes, and every post goes through your approval before it goes live.",
+  },
+  {
+    q: "How do you grow my network with event decision-makers?",
+    a: "Every week we identify conference chairs, VPs of Events, and association directors in your niche and send personal connection requests, expanding your direct audience with the people who book stages.",
+  },
+  {
+    q: "What is added on the Growth and Complete tiers?",
+    a: "Growth raises your cadence to 4 posts a month and adds edited vertical video clips from your talks. Complete includes 8 posts a month, strategic comments on industry accounts, and direct outreach to organizers in your name.",
+  },
 ];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 ---
 
 <MainLayout
-  title="LinkedIn Management for Speakers | Brux"
-  description="Positioning, profile optimization, posts and active network growth with the organizers who book speakers. A monthly report on every result."
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
 >
-  <section>
-    <h1>LinkedIn management for speakers</h1>
-    <p>
-      Before organizers book you, they check your LinkedIn. We make sure what they find backs up
-      every pitch, and grow your network with the people who book speakers.
-    </p>
-    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
-  </section>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-  <section>
-    <h2>Included in every plan</h2>
-    <ul>
-      <li>Positioning and profile optimization</li>
-      <li>Active network expansion with organizers in your niche</li>
-      <li>A monthly report</li>
-    </ul>
-  </section>
+  <div data-linkedin-page-root>
+    <!-- 1. HERO (bg-ink) 3D Speaker Authority & Organizer Network Mesh -->
+    <LinkedInHeroStage />
 
-  <section>
-    <h2>Posts on your profile every month</h2>
-    <ul>
-      {posts.map((p) => (
-        <li><strong>{p.value}</strong> posts a month on the {p.plan} plan</li>
-      ))}
-    </ul>
-  </section>
+    <!-- 2. WHAT WE BUILD ON YOUR LINKEDIN (bg-paper) -->
+    <section
+      class="bg-paper py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="li-system-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-6 border-b border-ink/12 pb-12 lg:grid-cols-12 lg:items-end">
+          <h2
+            id="li-system-title"
+            class="lg:col-span-7 text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+          >
+            What organizers see when they look up your name
+          </h2>
+          <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
+            Most speakers have a profile that reads like an old CV or a dormant feed. We turn your LinkedIn into a live speaker one-sheet.
+          </p>
+        </div>
 
-  <section>
-    <h2>On the Complete plan</h2>
-    <ul>
-      <li>Comments on relevant posts and accounts</li>
-      <li>Direct outreach to organizers in your name</li>
-    </ul>
-    <a href="/pricing/">See plans</a>
-  </section>
+        <!-- Split 1: Positioning + Network Growth -->
+        <div class="grid gap-10 border-b border-ink/12 py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12">
+          <div class="lg:col-span-5">
+            <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
+              Included in every monthly plan
+            </span>
+            <h3 class="mt-4 text-[clamp(1.5rem,1.25rem+1vw,2.25rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-ink">
+              Positioning, profile makeover, and organizer connections
+            </h3>
+            <p class="mt-4 text-base leading-relaxed text-ink/85">
+              An event director should know within five seconds what keynote topics you speak on, who you have spoken for, and how you sound on stage.
+            </p>
+            <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Headline, banner, and About section rewritten around your keynote topics</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Featured section pinned with your demo reel and speaker press kit</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Weekly connection requests sent to event organizers in your niche</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+            <div class="overflow-hidden rounded-[14px] bg-ink">
+              <video
+                class="aspect-video w-full object-cover"
+                muted
+                loop
+                autoplay
+                playsinline
+                disablepictureinpicture
+                preload="metadata"
+                poster="/videos/services/linkedin-strategy-poster.webp"
+                aria-label="Motion graphic showing Brux LinkedIn positioning, voice content, and organizer network growth"
+                data-lp-thumb
+              >
+                <source src="/videos/services/linkedin-strategy.webm" type="video/webm" />
+                <source src="/videos/services/linkedin-strategy.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split 2: Ghostwriting + Monthly Reporting -->
+        <div class="grid gap-10 pt-14 sm:pt-20 lg:grid-cols-12 lg:items-center lg:gap-12">
+          <div class="lg:col-span-5">
+            <span class="inline-flex items-center rounded-full bg-ink px-3 py-1 text-xs font-bold text-paper">
+              2 to 8 posts / month + monthly report
+            </span>
+            <h3 class="mt-4 text-[clamp(1.5rem,1.25rem+1vw,2.25rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-ink">
+              Posts in your voice and measurable follower growth
+            </h3>
+            <p class="mt-4 text-base leading-relaxed text-ink/85">
+              We write 2, 4, or 8 posts a month drawn from your talks, frameworks, and stories — paired with edited talk clips on Growth and Complete — and track every impression and profile view in your monthly report.
+            </p>
+            <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Every post drafted from your real frameworks and approved by you</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Captioned vertical video clips from your talks (Growth &amp; Complete)</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Strategic comments and direct outreach in your name (Complete)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7 overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.4)] ring-1 ring-ink/10 sm:p-3.5">
+            <Image
+              src={reportImg}
+              alt="Monthly report showing LinkedIn follower growth, post impressions and keynotes booked"
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1024px) 56vw, 94vw"
+              class="aspect-video w-full rounded-[14px] object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. POST CADENCE & DELIVERABLES BY PLAN (bg-mist, white bg-paper cards, NO prices shown) -->
+    <section
+      class="bg-mist py-24 text-ink sm:py-32"
+      aria-labelledby="li-tiers-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2
+              id="li-tiers-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              LinkedIn posts and outreach by plan
+            </h2>
+            <p class="mt-3 max-w-[38rem] text-base leading-relaxed text-muted">
+              Every plan includes profile optimization, weekly organizer connections, and direct booking pitches. Compare pricing on our Pricing page.
+            </p>
+          </div>
+          <Button href="/pricing/" variant="secondary-light" arrow>See plans &amp; pricing</Button>
+        </div>
+
+        <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {pricingTiers.map((t) => {
+            const meta = linkedinTierDetails[t.id];
+            return (
+              <li class="flex">
+                <a
+                  href={`/pricing/#${t.id}`}
+                  class:list={[
+                    "group flex flex-1 flex-col justify-between rounded-[20px] bg-paper p-7 text-ink shadow-[0_14px_32px_-24px_rgb(10_10_10/0.25)] transition-transform duration-200 hover:-translate-y-1",
+                    t.featured
+                      ? "ring-2 ring-stage-text"
+                      : "border border-ink/12 hover:border-ink/30",
+                  ]}
+                >
+                  <div>
+                    <div class="flex items-baseline justify-between gap-2">
+                      <h3 class="text-lg font-extrabold text-ink">{t.name}</h3>
+                      <span
+                        class:list={[
+                          "rounded-full px-2.5 py-0.5 text-xs font-bold",
+                          t.featured ? "bg-stage-text text-paper" : "bg-mist text-ink",
+                        ]}
+                      >
+                        {meta.tag}
+                      </span>
+                    </div>
+
+                    <p class="mt-6 text-5xl font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums">
+                      {t.posts}
+                    </p>
+                    <p class="mt-2 text-sm font-semibold text-stage-text">
+                      LinkedIn posts / month
+                    </p>
+
+                    <p class="mt-4 border-t border-ink/10 pt-4 text-sm leading-relaxed text-muted">
+                      {meta.detail}
+                    </p>
+                  </div>
+
+                  <span class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink group-hover:text-stage-text">
+                    <span>See {t.name} on Pricing</span>
+                    <MorphIcon icon={ArrowRight} size={15} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. CLIENT PROOF: DR. PHILLIP MEADE (bg-stage-text) -->
+    <section
+      class="bg-stage-text py-24 text-paper sm:py-32"
+      aria-labelledby="li-proof-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <h2 id="li-proof-title" class="sr-only">LinkedIn management client testimonial</h2>
+        <div class="grid overflow-hidden rounded-[26px] bg-paper text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)] lg:grid-cols-[28rem_minmax(0,1fr)]">
+          <div class="relative aspect-[3/2] bg-ink lg:aspect-auto">
+            <Image
+              src={drMeadeStage}
+              alt="Dr. Phillip Meade speaking on stage"
+              widths={[480, 832]}
+              sizes="(min-width: 1024px) 28rem, 100vw"
+              class="absolute inset-0 size-full object-cover object-[40%_30%]"
+            />
+          </div>
+
+          <figure class="flex flex-col justify-between gap-8 p-7 sm:p-10 lg:p-12">
+            <figcaption class="flex items-center gap-4">
+              <Image
+                src={drMeadePhoto}
+                alt="Dr. Phillip Meade"
+                width={112}
+                height={112}
+                class="size-14 shrink-0 rounded-full object-cover ring-4 ring-mist"
+              />
+              <div>
+                <p class="text-lg font-extrabold text-ink">Dr. Phillip Meade</p>
+                <p class="text-sm text-muted">Former NASA Engineer &amp; Keynote Speaker</p>
+              </div>
+            </figcaption>
+
+            <blockquote class="text-[clamp(1.1875rem,1.05rem+0.5vw,1.4375rem)] leading-relaxed text-ink">
+              “Over the course of our engagement, they've been instrumental in growing my LinkedIn presence and getting me booked for podcasts and speaking engagements I wouldn't have had access to on my own.”
+            </blockquote>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-5">
+              <p class="inline-flex items-center gap-2.5 rounded-full bg-mist py-2 pr-4 pl-2.5 text-sm font-bold text-ink">
+                <span class="grid size-6 place-items-center rounded-full bg-stage text-paper">
+                  <LucideCheck class="size-3.5 text-paper" stroke-width={2.5} aria-hidden="true" />
+                </span>
+                LinkedIn growth + podcast &amp; speaking bookings
+              </p>
+              <a
+                href="https://www.linkedin.com/in/philliptmeade/"
+                target="_blank"
+                rel="noopener"
+                class="text-sm font-bold text-stage-text hover:underline"
+              >
+                View Dr. Meade's LinkedIn ↗
+              </a>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ + SIBLING SERVICES (bg-ink) -->
+    <section
+      id="faq"
+      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      aria-labelledby="li-faq-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+          <div>
+            <h2
+              id="li-faq-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Questions about LinkedIn management
+            </h2>
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+              How we write in your voice, grow your organizer network, and pair LinkedIn with direct booking pitches.
+            </p>
+
+            <div class="mt-10 space-y-4 border-t border-paper/10 pt-8">
+              <p class="text-sm font-bold text-paper">Paired with LinkedIn in every plan:</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a
+                  href="/services/booking/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Direct monthly outreach to event organizers in your niche.</p>
+                </a>
+                <a
+                  href="/services/content/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker content &amp; clips →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Edited vertical video clips from your talks for your LinkedIn feed.</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            {faqs.map((f) => (
+              <details class="group relative border-b border-paper/10">
+                <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+                  <h3 class="text-pretty">{f.q}</h3>
+                  <span
+                    aria-hidden="true"
+                    class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
+                  >
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  </span>
+                </summary>
+                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FINAL CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="li-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="li-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Make your LinkedIn close the stage
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+          Book a 20-minute call. We will review your current profile and show you how we would position your topics for event organizers.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See pricing</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </MainLayout>
+
+<script>
+  let io: IntersectionObserver | null = null;
+
+  function initLinkedInPage() {
+    io?.disconnect();
+    io = null;
+
+    const root = document.querySelector<HTMLElement>("[data-linkedin-page-root]");
+    if (!root) return;
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const thumbs = root.querySelectorAll<HTMLVideoElement>("[data-lp-thumb]");
+    if (thumbs.length && !reduce) {
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const v = e.target as HTMLVideoElement;
+            if (e.isIntersecting) v.play().catch(() => {});
+            else v.pause();
+          }
+        },
+        { threshold: 0.35 },
+      );
+      thumbs.forEach((v) => io!.observe(v));
+    }
+  }
+
+  document.addEventListener("astro:page-load", initLinkedInPage);
+  document.addEventListener("astro:before-swap", () => {
+    io?.disconnect();
+    io = null;
+  });
+</script>

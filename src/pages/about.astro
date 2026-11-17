@@ -1,0 +1,259 @@
+---
+import { Check, X } from "@lucide/astro";
+import { ArrowRight } from "lucide";
+import MorphIcon from "morphicons/astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import AboutHeroStage from "../components/about/AboutHeroStage.astro";
+import MeetTheTeam from "../components/home/MeetTheTeam.astro";
+import CtaButton from "../components/ui/CtaButton.astro";
+import { bookingUrl } from "../data/site";
+
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "About Brux: Zero-Commission Speaker Booking Agency | Brux",
+  description:
+    "Why we founded Brux: helping keynote speakers land consistent paid stages with 0% commission, niche-only outreach, and LinkedIn positioning.",
+  canonical: "/about/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "About", item: `${siteUrl}/about/` },
+  ],
+};
+
+const aboutSchema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": `${siteUrl}/about/#aboutpage`,
+  url: `${siteUrl}/about/`,
+  name: "About Brux",
+  description: pageMeta.description,
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  mainEntity: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+    sameAs: [
+      "https://www.linkedin.com/in/everth-ferrer/",
+      "https://www.linkedin.com/in/jhon-perozo/",
+    ],
+    founder: [
+      {
+        "@type": "Person",
+        name: "Everth Ferrer",
+        jobTitle: "CEO & Co-Founder",
+        sameAs: "https://www.linkedin.com/in/everth-ferrer/",
+      },
+      {
+        "@type": "Person",
+        name: "Jhon Perozo",
+        jobTitle: "Co-Founder & Head of Web",
+        sameAs: "https://www.linkedin.com/in/jhon-perozo/",
+      },
+    ],
+    employee: [
+      {
+        "@type": "Person",
+        name: "Everth Ferrer",
+        jobTitle: "CEO & Co-Founder",
+        sameAs: "https://www.linkedin.com/in/everth-ferrer/",
+      },
+      {
+        "@type": "Person",
+        name: "Jhon Perozo",
+        jobTitle: "Co-Founder & Head of Web",
+        sameAs: "https://www.linkedin.com/in/jhon-perozo/",
+      },
+      {
+        "@type": "Person",
+        name: "Maria Muñoz",
+        jobTitle: "Head of Customer Success",
+        sameAs: "https://www.linkedin.com/in/mar%C3%ADa-mu%C3%B1oz-49479918b/",
+      },
+    ],
+  },
+};
+
+const industryContrasts = [
+  {
+    problem: "Random calls for speakers & unpaid rooms",
+    solution: "Verified niche event discovery",
+    detail:
+      "Too many platforms send generic event blasts without checking fit. We combine research and custom automations to pitch only events that match your topics and audience.",
+  },
+  {
+    problem: "Pitching before your profile is stage-ready",
+    solution: "Authority built before the pitch",
+    detail:
+      "Before organizers reply, they search your name. We strengthen your LinkedIn, demo reel, press kit, and speaker website first so every pitch lands on credible ground.",
+  },
+  {
+    problem: "20%–30% bureau cuts & closed doors",
+    solution: "0% commission on your fees",
+    detail:
+      "Traditional bureaus turn away emerging speakers and take steep commissions on every stage. We work on transparent monthly plans and you keep 100% of your speaking fee.",
+  },
+];
+---
+
+<MainLayout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} />
+  </Fragment>
+
+  <div data-about-page>
+    <!-- 1. HERO (bg-ink): escena 3D GSAP + MotionPathPlugin -->
+    <AboutHeroStage />
+
+    <!-- 2. MISSION & VISION (bg-mist): bloques editoriales con filetes -->
+    <section
+      id="mission"
+      class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="mission-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
+          <div class="lg:col-span-5">
+            <h2
+              id="mission-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              Our mission and vision for speakers
+            </h2>
+            <p class="mt-5 max-w-[36rem] text-base leading-relaxed text-pretty text-muted sm:text-lg">
+              Our mission has always been to help keynote speakers land events regularly and with greater consistency—by fixing their online positioning first and matching them strictly to stages in their niche.
+            </p>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="divide-y divide-ink/12 border-t border-b border-ink/12">
+              <article class="pt-8 pb-7">
+                <h3 class="text-xl font-extrabold tracking-[-0.015em] text-balance text-ink sm:text-2xl">
+                  Our Mission: Consistent, niche-matched bookings
+                </h3>
+                <p class="mt-3 max-w-[36rem] text-base leading-relaxed text-pretty text-ink/82">
+                  We saw too many booking websites offer pitches without first improving a speaker's profile, visibility, or credibility—or send generic event listings that had nothing to do with the speaker's niche. Brux fixes that formula: we build your authority on LinkedIn and the web, package your demo reel and press kit, and pitch you directly to events that genuinely fit your talk.
+                </p>
+              </article>
+
+              <article class="pt-8 pb-7">
+                <h3 class="text-xl font-extrabold tracking-[-0.015em] text-balance text-ink sm:text-2xl">
+                  Our Vision: Stages earned on craft, not bureau fees
+                </h3>
+                <p class="mt-3 max-w-[36rem] text-base leading-relaxed text-pretty text-ink/82">
+                  Speakers shouldn't be overlooked because they are emerging or lose a percentage of every honorarium to a traditional bureau. Our vision is a long-term backstage studio where speakers build steady demand, own every organizer relationship inside a transparent CRM, and keep 100% of their speaking fees.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. WHY THE OLD MODEL FAILS (bg-ink-raised): editorial 3-column contrast ledger without numbered rows -->
+    <section
+      id="why-brux"
+      class="scroll-mt-24 bg-ink-raised py-20 text-paper sm:py-28 lg:py-32"
+      aria-labelledby="why-brux-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-6 pb-12 lg:grid-cols-12 lg:items-end lg:pb-14">
+          <h2
+            id="why-brux-title"
+            class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-paper lg:col-span-7"
+          >
+            Why the old speaker booking model fails
+          </h2>
+          <p class="max-w-[36rem] text-base leading-relaxed text-pretty text-muted-on-ink sm:text-lg lg:col-span-5">
+            Brux was built to replace the three habits that hold independent and emerging keynote speakers back.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 divide-y divide-paper/12 border-t border-b border-paper/14 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+          {
+            industryContrasts.map((item, idx) => (
+              <article
+                class:list={[
+                  "group flex flex-col py-8 sm:py-10",
+                  idx === 0 && "lg:pr-8 lg:pl-0",
+                  idx === 1 && "lg:px-8",
+                  idx === 2 && "lg:pr-0 lg:pl-8",
+                ]}
+              >
+                <div class="flex items-start gap-3 border-b border-paper/10 pb-6 lg:min-h-[4.5rem]">
+                  <span
+                    class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-paper/14 bg-paper/[0.04] text-muted-on-ink transition-colors duration-200 group-hover:border-paper/24 group-hover:text-paper/80"
+                    aria-hidden="true"
+                  >
+                    <X class="size-3.5" stroke-width={2} />
+                  </span>
+                  <p class="text-sm leading-snug font-medium text-muted-on-ink">
+                    <span class="sr-only">Old model: </span>
+                    {item.problem}
+                  </p>
+                </div>
+
+                <div class="flex flex-1 flex-col pt-7">
+                  <div class="flex items-start gap-3">
+                    <span
+                      class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-stage-glow/40 bg-stage/15 text-stage-glow transition-colors duration-200 group-hover:border-stage-glow/75 group-hover:bg-stage/25"
+                      aria-hidden="true"
+                    >
+                      <Check class="size-3.5" stroke-width={2.25} />
+                    </span>
+                    <h3 class="text-xl leading-snug font-extrabold tracking-[-0.015em] text-balance text-paper">
+                      <span class="sr-only">With Brux: </span>
+                      {item.solution}
+                    </h3>
+                  </div>
+                  <p class="mt-4 max-w-[34rem] pl-9 text-base leading-relaxed text-pretty text-paper/85">
+                    {item.detail}
+                  </p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MEET THE TEAM (bg-paper): universo de partículas contenido dentro de #about -->
+    <MeetTheTeam />
+
+    <!-- 5. CLOSING CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="about-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="about-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Ready to work with our backstage team?
+        </h2>
+        <p class="mt-6 max-w-[36rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper">
+          Tell us your keynote topics and where you want to speak next. We'll walk you through our plans and the events in your niche.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See plans &amp; pricing</span>
+            <MorphIcon icon={ArrowRight} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</MainLayout>

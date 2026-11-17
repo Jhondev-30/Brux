@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brux Services Architecture — Content Gap & Asset Readiness Tracker</title>
+  <style>
+    :root {
+      --color-ink: #0A0A0A;
+      --color-ink-raised: #161616;
+      --color-ink-elevated: #1F1F1F;
+      --color-paper: #FFFFFF;
+      --color-mist: #F2F2F2;
+      --color-stage: #E50C13;
+      --color-stage-glow: #FF4D47;
+      --color-stage-text: #C20A18;
+      --color-muted: #5C5C5C;
+      --color-muted-on-ink: #A8A8A8;
+      --border-subtle: rgba(255, 255, 255, 0.12);
+      --border-focus: rgba(229, 12, 19, 0.6);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-ink);
+      color: var(--color-paper);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-stage-glow);
+      margin-bottom: 0.75rem;
+    }
+
+    .brand-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-stage);
+      display: inline-block;
+      box-shadow: 0 0 10px var(--color-stage);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 1.6rem + 1.8vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--color-muted-on-ink);
+      max-width: 850px;
+      line-height: 1.6;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--color-muted-on-ink);
+    }
+
+    .meta-bar span strong {
+      color: var(--color-paper);
+    }
+
+    /* KPI CARDS */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .kpi-card {
+      background: var(--color-ink-raised);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-label {
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-muted-on-ink);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--color-paper);
+      margin: 0.4rem 0;
+    }
+
+    .kpi-sub {
+      font-size: 0.8125rem;
+      color: var(--color-muted-on-ink);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--color-stage);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* FILTERS AND CONTROLS */
+    .controls-bar {
+      background: var(--color-ink-raised);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 0.8125rem;
+      color: var(--color-muted-on-ink);
+      font-weight: 600;
+    }
+
+    select, input[type="text"] {
+      background: var(--color-ink);
+      border: 1px solid var(--border-subtle);
+      color: var(--color-paper);
+      padding: 0.5rem 0.875rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--color-stage-glow);
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--color-muted-on-ink);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--color-paper);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* TABLE */
+    .table-container {
+      background: var(--color-ink-raised);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow-x: auto;
+      box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.7);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    thead th {
+      background: var(--color-ink-elevated);
+      color: var(--color-paper);
+      font-weight: 700;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transition: background-color 0.15s ease;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tbody tr.resolved {
+      opacity: 0.55;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    tbody tr.resolved td.gap-desc {
+      text-decoration: line-through;
+    }
+
+    td {
+      padding: 1.125rem 1.25rem;
+      vertical-align: top;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .badge-critical {
+      background: rgba(229, 12, 19, 0.18);
+      color: var(--color-stage-glow);
+      border: 1px solid rgba(229, 12, 19, 0.35);
+    }
+
+    .badge-high {
+      background: rgba(255, 165, 0, 0.16);
+      color: #FFB347;
+      border: 1px solid rgba(255, 165, 0, 0.3);
+    }
+
+    .badge-medium {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-paper);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .badge-status-missing {
+      background: rgba(229, 12, 19, 0.12);
+      color: #FF8080;
+      border: 1px solid rgba(229, 12, 19, 0.25);
+    }
+
+    .badge-status-review {
+      background: rgba(255, 215, 0, 0.12);
+      color: #FFE066;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+    }
+
+    .badge-status-resolved {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ECC71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .page-tag {
+      font-family: monospace;
+      font-size: 0.8125rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      color: var(--color-paper);
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .owner-tag {
+      font-weight: 600;
+      color: var(--color-paper);
+    }
+
+    .checkbox-col {
+      text-align: center;
+      width: 44px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--color-stage);
+    }
+
+    /* SECTION DETAIL CARDS */
+    .guidance-section {
+      margin-top: 3.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2.5rem;
+    }
+
+    .guidance-section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .guidance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .guidance-card {
+      background: var(--color-ink-raised);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+
+    .guidance-card h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-stage-glow);
+      margin-bottom: 0.75rem;
+    }
+
+    .guidance-card p {
+      font-size: 0.875rem;
+      color: var(--color-muted-on-ink);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+
+    .guidance-card ul {
+      padding-left: 1.2rem;
+      font-size: 0.875rem;
+      color: var(--color-paper);
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 4rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: var(--color-muted-on-ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand-badge">Brux Production Architecture</div>
+      <h1>Services Content Gap & Asset Readiness Tracker</h1>
+      <p class="subtitle">
+        Internal inventory of missing empirical data, speaker case studies, technical specifications, and client proof assets needed to replace wireframe placeholders across the 5 services routes.
+      </p>
+      <div class="meta-bar">
+        <span>Target Repository: <strong>Brux-website</strong></span>
+        <span>Routes Audited: <strong>5 (/services/*)</strong></span>
+        <span>Last Audit: <strong>November 2026</strong></span>
+        <span>Audit Status: <strong style="color: var(--color-stage-glow);">14 Action Items Identified</strong></span>
+      </div>
+    </header>
+
+    <!-- KPI SUMMARY DASHBOARD -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Overall Content Readiness</span>
+        <div class="kpi-value" id="kpi-readiness">79%</div>
+        <span class="kpi-sub" id="kpi-resolved-text">3 of 14 items verified</span>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="kpi-progress-bar" style="width: 79%;"></div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Critical Blockers</span>
+        <div class="kpi-value" style="color: var(--color-stage-glow);" id="kpi-critical">4</div>
+        <span class="kpi-sub">Must resolve before client launch</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">High Priority Gaps</span>
+        <div class="kpi-value" style="color: #FFB347;" id="kpi-high">6</div>
+        <span class="kpi-sub">Case studies, specs, SLA metrics</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Medium Priority Refinements</span>
+        <div class="kpi-value" style="color: var(--color-paper);" id="kpi-medium">4</div>
+        <span class="kpi-sub">Video testimonials & downloads</span>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE CONTROLS BAR -->
+    <div class="controls-bar">
+      <div class="filter-group">
+        <label class="filter-label" for="filter-severity">Severity:</label>
+        <select id="filter-severity">
+          <option value="ALL">All Severities</option>
+          <option value="CRITICAL">Critical Only</option>
+          <option value="HIGH">High Only</option>
+          <option value="MEDIUM">Medium Only</option>
+        </select>
+
+        <label class="filter-label" for="filter-page">Route:</label>
+        <select id="filter-page">
+          <option value="ALL">All Routes</option>
+          <option value="/services/">/services/ (Hub)</option>
+          <option value="/services/booking/">/services/booking/</option>
+          <option value="/services/linkedin/">/services/linkedin/</option>
+          <option value="/services/content/">/services/content/</option>
+          <option value="/services/web-design/">/services/web-design/</option>
+        </select>
+
+        <label class="filter-label" for="filter-owner">Owner:</label>
+        <select id="filter-owner">
+          <option value="ALL">All Owners</option>
+          <option value="Jhon Cordero">Jhon Cordero</option>
+          <option value="Everth Ferrer">Everth Ferrer</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <input type="text" id="search-input" placeholder="Search missing items..." />
+        <button class="btn-reset" id="btn-reset-filters">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- MAIN TRACKING TABLE -->
+    <div class="table-container">
+      <table id="gaps-table">
+        <thead>
+          <tr>
+            <th class="checkbox-col">Done</th>
+            <th>ID</th>
+            <th>Route</th>
+            <th>Category</th>
+            <th>Missing Item & Required Asset</th>
+            <th>Severity</th>
+            <th>Action Owner</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Row 1 -->
+          <tr data-id="G-01" data-severity="CRITICAL" data-page="/services/booking/" data-owner="Everth Ferrer">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-01"></td>
+            <td><strong>G-01</strong></td>
+            <td><span class="page-tag">/services/booking/</span></td>
+            <td><strong>Client Metrics</strong></td>
+            <td class="gap-desc">
+              <strong>Empirical Stage Booking Velocity:</strong> Exact average number of confirmed stages booked per speaker within their first 90 and 180 days on the Founder, Growth, and Complete retainers.
+            </td>
+            <td><span class="badge badge-critical">CRITICAL</span></td>
+            <td><span class="owner-tag">Everth Ferrer</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-01">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 2 -->
+          <tr data-id="G-02" data-severity="HIGH" data-page="/services/booking/" data-owner="Everth Ferrer">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-02"></td>
+            <td><strong>G-02</strong></td>
+            <td><span class="page-tag">/services/booking/</span></td>
+            <td><strong>Client Metrics</strong></td>
+            <td class="gap-desc">
+              <strong>Keynote Fee Escalation Data:</strong> Verifiable case study demonstrating fee growth (e.g. speaker fees rising from $3,500 to $10,000+ per engagement through targeted positioning).
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Everth Ferrer</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-02">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 3 -->
+          <tr data-id="G-03" data-severity="MEDIUM" data-page="/services/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-03"></td>
+            <td><strong>G-03</strong></td>
+            <td><span class="page-tag">/services/</span></td>
+            <td><strong>Client Metrics</strong></td>
+            <td class="gap-desc">
+              <strong>Aggregate Outreach Metrics:</strong> Total conference organizers pitched across 2025–2026, cumulative audience members addressed, and average organizer reply percentage.
+            </td>
+            <td><span class="badge badge-medium">MEDIUM</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-review" id="status-G-03">IN REVIEW</span></td>
+          </tr>
+
+          <!-- Row 4 -->
+          <tr data-id="G-04" data-severity="CRITICAL" data-page="/services/" data-owner="Everth Ferrer">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-04"></td>
+            <td><strong>G-04</strong></td>
+            <td><span class="page-tag">/services/</span></td>
+            <td><strong>Speaker Roster</strong></td>
+            <td class="gap-desc">
+              <strong>Roster Breadth Expansion:</strong> Currently only Dr. Meade (Leadership/NASA) and Angie Pichardo (Life/Faith) are documented. Need 2–3 additional speaker profiles in AI/Tech, Corporate Sales, or Healthcare.
+            </td>
+            <td><span class="badge badge-critical">CRITICAL</span></td>
+            <td><span class="owner-tag">Everth Ferrer</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-04">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 5 -->
+          <tr data-id="G-05" data-severity="HIGH" data-page="/services/content/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-05"></td>
+            <td><strong>G-05</strong></td>
+            <td><span class="page-tag">/services/content/</span></td>
+            <td><strong>Speaker Roster</strong></td>
+            <td class="gap-desc">
+              <strong>Philip Jayhawk Chan Full Case Study:</strong> Video reel exists in public repo (`philip-chan-reel.mp4`), but lacks written testimonial quote, speaker fee range, and topic category in CMS.
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-05">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 6 -->
+          <tr data-id="G-06" data-severity="MEDIUM" data-page="/services/linkedin/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-06"></td>
+            <td><strong>G-06</strong></td>
+            <td><span class="page-tag">/services/linkedin/</span></td>
+            <td><strong>Speaker Roster</strong></td>
+            <td class="gap-desc">
+              <strong>Dr. Meade Video Testimonial:</strong> Dr. Phillip Meade's testimonial is currently text-only. Requesting a short 30–60 second video clip for social proof parity with Angie Pichardo.
+            </td>
+            <td><span class="badge badge-medium">MEDIUM</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-review" id="status-G-06">IN REVIEW</span></td>
+          </tr>
+
+          <!-- Row 7 -->
+          <tr data-id="G-07" data-severity="HIGH" data-page="/services/content/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-07"></td>
+            <td><strong>G-07</strong></td>
+            <td><span class="page-tag">/services/content/</span></td>
+            <td><strong>Content Workflow</strong></td>
+            <td class="gap-desc">
+              <strong>Raw Video Footage Ingestion Guidelines:</strong> Minimum resolution requirements (1080p 60fps or 4K), audio specs (isolated lavalier vs house audio), accepted file containers, and Dropbox/Drive intake links.
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-07">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 8 -->
+          <tr data-id="G-08" data-severity="MEDIUM" data-page="/services/content/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-08"></td>
+            <td><strong>G-08</strong></td>
+            <td><span class="page-tag">/services/content/</span></td>
+            <td><strong>Content Workflow</strong></td>
+            <td class="gap-desc">
+              <strong>Demo Reel Revision SLA & Policy:</strong> Explicit turnaround guarantee (e.g. initial cut in 10 business days), number of feedback cycles included (standard: 2 rounds), and rush fees for upcoming conferences.
+            </td>
+            <td><span class="badge badge-medium">MEDIUM</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-review" id="status-G-08">IN REVIEW</span></td>
+          </tr>
+
+          <!-- Row 9 -->
+          <tr data-id="G-09" data-severity="HIGH" data-page="/services/content/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-09"></td>
+            <td><strong>G-09</strong></td>
+            <td><span class="page-tag">/services/content/</span></td>
+            <td><strong>Content Workflow</strong></td>
+            <td class="gap-desc">
+              <strong>Downloadable Press Kit Sample PDF:</strong> An actual sample one-sheet PDF asset in `public/assets/` that visitors can download to evaluate the press kit design quality.
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-09">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 10 -->
+          <tr data-id="G-10" data-severity="CRITICAL" data-page="/services/web-design/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-10"></td>
+            <td><strong>G-10</strong></td>
+            <td><span class="page-tag">/services/web-design/</span></td>
+            <td><strong>Web Design Scope</strong></td>
+            <td class="gap-desc">
+              <strong>Hosting, Maintenance & Domain Policy:</strong> Specification of whether global CDN hosting (Cloudflare/Vercel) is included indefinitely or billed annually, SSL certificate management, and DNS setup assistance.
+            </td>
+            <td><span class="badge badge-critical">CRITICAL</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-10">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 11 -->
+          <tr data-id="G-11" data-severity="HIGH" data-page="/services/web-design/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-11"></td>
+            <td><strong>G-11</strong></td>
+            <td><span class="page-tag">/services/web-design/</span></td>
+            <td><strong>Web Design Scope</strong></td>
+            <td class="gap-desc">
+              <strong>$1,100 Scope Boundaries & Upgrades:</strong> Exact section count included in base $1,100 price (e.g. up to 6 sections, 3 keynote topics), and pricing structure for custom integrations (e.g. book checkout, multi-language).
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-11">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 12 -->
+          <tr data-id="G-12" data-severity="MEDIUM" data-page="/services/web-design/" data-owner="Jhon Cordero">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-12"></td>
+            <td><strong>G-12</strong></td>
+            <td><span class="page-tag">/services/web-design/</span></td>
+            <td><strong>Web Design Scope</strong></td>
+            <td class="gap-desc">
+              <strong>Second Production Site Demo:</strong> Supplementing `graceafterthegrave.com` with a second live speaker website URL or high-fidelity mockup to demonstrate stylistic range.
+            </td>
+            <td><span class="badge badge-medium">MEDIUM</span></td>
+            <td><span class="owner-tag">Jhon Cordero</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-12">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 13 -->
+          <tr data-id="G-13" data-severity="HIGH" data-page="/services/booking/" data-owner="Everth Ferrer">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-13"></td>
+            <td><strong>G-13</strong></td>
+            <td><span class="page-tag">/services/booking/</span></td>
+            <td><strong>CRM Technology</strong></td>
+            <td class="gap-desc">
+              <strong>CRM Platform Architecture:</strong> Formal name and screenshots of the client-facing tracking environment (e.g. Notion Client Portal vs Airtable Database vs HubSpot) with a sanitized UI preview.
+            </td>
+            <td><span class="badge badge-high">HIGH</span></td>
+            <td><span class="owner-tag">Everth Ferrer</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-13">ACTION REQ</span></td>
+          </tr>
+
+          <!-- Row 14 -->
+          <tr data-id="G-14" data-severity="CRITICAL" data-page="/services/booking/" data-owner="Everth Ferrer">
+            <td class="checkbox-col"><input type="checkbox" data-checkbox="G-14"></td>
+            <td><strong>G-14</strong></td>
+            <td><span class="page-tag">/services/booking/</span></td>
+            <td><strong>CRM Technology</strong></td>
+            <td class="gap-desc">
+              <strong>Geographic Outreach Coverage:</strong> Definitive statement on whether outreach covers US & Canada exclusively, or expands to UK, European Union, and Latin American events.
+            </td>
+            <td><span class="badge badge-critical">CRITICAL</span></td>
+            <td><span class="owner-tag">Everth Ferrer</span></td>
+            <td><span class="badge badge-status-missing" id="status-G-14">ACTION REQ</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- OPERATIONAL GUIDANCE AND SPECIFICATION STANDARDS -->
+    <section class="guidance-section">
+      <h2>Implementation & Asset Ingestion Standards</h2>
+      <div class="guidance-grid">
+        <div class="guidance-card">
+          <h3>1. Metric Verification Rule</h3>
+          <p>
+            Never publish invented statistics (e.g. "98.4% success rate"). All performance claims must be backed by documented CRM outreach logs and signed event confirmations.
+          </p>
+          <ul>
+            <li>Retain copies of organizer booking confirmations.</li>
+            <li>Maintain client permission on all published fee brackets.</li>
+          </ul>
+        </div>
+
+        <div class="guidance-card">
+          <h3>2. Speaker Roster Ingestion</h3>
+          <p>
+            When onboarding new featured speakers to `/services/` and `/pricing/`, collect standard media kit assets:
+          </p>
+          <ul>
+            <li>High-resolution stage photography (min 2400x1600px).</li>
+            <li>Signed testimonial release or verified LinkedIn quote.</li>
+            <li>Link to live personal brand site or LinkedIn profile.</li>
+          </ul>
+        </div>
+
+        <div class="guidance-card">
+          <h3>3. Web Design Delivery SLA</h3>
+          <p>
+            To sustain the $1,100 fixed price without scope creep, provide clients with the standardized Brux Web Intake Form before coding begins:
+          </p>
+          <ul>
+            <li>Keynote topic titles, 3 learning takeaways per topic.</li>
+            <li>Direct embedding link for video reel (YouTube/Vimeo/MP4).</li>
+            <li>Google Calendar or Calendly booking appointment link.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Brux Internal Documentation &bull; Generated for Milestone 3 (M3) Execution &bull; Confidential</p>
+    </footer>
+  </div>
+
+  <script>
+    // State Persistence and Table Filtering
+    const STORAGE_KEY = "brux_content_gaps_v1";
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveState(state) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    const state = loadState();
+
+    // Elements
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][data-checkbox]');
+    const filterSeverity = document.getElementById("filter-severity");
+    const filterPage = document.getElementById("filter-page");
+    const filterOwner = document.getElementById("filter-owner");
+    const searchInput = document.getElementById("search-input");
+    const btnReset = document.getElementById("btn-reset-filters");
+    const rows = document.querySelectorAll("#table-body tr");
+
+    // KPI Elements
+    const kpiReadiness = document.getElementById("kpi-readiness");
+    const kpiResolvedText = document.getElementById("kpi-resolved-text");
+    const kpiProgressBar = document.getElementById("kpi-progress-bar");
+    const kpiCritical = document.getElementById("kpi-critical");
+    const kpiHigh = document.getElementById("kpi-high");
+    const kpiMedium = document.getElementById("kpi-medium");
+
+    function updateRowUI(row, isChecked) {
+      const id = row.getAttribute("data-id");
+      const statusBadge = document.getElementById(`status-${id}`);
+      if (isChecked) {
+        row.classList.add("resolved");
+        if (statusBadge) {
+          statusBadge.textContent = "VERIFIED";
+          statusBadge.className = "badge badge-status-resolved";
+        }
+      } else {
+        row.classList.remove("resolved");
+        if (statusBadge) {
+          const originalStatus = id === "G-03" || id === "G-06" || id === "G-08" ? "IN REVIEW" : "ACTION REQ";
+          const originalClass = originalStatus === "IN REVIEW" ? "badge badge-status-review" : "badge badge-status-missing";
+          statusBadge.textContent = originalStatus;
+          statusBadge.className = originalClass;
+        }
+      }
+    }
+
+    function recalculateKPIs() {
+      const total = rows.length;
+      let resolvedCount = 0;
+      let remainingCrit = 0;
+      let remainingHigh = 0;
+      let remainingMed = 0;
+
+      rows.forEach(r => {
+        const id = r.getAttribute("data-id");
+        const isDone = !!state[id];
+        const sev = r.getAttribute("data-severity");
+
+        if (isDone) {
+          resolvedCount++;
+        } else {
+          if (sev === "CRITICAL") remainingCrit++;
+          else if (sev === "HIGH") remainingHigh++;
+          else if (sev === "MEDIUM") remainingMed++;
+        }
+      });
+
+      const pct = Math.round((resolvedCount / total) * 100);
+      kpiReadiness.textContent = `${pct}%`;
+      kpiResolvedText.textContent = `${resolvedCount} of ${total} items verified`;
+      kpiProgressBar.style.width = `${pct}%`;
+      kpiCritical.textContent = remainingCrit;
+      kpiHigh.textContent = remainingHigh;
+      kpiMedium.textContent = remainingMed;
+    }
+
+    // Initialize checkboxes
+    checkboxes.forEach(cb => {
+      const id = cb.getAttribute("data-checkbox");
+      if (state[id]) {
+        cb.checked = true;
+        const row = document.querySelector(`tr[data-id="${id}"]`);
+        if (row) updateRowUI(row, true);
+      }
+
+      cb.addEventListener("change", (e) => {
+        state[id] = e.target.checked;
+        saveState(state);
+        const row = document.querySelector(`tr[data-id="${id}"]`);
+        if (row) updateRowUI(row, e.target.checked);
+        recalculateKPIs();
+      });
+    });
+
+    // Filtering logic
+    function applyFilters() {
+      const sevFilter = filterSeverity.value;
+      const pageFilter = filterPage.value;
+      const ownerFilter = filterOwner.value;
+      const searchQuery = searchInput.value.toLowerCase().trim();
+
+      rows.forEach(row => {
+        const sev = row.getAttribute("data-severity");
+        const page = row.getAttribute("data-page");
+        const owner = row.getAttribute("data-owner");
+        const text = row.innerText.toLowerCase();
+
+        const matchSev = sevFilter === "ALL" || sev === sevFilter;
+        const matchPage = pageFilter === "ALL" || page === pageFilter;
+        const matchOwner = ownerFilter === "ALL" || owner === ownerFilter;
+        const matchSearch = !searchQuery || text.includes(searchQuery);
+
+        if (matchSev && matchPage && matchOwner && matchSearch) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    filterSeverity.addEventListener("change", applyFilters);
+    filterPage.addEventListener("change", applyFilters);
+    filterOwner.addEventListener("change", applyFilters);
+    searchInput.addEventListener("input", applyFilters);
+
+    btnReset.addEventListener("click", () => {
+      filterSeverity.value = "ALL";
+      filterPage.value = "ALL";
+      filterOwner.value = "ALL";
+      searchInput.value = "";
+      applyFilters();
+    });
+
+    recalculateKPIs();
+  </script>
+</body>
+</html>

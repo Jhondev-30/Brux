@@ -6,14 +6,15 @@ import ServicesList from "../components/home/ServicesList.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import OurWork from "../components/home/OurWork.astro";
 import PricingTeaser from "../components/home/PricingTeaser.astro";
+import MeetTheTeam from "../components/home/MeetTheTeam.astro";
 import Faq from "../components/home/Faq.astro";
 import StatementScene from "../components/home/StatementScene.astro";
 import FinalCta from "../components/home/FinalCta.astro";
 ---
 
 <MainLayout
-	title="Speaker Booking & LinkedIn for Keynote Speakers | Brux"
-	description="We pitch you every month to the organizers who book speakers in your niche and grow your LinkedIn. Plans from $500 a month, no commission on your fees."
+	title="Speaker Booking Agency for Keynote Speakers | Brux"
+	description="Brux pitches keynote speakers to niche events monthly and builds LinkedIn authority. Plans from $500/mo with 0% commission on speaking fees."
 >
 	<!-- 1. La respuesta corta: qué hacemos y para quién (h1) -->
 	<MainHero />
@@ -33,7 +34,8 @@ import FinalCta from "../components/home/FinalCta.astro";
 	<!-- 6. Planes y precio: la sección clara del formato Backstage -->
 	<PricingTeaser />
 
-	<!-- 7. PENDIENTE: quiénes somos (Jhon y Everth), con enlace a /about/ -->
+	<!-- 7. Quiénes somos: el equipo backstage que trabaja para tu escenario -->
+	<MeetTheTeam showStoryLink />
 
 	<!-- 8. Preguntas frecuentes, con JSON-LD -->
 	<Faq />

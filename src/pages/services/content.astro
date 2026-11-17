@@ -1,34 +1,455 @@
 ---
+import { Image } from "astro:assets";
+import { Check as LucideCheck } from "@lucide/astro";
+import { Play, Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import ContentHeroStage from "../../components/services/ContentHeroStage.astro";
+import Button from "../../components/ui/Button.astro";
+import CtaButton from "../../components/ui/CtaButton.astro";
 import { bookingUrl } from "../../data/site";
+import pressKitImg from "../../assets/work/philip-chan-press-kit.png";
+
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "Speaker Demo Reels, Press Kits & Talk Clips | Brux",
+  description:
+    "High-converting speaker demo reels, one-sheet press kits, and vertical keynote video clips that prove stage authority and close event committees.",
+  canonical: "/services/content/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+    { "@type": "ListItem", position: 3, name: "Speaker Content", item: `${siteUrl}/services/content/` },
+  ],
+};
+
+const videoObjectSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: "Philip Jayhawk Chan Keynote Speaker Demo Reel",
+  description:
+    "High-energy keynote speaker demo reel cut by Brux showcasing stage presence, vocal authority, and audience engagement.",
+  thumbnailUrl: `${siteUrl}/videos/work/philip-chan-reel-poster.webp`,
+  uploadDate: "2026-11-15T00:00:00Z",
+  contentUrl: `${siteUrl}/videos/work/philip-chan-reel.mp4`,
+  embedUrl: `${siteUrl}/services/content/#demo-reel`,
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteUrl}/services/content/#service`,
+  name: "Keynote Speaker Content & Demo Reel Production",
+  serviceType: "Speaker Video Editing, Demo Reel Production & Media Kits",
+  provider: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+  },
+  url: `${siteUrl}/services/content/`,
+  description:
+    "Brux produces conversion-focused speaker demo reels, one-sheet press kits, and edited keynote talk clips that prove stage presence in under three minutes.",
+};
+
+const faqs = [
+  {
+    q: "Why is a speaker demo reel essential for getting booked?",
+    a: "Event committees review dozens of speaker candidates for each slot. They rarely have time to watch a 60-minute talk, and they won't risk booking a speaker without seeing how they command a room. A three-minute reel proves your delivery and audience reaction immediately.",
+  },
+  {
+    q: "What footage do I need to provide for a demo reel?",
+    a: "You send us existing video recordings from 1 to 3 past talks, panels, or podcast interviews. We select the strongest hooks, balance the audio, add titles and pacing, and cut it into a tight booking reel.",
+  },
+  {
+    q: "What is inside the speaker one-sheet press kit?",
+    a: "Your press kit includes your short and long speaker bio, speaking topics, signature talk titles with takeaways, past appearances, high-res headshots, and booking links — formatted so an event planner can forward it straight to their committee.",
+  },
+  {
+    q: "Which monthly plans include ongoing talk video clips?",
+    a: "Your speaker demo reel and press kit are included in every monthly plan. Ongoing video editing of your talks for LinkedIn is included in Growth and Complete.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 ---
 
 <MainLayout
-  title="Speaker Content: Demo Reel, Clips and LinkedIn Posts | Brux"
-  description="Demo reel, press kit, LinkedIn posts and edited clips from your talks, so organizers see how you sound on stage before they book you."
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
 >
-  <section>
-    <h1>Content for speakers: demo reel, clips and posts</h1>
-    <p>
-      Organizers want to see how you sound on stage before they book you. We turn your talks into
-      the material that shows it.
-    </p>
-    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
-  </section>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(videoObjectSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-  <section>
-    <h2>Speaker demo reel and press kit</h2>
-    <p>Included in every plan. They go with every pitch we send to organizers.</p>
-  </section>
+  <div data-content-page-root>
+    <!-- 1. HERO (bg-ink) 3D Stage Reel & Press Kit Production Studio -->
+    <ContentHeroStage />
 
-  <section>
-    <h2>Video editing of your talks</h2>
-    <p>We edit your talks into short videos for LinkedIn. Included in the Growth and Complete plans.</p>
-  </section>
+    <!-- 2. EDITED SPEAKER REELS & TALK CLIPS (bg-paper) -->
+    <section
+      class="bg-paper py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="content-samples-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-6 border-b border-ink/12 pb-12 lg:grid-cols-12 lg:items-end">
+          <h2
+            id="content-samples-title"
+            class="lg:col-span-7 text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+          >
+            Real speaker reels and stage talk edits
+          </h2>
+          <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
+            We turn raw stage recordings and interviews into pacing-driven reels and captioned talk clips ready for event committees and LinkedIn.
+          </p>
+        </div>
 
-  <section>
-    <h2>LinkedIn posts</h2>
-    <p>From 2 posts a month on Founder and Foundation, to 4 on Growth and 8 on Complete.</p>
-    <a href="/pricing/">See plans</a>
-  </section>
+        <div class="mt-14 grid items-stretch gap-8 lg:grid-cols-2 lg:gap-10">
+          <!-- Sample 1: Vimeo Speaker Reel Embed -->
+          <article
+            class="flex h-full flex-col overflow-hidden rounded-[22px] border border-ink/12 bg-mist p-4 sm:p-6"
+            data-cp-sample
+          >
+            <div class="relative aspect-video w-full overflow-hidden rounded-[14px] bg-ink">
+              <iframe
+                title="Executive speaker highlight reel on Vimeo"
+                src="https://player.vimeo.com/video/1140834206?h=d47efda74c"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                allowfullscreen
+                loading="lazy"
+                class="absolute inset-0 h-full w-full border-0"
+              ></iframe>
+            </div>
+            <div class="flex flex-1 flex-col px-1 pt-5">
+              <div>
+                <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
+                  Speaker demo reel
+                </span>
+              </div>
+              <h3 class="mt-3 text-2xl font-extrabold tracking-[-0.02em] text-ink">
+                Executive speaker highlight reel
+              </h3>
+              <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink/80">
+                Structured to hook a conference committee in the first 15 seconds, then showcase topic range, stage energy, and audience reaction.
+              </p>
+            </div>
+          </article>
+
+          <!-- Sample 2: Philip Chan Stage Talk Clip (WebM) -->
+          <article
+            class="flex h-full flex-col overflow-hidden rounded-[22px] border border-ink/12 bg-mist p-4 sm:p-6"
+            data-cp-sample
+          >
+            <div class="relative aspect-video w-full overflow-hidden rounded-[14px] bg-ink">
+              <video
+                controls
+                playsinline
+                preload="none"
+                poster="/videos/work/philip-the-fit-h-poster.webp"
+                class="absolute inset-0 h-full w-full object-cover"
+                aria-label="Philip Jayhawk Chan keynote talk clip from Dallas TAG Talks edited by Brux"
+              >
+                <source src="/videos/work/philip-the-fit-h.webm" type="video/webm" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col px-1 pt-5">
+              <div>
+                <span class="inline-flex items-center rounded-full bg-ink px-3 py-1 text-xs font-bold text-paper">
+                  Edited stage talk clip
+                </span>
+              </div>
+              <h3 class="mt-3 text-2xl font-extrabold tracking-[-0.02em] text-ink">
+                Philip Jayhawk Chan · Dallas TAG Talks
+              </h3>
+              <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink/80">
+                Tight 42-second keynote excerpt with dynamic kinetic captions and sound leveling — built for LinkedIn feeds and speaker pages.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ONE-SHEET PRESS KIT + PHILIP CHAN DEMO REEL CARD (bg-mist) -->
+    <section
+      class="bg-mist py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="content-presskit-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
+          <div class="lg:col-span-5">
+            <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
+              Included in every monthly plan
+            </span>
+            <h2
+              id="content-presskit-title"
+              class="mt-4 text-[clamp(1.875rem,1.45rem+1.8vw,2.875rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              A real speaker one-sheet committees can forward in one click
+            </h2>
+            <p class="mt-4 text-base leading-relaxed text-ink/85 sm:text-lg">
+              Before sending a single outreach pitch, we design your speaker press kit so organizers have your bio, signature talks, target audiences, and past appearances in one clean page.
+            </p>
+
+            <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6">
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Custom visual design matched to your speaker brand and headshots</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Speaking topics, signature talk titles, and audience outcomes clearly structured</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Featured stage appearances, video link, and direct booking contact</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
+                <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                <span>Ongoing vertical talk clips included on Growth and Complete</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7 space-y-8">
+            <div class="overflow-hidden rounded-[24px] border border-ink/12 bg-paper p-3 shadow-[0_28px_56px_-28px_rgb(10_10_10/0.35)] sm:p-5" data-cp-showcase>
+              <Image
+                src={pressKitImg}
+                alt="Philip Jayhawk Chan speaker one-sheet press kit showing bio, speaking topics, signature talks, and featured appearances"
+                widths={[640, 935]}
+                sizes="(min-width: 1024px) 52vw, 94vw"
+                class="mx-auto w-full max-w-[34rem] rounded-[12px] border border-ink/10"
+              />
+            </div>
+
+            <!-- Matching card directly under Philip Chan's press kit: Philip Jayhawk Chan Demo Reel -->
+            <div
+              id="demo-reel"
+              class="scroll-mt-24 overflow-hidden rounded-[24px] border border-ink/12 bg-paper p-3 shadow-[0_28px_56px_-28px_rgb(10_10_10/0.35)] sm:p-5"
+              data-cp-showcase
+            >
+              <div class="relative aspect-video w-full overflow-hidden rounded-[14px] bg-ink">
+                <video
+                  controls
+                  playsinline
+                  preload="metadata"
+                  poster="/videos/work/philip-chan-reel-poster.webp"
+                  class="absolute inset-0 h-full w-full object-cover"
+                  aria-label="Philip Jayhawk Chan keynote speaker demo reel produced by Brux"
+                >
+                  <source src="/videos/work/philip-chan-reel.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-3 px-1 text-sm">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <span class="inline-flex items-center gap-1.5 rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
+                    <MorphIcon icon={Play} size={12} strokeWidth={2.2} spring="snappy" reducedMotion="user" />
+                    Client speaker reel
+                  </span>
+                  <span class="font-bold text-ink">Philip Jayhawk Chan</span>
+                  <span class="text-muted">· CEO &amp; President, Lightspeed Investing</span>
+                </div>
+                <span class="text-xs font-semibold text-ink/75">Attached to every outreach pitch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CLEAN PRICING REDIRECT BAND (bg-ink-raised) -->
+    <section
+      class="bg-ink-raised py-20 text-paper sm:py-24"
+      aria-labelledby="content-pricing-redirect-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="flex flex-col justify-between gap-8 rounded-[26px] border border-paper/12 bg-ink p-8 sm:p-12 lg:flex-row lg:items-center">
+          <div class="max-w-[40rem]">
+            <h2
+              id="content-pricing-redirect-title"
+              class="text-[clamp(1.75rem,1.35rem+1.6vw,2.75rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Demo reels and press kits come built into every plan
+            </h2>
+            <p class="mt-4 text-base leading-relaxed text-muted-on-ink sm:text-lg">
+              See which monthly tiers include ongoing talk video editing for LinkedIn on our Pricing page.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
+            <Button href={bookingUrl} variant="secondary">Book a call</Button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ + SIBLING SERVICES (bg-ink) -->
+    <section
+      id="faq"
+      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      aria-labelledby="content-faq-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+          <div>
+            <h2
+              id="content-faq-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+            >
+              Questions about speaker content
+            </h2>
+            <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+              What raw footage we need, what goes into your press kit, and how we use your reel to book events.
+            </p>
+
+            <div class="mt-10 space-y-4 border-t border-paper/10 pt-8">
+              <p class="text-sm font-bold text-paper">Where your reel and press kit go to work:</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a
+                  href="/services/web-design/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker websites →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Embed your reel and one-sheet on a dedicated branded site.</p>
+                </a>
+                <a
+                  href="/services/booking/"
+                  class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
+                >
+                  <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Attached to every pitch we send to event organizers in your niche.</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+            {faqs.map((f) => (
+              <details class="group relative border-b border-paper/10">
+                <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+                  <h3 class="text-pretty">{f.q}</h3>
+                  <span
+                    aria-hidden="true"
+                    class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
+                  >
+                    <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                  </span>
+                </summary>
+                <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FINAL CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="content-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="content-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Turn your talk recordings into a reel that books stages
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+          Book a 20-minute strategy call. We will review your existing footage and show you how we would cut your reel and press kit.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See pricing</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </MainLayout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let mm: gsap.MatchMedia | null = null;
+
+  function initContentPage() {
+    mm?.revert();
+    mm = null;
+
+    const root = document.querySelector<HTMLElement>("[data-content-page-root]");
+    if (!root) return;
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const samples = root.querySelectorAll<HTMLElement>("[data-cp-sample]");
+        const showcases = root.querySelectorAll<HTMLElement>("[data-cp-showcase]");
+
+        if (samples.length) {
+          gsap.from(samples, {
+            y: 22,
+            opacity: 0,
+            duration: 0.78,
+            stagger: 0.1,
+            ease: "expo.out",
+            clearProps: "transform,opacity",
+            scrollTrigger: {
+              trigger: samples[0],
+              start: "top 85%",
+              once: true,
+            },
+          });
+        }
+
+        showcases.forEach((box) => {
+          gsap.from(box, {
+            y: 24,
+            opacity: 0,
+            duration: 0.82,
+            ease: "expo.out",
+            clearProps: "transform,opacity",
+            scrollTrigger: {
+              trigger: box,
+              start: "top 85%",
+              once: true,
+            },
+          });
+        });
+      }, root);
+
+      return () => ctx.revert();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initContentPage);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+</script>

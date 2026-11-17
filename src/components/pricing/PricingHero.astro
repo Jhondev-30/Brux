@@ -1,13 +1,8 @@
 ---
-import { ArrowDown } from "lucide";
-import MorphIcon from "morphicons/astro";
-
-const anchors = [
-  { href: "#plans", label: "Monthly plans" },
-  { href: "#compare", label: "Compare features" },
-  { href: "#included", label: "What's included" },
-  { href: "#website", label: "Speaker website ($1,100)" },
-  { href: "#faq", label: "FAQ" },
+const facts = [
+  { value: "0%", label: "Commission on your fees" },
+  { value: "60–160+", label: "Organizer pitches / mo" },
+  { value: "<72h", label: "Onboarding kickoff" },
 ];
 
 const words = (s: string) => s.split(" ");
@@ -17,28 +12,32 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
 <section
-  class="bg-ink pt-[max(8.5rem,calc(4.5rem+6svh))] pb-16 text-paper sm:pb-24"
+  class="flex min-h-svh flex-col justify-center bg-paper pt-[max(7.25rem,calc(4.5rem+4svh))] pb-14 text-ink sm:pb-20"
   aria-labelledby="pricing-hero-title"
   data-pricing-hero
 >
-  <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-    <nav aria-label="Breadcrumb" class="text-sm text-muted-on-ink" data-ph-crumb>
-      <ol class="flex flex-wrap items-center gap-2">
-        <li>
-          <a href="/" class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage">
-            Home
-          </a>
-        </li>
-        <li aria-hidden="true" class="text-paper/35">/</li>
-        <li aria-current="page" class="font-semibold text-paper">Pricing</li>
-      </ol>
-    </nav>
+  <div class="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+      <!-- Columna izquierda: breadcrumb, titular y propuesta sin comisión (sin CTAs forzados) -->
+      <div class="lg:col-span-5">
+        <nav aria-label="Breadcrumb" class="text-sm text-muted" data-ph-crumb>
+          <ol class="flex flex-wrap items-center gap-2">
+            <li>
+              <a
+                href="/"
+                class="transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+              >
+                Home
+              </a>
+            </li>
+            <li aria-hidden="true" class="text-ink/30">/</li>
+            <li aria-current="page" class="font-semibold text-ink">Pricing</li>
+          </ol>
+        </nav>
 
-    <div class="mt-6 grid gap-8 lg:grid-cols-12 lg:items-end">
-      <div class="lg:col-span-8">
         <h1
           id="pricing-hero-title"
-          class="max-w-[46rem] text-[clamp(2.25rem,1.5rem+3.1vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-paper"
+          class="mt-5 text-[clamp(2.25rem,1.5rem+2.8vw,3.75rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-ink"
           data-ph-title
         >
           {words("Compare speaker booking & LinkedIn plans").map((w, j, a) => (
@@ -48,42 +47,53 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
             </>
           ))}
         </h1>
+
         <p
-          class="mt-6 max-w-[40rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-relaxed text-pretty text-muted-on-ink"
+          class="mt-5 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.25vw,1.1875rem)] leading-relaxed text-pretty text-muted"
           data-ph-lead
         >
           Every plan pairs direct outreach to event organizers in your niche with LinkedIn positioning and content.
-          You pay one flat monthly rate — we take <strong class="font-semibold text-paper">0% commission</strong> on your speaking fees.
+          You pay one flat monthly rate — we take <strong class="font-semibold text-ink">0% commission</strong> on your speaking fees.
         </p>
       </div>
 
-      <div class="lg:col-span-4 lg:justify-self-end" data-ph-badge>
-        <div class="inline-flex flex-col gap-1 rounded-[16px] border border-paper/12 bg-ink-raised px-5 py-4">
-          <span class="text-3xl font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">0%</span>
-          <span class="text-sm leading-snug text-muted-on-ink">Commission on any paid stage we book</span>
+      <!-- Columna derecha: vídeo HyperFrames sin controles/audio sobre bg-paper + 3 datos debajo -->
+      <div class="lg:col-span-7">
+        <div
+          class="overflow-hidden rounded-[20px] bg-paper"
+          data-ph-stage
+        >
+          <video
+            class="aspect-video w-full bg-paper object-cover will-change-transform"
+            autoplay
+            muted
+            loop
+            playsinline
+            disablepictureinpicture
+            preload="auto"
+            poster="/videos/pricing-hero-poster.webp"
+            aria-label="Motion graphic showing Brux's four plan levels, direct organizer outreach workflow, and stage calendar"
+            data-ph-video
+          >
+            <source src="/videos/pricing-hero.webm" type="video/webm" />
+            <source src="/videos/pricing-hero.mp4" type="video/mp4" />
+          </video>
         </div>
+
+        <dl class="mt-6 grid grid-cols-3 gap-4 border-t border-ink/10 pt-5 sm:gap-6" data-ph-facts>
+          {facts.map((fact) => (
+            <div data-ph-fact>
+              <dt class="text-[clamp(1.375rem,1.1rem+0.9vw,1.875rem)] font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums">
+                {fact.value}
+              </dt>
+              <dd class="mt-1.5 text-xs leading-snug text-muted sm:text-sm">
+                {fact.label}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </div>
-
-    <!-- Navegación rápida por anclas (sin descuentos anuales ficticios) -->
-    <nav
-      aria-label="Jump to section"
-      class="mt-10 flex flex-wrap gap-2.5 border-t border-paper/10 pt-8"
-      data-ph-anchors
-    >
-      {anchors.map((item) => (
-        <a
-          href={item.href}
-          class="group/pill inline-flex min-h-10 items-center gap-2 rounded-full border border-paper/15 bg-ink-raised px-4 py-2 text-sm font-semibold text-paper/90 transition-[border-color,background-color,color] duration-150 ease-out hover:border-paper/35 hover:bg-paper/10 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stage"
-          data-ph-pill
-        >
-          <span>{item.label}</span>
-          <span class="inline-flex shrink-0 text-stage-glow transition-transform duration-150 group-hover/pill:translate-y-0.5" aria-hidden="true">
-            <MorphIcon icon={ArrowDown} size={14} strokeWidth={2.2} spring="snappy" reducedMotion="user" />
-          </span>
-        </a>
-      ))}
-    </nav>
   </div>
 </section>
 
@@ -93,8 +103,18 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
   let mm: gsap.MatchMedia | null = null;
 
   function initPricingHero() {
+    mm?.revert();
+    mm = null;
+
     const root = document.querySelector<HTMLElement>("[data-pricing-hero]");
     if (!root) return;
+
+    const video = root.querySelector<HTMLVideoElement>("[data-ph-video]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    if (video) {
+      if (reduce.matches) video.pause();
+      else video.play().catch(() => {});
+    }
 
     mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -102,24 +122,34 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
         const crumb = root.querySelector<HTMLElement>("[data-ph-crumb]");
         const words = root.querySelectorAll<HTMLElement>("[data-ph-word]");
         const lead = root.querySelector<HTMLElement>("[data-ph-lead]");
-        const badge = root.querySelector<HTMLElement>("[data-ph-badge]");
-        const pills = root.querySelectorAll<HTMLElement>("[data-ph-pill]");
+        const stage = root.querySelector<HTMLElement>("[data-ph-stage]");
+        const facts = root.querySelectorAll<HTMLElement>("[data-ph-fact]");
 
         const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-        if (crumb) tl.from(crumb, { y: 8, autoAlpha: 0, duration: 0.6, clearProps: "transform,opacity,visibility" }, 0);
+        if (crumb) tl.from(crumb, { y: 8, autoAlpha: 0, duration: 0.5, clearProps: "transform,opacity,visibility" }, 0);
         if (words.length) {
           tl.fromTo(
             words,
-            { yPercent: 112, rotate: 5 },
-            { yPercent: 0, rotate: 0, duration: 0.95, stagger: 0.045, clearProps: "transform" },
-            0.05,
+            { yPercent: 112, rotate: 4 },
+            { yPercent: 0, rotate: 0, duration: 0.9, stagger: 0.04, clearProps: "transform" },
+            0.04,
           );
         }
-        if (lead) tl.from(lead, { y: 14, autoAlpha: 0, duration: 0.75, clearProps: "transform,opacity,visibility" }, 0.25);
-        if (badge) tl.from(badge, { y: 14, autoAlpha: 0, duration: 0.75, clearProps: "transform,opacity,visibility" }, 0.32);
-        if (pills.length) {
-          tl.from(pills, { y: 10, autoAlpha: 0, duration: 0.55, stagger: 0.035, clearProps: "transform,opacity,visibility" }, 0.42);
+        if (lead) tl.from(lead, { y: 12, autoAlpha: 0, duration: 0.65, clearProps: "transform,opacity,visibility" }, 0.24);
+        if (stage) {
+          tl.fromTo(
+            stage,
+            { clipPath: "inset(0% 100% 0% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "power4.inOut", clearProps: "clipPath" },
+            0.14,
+          );
+        }
+        if (video) {
+          tl.from(video, { scale: 1.04, duration: 1.1, ease: "expo.out", clearProps: "scale" }, 0.14);
+        }
+        if (facts.length) {
+          tl.from(facts, { y: 12, autoAlpha: 0, duration: 0.6, stagger: 0.06, clearProps: "transform,opacity,visibility" }, 0.42);
         }
       }, root);
 

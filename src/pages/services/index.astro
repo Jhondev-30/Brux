@@ -1,61 +1,534 @@
 ---
+import { Image } from "astro:assets";
+import { Check as LucideCheck } from "@lucide/astro";
+import { ArrowRight, Plus } from "lucide";
+import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import ServicesPortalHero from "../../components/services/ServicesPortalHero.astro";
+import Button from "../../components/ui/Button.astro";
+import CtaButton from "../../components/ui/CtaButton.astro";
 import { bookingUrl } from "../../data/site";
+import pressKitImg from "../../assets/work/philip-chan-press-kit.png";
+import graceImg from "../../assets/work/grace-after-the-grave.webp";
 
-const services = [
+const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
+
+const pageMeta = {
+  title: "Services for Keynote & Professional Speakers | Brux",
+  description:
+    "Full-service keynote speaker representation: direct organizer booking, LinkedIn positioning, demo reels, press kits, and custom speaker websites.",
+  canonical: "/services/",
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+  ],
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteUrl}/services/#service`,
+  name: "Keynote Speaker Representation and Agency Services",
+  serviceType: "Keynote Speaker Booking, LinkedIn Management & Media Production",
+  provider: {
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Brux",
+    url: siteUrl,
+  },
+  url: `${siteUrl}/services/`,
+  description:
+    "Brux provides four integrated services for keynote speakers: direct outreach to event organizers, LinkedIn management, demo reels and press kits, and speaker website design.",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Speaker Agency Services",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Speaker Booking",
+          url: `${siteUrl}/services/booking/`,
+          description: "Direct outreach to conference organizers and corporate event planners in your verified niche.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "LinkedIn Management",
+          url: `${siteUrl}/services/linkedin/`,
+          description: "Profile positioning, thought-leadership ghostwriting, and organizer network growth.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Speaker Content",
+          url: `${siteUrl}/services/content/`,
+          description: "Speaker demo reels, keynote video clips, and one-sheet press kits.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Speaker Website Design",
+          url: `${siteUrl}/services/web-design/`,
+          description: "Custom speaker websites with full brand direction built to close event organizers.",
+        },
+      },
+    ],
+  },
+};
+
+const faqs = [
   {
+    q: "Why does Brux combine speaker booking and LinkedIn management?",
+    a: "When an event organizer receives a pitch for a keynote speaker, their first move is checking the speaker's LinkedIn profile. Pairing direct outreach with an active, stage-ready LinkedIn ensures committees see proof of authority before replying.",
+  },
+  {
+    q: "Do you take any commission on speaking fees?",
+    a: "No. Brux works on flat monthly retainers with 0% commission on your speaking contracts. When you book a paid stage, you keep 100% of your fee.",
+  },
+  {
+    q: "Can I hire Brux for a speaker website or demo reel on its own?",
+    a: "Yes. Speaker website design is scoped as a standalone build based on site complexity and always includes full brand direction. Demo reels and press kits are built into every monthly retainer or can be discussed on a strategy call.",
+  },
+  {
+    q: "Where can I compare monthly plans and pitch volumes?",
+    a: "All four monthly retainers (Founder, Foundation, Growth, and Complete) and their full deliverable breakdown live on our Pricing page.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
+const serviceChapters = [
+  {
+    id: "booking",
+    title: "Speaker booking",
     href: "/services/booking/",
-    name: "Speaker booking",
-    text: "We pitch you every month to the organizers of events in your niche. No commission on your fees.",
+    cta: "Explore speaker booking",
+    tag: "Direct organizer outreach",
+    summary:
+      "We research conferences, corporate summits, and industry associations in your niche, then pitch the decision-makers directly. No generic speaker directories and 0% commission on your fee.",
+    bullets: [
+      "Tailored pitches mapped to your keynote topics and audience outcomes",
+      "Your press kit and demo reel attached to every outreach thread",
+      "Live CRM access showing every organizer contacted, status, and replies",
+      "Post-event follow-up and calendar coordination",
+    ],
+    kind: "video" as const,
+    videoBase: "/videos/how/step-3",
+    alt: "Animation: a personal note to an event organizer is sent, alongside 160+ pitches by direct message and email.",
   },
   {
+    id: "linkedin",
+    title: "LinkedIn management",
     href: "/services/linkedin/",
-    name: "LinkedIn management",
-    text: "Positioning, an optimized profile and a growing network of the people who book speakers.",
+    cta: "Explore LinkedIn management",
+    tag: "Positioning & network growth",
+    summary:
+      "Before organizers reply to a pitch, they check your LinkedIn. We rewrite your headline and bio for event buyers, publish posts in your voice, and connect you weekly with decision-makers.",
+    bullets: [
+      "Profile positioning built so organizers see your topics in five seconds",
+      "Consistent monthly posts written from your talks and frameworks",
+      "Weekly connection requests to event planners and conference chairs",
+      "Strategic comments and outreach in your name on top-tier plans",
+    ],
+    kind: "video" as const,
+    videoBase: "/videos/services/linkedin-strategy",
+    alt: "Motion graphic showing Brux LinkedIn positioning, voice posts, talk clips, and organizer network growth",
   },
   {
+    id: "content",
+    title: "Speaker content",
     href: "/services/content/",
-    name: "Speaker content",
-    text: "Demo reel, press kit, LinkedIn posts and edited clips from your talks.",
+    cta: "See reels & press kits",
+    tag: "Demo reels, press kits & clips",
+    summary:
+      "Selection committees won't book a speaker they haven't heard on stage. We cut your talks and interviews into a sharp demo reel, design a clean one-sheet press kit, and edit vertical clips for LinkedIn.",
+    bullets: [
+      "Three-minute speaker demo reel edited from your best stage moments",
+      "Custom speaker one-sheet press kit with bio, topics, and past stages",
+      "Short captioned talk clips formatted for silent-autoplay feeds",
+      "Ready to attach to every pitch and embed on your speaker site",
+    ],
+    kind: "unboxed-presskit" as const,
+    img: pressKitImg,
+    alt: "Philip Jayhawk Chan speaker one-sheet press kit designed for event organizers",
   },
   {
+    id: "web-design",
+    title: "Speaker websites",
     href: "/services/web-design/",
-    name: "Speaker websites",
-    text: "One link that answers an organizer's questions: bio, topics, reel and a way to book you.",
+    cta: "Explore speaker websites",
+    tag: "Custom scope & branding included",
+    summary:
+      "When an organizer considers booking you, they want one clear link that answers every question: your bio, keynote topics, demo reel, past events, and inquiry form — paired with custom brand direction.",
+    bullets: [
+      "Custom build plan scoped to your page complexity and timeline",
+      "Full brand direction included: palette, typography, logos, and assets",
+      "Embedded stage reel, keynote takeaways, and downloadable one-sheet",
+      "Direct inquiry form and booking calendar integration",
+    ],
+    kind: "image" as const,
+    img: graceImg,
+    alt: "Angie Pichardo speaker website graceafterthegrave.com designed by Brux",
+  },
+];
+
+const conversionChain = [
+  {
+    step: "01",
+    moment: "Organizer receives your pitch",
+    role: "Direct outreach lands in the conference director's inbox with clear topic fit.",
+    service: "Speaker booking",
+    href: "/services/booking/",
+  },
+  {
+    step: "02",
+    moment: "They search your name on LinkedIn",
+    role: "An active feed, speaker headline, and pinned reel confirm your stage credibility in five seconds.",
+    service: "LinkedIn management",
+    href: "/services/linkedin/",
+  },
+  {
+    step: "03",
+    moment: "Committee reviews your stage proof",
+    role: "Your three-minute demo reel and one-sheet give decision-makers everything they need to forward.",
+    service: "Speaker content",
+    href: "/services/content/",
+  },
+  {
+    step: "04",
+    moment: "They check dates on your site",
+    role: "One branded speaker site answers remaining questions and routes the inquiry straight to your calendar.",
+    service: "Speaker websites",
+    href: "/services/web-design/",
   },
 ];
 ---
 
 <MainLayout
-  title="Services for Professional Speakers | Brux"
-  description="Speaker booking, LinkedIn management, content and speaker websites. Plans from $500 a month, with no commission on your fees."
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonical={pageMeta.canonical}
 >
-  <section>
-    <h1>Services for professional speakers</h1>
-    <p>
-      We go after the paid stages that fit your niche, and make sure your LinkedIn backs up every pitch.
-    </p>
-  </section>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-  <section>
-    <h2>What we do</h2>
-    <ul>
-      {services.map((s) => (
-        <li>
-          <h3><a href={s.href}>{s.name}</a></h3>
-          <p>{s.text}</p>
-        </li>
-      ))}
-    </ul>
-  </section>
+  <div data-services-hub-root>
+    <!-- 1. HERO: Puerta de escenario luminosa + Logo BRUX 3D + Foco rojo + Partículas GSAP -->
+    <ServicesPortalHero />
 
-  <section>
-    <h2>One plan, booking and LinkedIn together</h2>
-    <p>
-      Every plan combines booking and LinkedIn, because organizers check your profile before they book you.
-      Plans go from $500 to $2,500 a month.
-    </p>
-    <a href="/pricing/">See plans</a>
-    <a href={bookingUrl} target="_blank" rel="noopener">Book a call</a>
-  </section>
+    <!-- 2. THE 4 SERVICES AS EDITORIAL SPLIT CHAPTERS ON LIGHT GROUND (bg-paper) -->
+    <section
+      class="bg-paper py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="chapters-title"
+      data-hub-chapters
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-6 border-b border-ink/12 pb-12 lg:grid-cols-12 lg:items-end">
+          <h2
+            id="chapters-title"
+            class="lg:col-span-7 text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+          >
+            Everything an event organizer checks before booking you
+          </h2>
+          <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
+            Pitching without a strong profile gets ignored. A strong profile without pitching waits for invites. Explore each service in detail below.
+          </p>
+        </div>
+
+        <div class="divide-y divide-ink/12">
+          {serviceChapters.map((s) => (
+            <article
+              id={s.id}
+              class="scroll-mt-24 grid gap-10 py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12"
+              data-hub-chapter
+            >
+              <div class="lg:col-span-5">
+                <div class="flex flex-wrap items-center gap-3">
+                  <span class="inline-flex items-center rounded-full bg-stage-text px-3 py-1 text-xs font-bold text-paper">
+                    {s.tag}
+                  </span>
+                </div>
+
+                <h3 class="mt-4 text-[clamp(1.625rem,1.3rem+1.2vw,2.375rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-ink">
+                  <a href={s.href} class="transition-colors hover:text-stage-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage">
+                    {s.title}
+                  </a>
+                </h3>
+
+                <p class="mt-4 text-base leading-relaxed text-ink/85 sm:text-[1.0625rem]">
+                  {s.summary}
+                </p>
+
+                <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
+                  {s.bullets.map((b) => (
+                    <li class="flex items-start gap-2.5 text-[0.9375rem] leading-snug text-ink/85">
+                      <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div class="mt-8">
+                  <Button href={s.href} variant="secondary-light" arrow>
+                    {s.cta}
+                  </Button>
+                </div>
+              </div>
+
+              <div class="lg:col-span-7">
+                {s.kind === "unboxed-presskit" ? (
+                  /* Sin card: el press kit de Philip Chan directamente, más grande y legible */
+                  <a
+                    href={s.href}
+                    class="group/media block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+                  >
+                    <Image
+                      src={s.img}
+                      alt={s.alt}
+                      widths={[480, 760, 935]}
+                      sizes="(min-width: 1024px) 28rem, 92vw"
+                      class="mx-auto w-full max-w-[28rem] shadow-[0_28px_60px_-28px_rgb(10_10_10/0.35)] ring-1 ring-ink/10 transition-transform duration-500 ease-out group-hover/media:scale-[1.015]"
+                    />
+                  </a>
+                ) : s.kind === "video" ? (
+                  <a
+                    href={s.href}
+                    class="group/media block overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.45)] ring-1 ring-ink/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage sm:p-3.5"
+                  >
+                    <div class="overflow-hidden rounded-[16px] bg-ink">
+                      <video
+                        class="aspect-video w-full object-cover transition-transform duration-500 ease-out group-hover/media:scale-[1.02]"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        disablepictureinpicture
+                        preload="metadata"
+                        poster={`${s.videoBase}-poster.webp`}
+                        aria-label={s.alt}
+                        data-hub-video
+                      >
+                        <source src={`${s.videoBase}.webm`} type="video/webm" />
+                        <source src={`${s.videoBase}.mp4`} type="video/mp4" />
+                      </video>
+                    </div>
+                  </a>
+                ) : (
+                  <a
+                    href={s.href}
+                    class="group/media block overflow-hidden rounded-[22px] bg-ink p-2.5 shadow-[0_24px_48px_-28px_rgb(10_10_10/0.45)] ring-1 ring-ink/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage sm:p-3.5"
+                  >
+                    <div class="overflow-hidden rounded-[16px] bg-ink">
+                      <Image
+                        src={s.img}
+                        alt={s.alt}
+                        widths={[640, 960, 1280]}
+                        sizes="(min-width: 1024px) 58vw, 94vw"
+                        class="aspect-video w-full object-cover transition-transform duration-500 ease-out group-hover/media:scale-[1.025]"
+                      />
+                    </div>
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. WHY ALL FOUR OUTPERFORM COLD PITCHING (bg-mist) — Diseño editorial taste-skill: diagrama estático + índice con filetes, sin cards repetitivas -->
+    <section
+      id="system"
+      class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28 lg:py-32"
+      aria-labelledby="hub-system-title"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+        <div class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
+          <!-- Columna izquierda: tesis + diagrama de flujo estático -->
+          <div class="lg:col-span-5">
+            <h2
+              id="hub-system-title"
+              class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.02em] text-balance text-ink"
+            >
+              Why running all four together outperforms cold pitching alone
+            </h2>
+            <p class="mt-5 max-w-[34rem] text-base leading-relaxed text-muted sm:text-lg">
+              Cold outreach fails when the organizer looks up your name and finds an inactive feed, no stage clip, or a scattered site. Each service removes one friction point from the committee's decision.
+            </p>
+
+            <!-- Diagrama still node-and-line (criterio diagrams.md para service: limpio, sin pulso ni adornos) -->
+            <div class="mt-10 rounded-[20px] border border-ink/12 bg-paper p-6 sm:p-7" role="img" aria-label="Flow showing how direct pitch leads to LinkedIn verification, reel and press kit review, and website booking">
+              <div class="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2">
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">1</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                  <span class="text-sm font-extrabold text-ink">Direct Organizer Pitch</span>
+                  <span class="text-xs font-semibold text-muted">Inbox</span>
+                </div>
+
+                <span class="mx-auto h-5 w-px bg-ink/20" aria-hidden="true"></span>
+                <span></span>
+
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">2</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                  <span class="text-sm font-extrabold text-ink">LinkedIn Verification</span>
+                  <span class="text-xs font-semibold text-muted">5-sec check</span>
+                </div>
+
+                <span class="mx-auto h-5 w-px bg-ink/20" aria-hidden="true"></span>
+                <span></span>
+
+                <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper">3</span>
+                <div class="flex items-center justify-between border-b border-ink/10 pb-2.5">
+                  <span class="text-sm font-extrabold text-ink">Demo Reel &amp; One-Sheet</span>
+                  <span class="text-xs font-semibold text-muted">Committee proof</span>
+                </div>
+
+                <span class="mx-auto h-5 w-px bg-stage-text/50" aria-hidden="true"></span>
+                <span></span>
+
+                <span class="grid size-8 place-items-center rounded-full bg-stage-text text-xs font-extrabold text-paper">4</span>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-extrabold text-ink">Speaker Site &amp; Booking</span>
+                  <span class="text-xs font-bold text-stage-text">Stage closed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna derecha: índice editorial con filetes (sin 3 cards repetitivas) -->
+          <div class="lg:col-span-7">
+            <ol class="divide-y divide-ink/14 border-t border-b border-ink/14">
+              {conversionChain.map((row) => (
+                <li class="group py-7 transition-colors sm:py-8">
+                  <a
+                    href={row.href}
+                    class="grid gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:items-start sm:gap-6"
+                  >
+                    <span class="pt-0.5 text-sm font-extrabold text-stage-text tabular-nums">
+                      {row.step}
+                    </span>
+
+                    <div>
+                      <h3 class="text-xl font-extrabold tracking-[-0.015em] text-ink transition-colors group-hover:text-stage-text">
+                        {row.moment}
+                      </h3>
+                      <p class="mt-2 max-w-[36rem] text-[0.9375rem] leading-relaxed text-ink/80">
+                        {row.role}
+                      </p>
+                    </div>
+
+                    <span class="inline-flex items-center gap-1.5 self-center text-sm font-semibold text-ink transition-transform duration-150 group-hover:translate-x-1 group-hover:text-stage-text">
+                      <span class="border-b border-ink/30 pb-0.5 group-hover:border-stage-text">{row.service}</span>
+                      <MorphIcon icon={ArrowRight} size={16} strokeWidth={2.2} spring="snappy" reducedMotion="user" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FAQ (bg-ink) -->
+    <section
+      id="faq"
+      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      aria-labelledby="hub-faq-title"
+      data-hub-faq
+    >
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20 lg:px-12">
+        <div>
+          <h2
+            id="hub-faq-title"
+            class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-paper"
+          >
+            Questions about our speaker services
+          </h2>
+          <p class="mt-4 max-w-[30rem] leading-relaxed text-muted-on-ink">
+            How our four services fit together, how standalone builds work, and where to compare monthly retainers.
+          </p>
+        </div>
+
+        <div class="relative">
+          <span class="absolute inset-x-0 top-0 h-px bg-paper/10" aria-hidden="true"></span>
+          {faqs.map((f) => (
+            <details class="group relative border-b border-paper/10">
+              <summary class="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg font-semibold text-paper transition-colors hover:text-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage [&::-webkit-details-marker]:hidden">
+                <h3 class="text-pretty">{f.q}</h3>
+                <span
+                  aria-hidden="true"
+                  class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full text-paper/70 ring-1 ring-paper/15 transition-colors group-open:bg-stage group-open:text-paper group-open:ring-stage"
+                >
+                  <MorphIcon icon={Plus} size={16} strokeWidth={2} spring="snappy" reducedMotion="user" />
+                </span>
+              </summary>
+              <p class="max-w-[40rem] pb-7 leading-relaxed text-muted-on-ink">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FINAL CTA (bg-stage) -->
+    <section class="bg-stage py-24 text-paper sm:py-36" aria-labelledby="hub-cta-title">
+      <div class="mx-auto flex max-w-7xl flex-col items-center px-4 text-center sm:px-8 lg:px-12">
+        <h2
+          id="hub-cta-title"
+          class="max-w-[44rem] text-[clamp(2.25rem,1.6rem+3vw,4.25rem)] leading-[1.03] font-extrabold tracking-[-0.02em] text-balance text-paper"
+        >
+          Ready for your next paid stage?
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-normal text-paper">
+          Tell us your niche and recent talks on a 20-minute call, and we will show you the events we would pitch first.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <CtaButton href={bookingUrl} tone="ink">Book a strategy call</CtaButton>
+          <a
+            href="/pricing/"
+            class="inline-flex min-h-14 items-center justify-center gap-2 rounded-[3px] px-7 text-base font-semibold text-paper ring-1 ring-paper/45 ring-inset transition-colors duration-150 hover:bg-paper/10 hover:ring-paper focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+          >
+            <span>See pricing</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </MainLayout>
+
+<script>
+  function initHubVideos() {
+    const videos = document.querySelectorAll<HTMLVideoElement>("[data-hub-video]");
+    if (!videos.length) return;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    videos.forEach((v) => {
+      if (reduce) v.pause();
+      else v.play().catch(() => {});
+    });
+  }
+
+  document.addEventListener("astro:page-load", initHubVideos);
+</script>

@@ -18,6 +18,16 @@ const url = new URL(`/blog/${post.id}/`, Astro.site);
 
 const fmt = (date: Date) => date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${Astro.site?.origin ?? "https://www.brux.site"}/` },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${Astro.site?.origin ?? "https://www.brux.site"}/blog/` },
+    { "@type": "ListItem", position: 3, name: d.title, item: url.href },
+  ],
+};
+
 // BlogPosting: autor, fecha e imagen para Google y los buscadores con IA
 const jsonLd = {
   "@context": "https://schema.org",
@@ -33,7 +43,11 @@ const jsonLd = {
 };
 ---
 
-<MainLayout title={`${d.title} | Brux`} description={d.description}>
+<MainLayout title={`${d.title} | Brux`} description={d.description} ogType="article" canonical={`/blog/${post.id}/`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
   <article class="bg-ink pt-[max(9rem,calc(4.5rem+8svh))] pb-24 sm:pb-32" data-blog-post>
     <header class="mx-auto max-w-[46rem] px-4 sm:px-8">
       <a
@@ -94,8 +108,6 @@ const jsonLd = {
       </div>
     </footer>
   </article>
-
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </MainLayout>
 
 <script>

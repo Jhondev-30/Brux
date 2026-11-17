@@ -1,0 +1,601 @@
+---
+import { Mic, Radio, Sparkles, Check } from "@lucide/astro";
+import Button from "../ui/Button.astro";
+import CtaButton from "../ui/CtaButton.astro";
+import { bookingUrl } from "../../data/site";
+
+const words = (text: string) => text.trim().split(/\s+/);
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.04em] -mt-[0.06em] -mb-[0.14em] -mx-[0.04em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  class="booking-hero relative isolate overflow-hidden bg-ink pt-[max(8.5rem,calc(4.5rem+6svh))] pb-20 text-paper sm:pb-24 lg:pb-28"
+  aria-labelledby="booking-hero-title"
+  data-booking-hero
+>
+  <!-- Full-hero ambient crimson glow & GSAP signal particle canvas -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-20"
+    style="background:
+      radial-gradient(ellipse 58% 62% at 74% 50%, rgba(229, 12, 19, 0.16) 0%, rgba(229, 12, 19, 0.05) 42%, transparent 74%),
+      radial-gradient(ellipse 40% 45% at 22% 72%, rgba(229, 12, 19, 0.06) 0%, transparent 70%);"
+  ></div>
+
+  <canvas
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-10 h-full w-full"
+    data-bh-canvas
+  ></canvas>
+
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <nav aria-label="Breadcrumb" class="text-sm text-muted-on-ink" data-bh-crumb>
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a
+            href="/"
+            class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Home
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-paper/35">/</li>
+        <li>
+          <a
+            href="/services/"
+            class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Services
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-paper/35">/</li>
+        <li aria-current="page" class="font-semibold text-paper">Speaker Booking</li>
+      </ol>
+    </nav>
+
+    <div class="mt-6 grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+      <!-- Copy column -->
+      <div class="relative z-10 lg:col-span-6">
+        <h1
+          id="booking-hero-title"
+          class="text-[clamp(2.25rem,1.5rem+3.1vw,4rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-paper"
+          data-bh-title
+        >
+          {words("Direct monthly pitches to the organizers who book paid speakers").map((w, j, a) => (
+            <>
+              <span class={maskClass}><span class={wordClass} data-bh-word>{w}</span></span>
+              {j < a.length - 1 && " "}
+            </>
+          ))}
+        </h1>
+
+        <p
+          class="mt-6 max-w-[38rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-relaxed text-pretty text-muted-on-ink"
+          data-bh-lead
+        >
+          Brux researches conferences and corporate events in your niche and sends custom pitches every month with your press kit and demo reel attached. You keep <strong class="font-semibold text-paper">100% of your speaking fee</strong>.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6" data-bh-ctas>
+          <CtaButton href={bookingUrl}>Book a strategy call</CtaButton>
+          <Button href="/pricing/" variant="link" class="justify-center sm:justify-start">
+            See monthly plans
+          </Button>
+        </div>
+      </div>
+
+      <!-- 3D Direct Pitch Stage Orbit (seamless bg-ink spatial scene) -->
+      <div class="relative lg:col-span-6" aria-hidden="true" data-bh-visual>
+        <div
+          class="bh-perspective relative mx-auto flex aspect-[4/3] w-full max-w-[36rem] items-center justify-center sm:aspect-[11/9]"
+          data-bh-stage
+        >
+          <!-- Soft central crimson aura directly behind the core -->
+          <div
+            class="bh-core-aura pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-64 sm:w-64"
+            style="background: radial-gradient(circle, rgba(229, 12, 19, 0.34) 0%, rgba(229, 12, 19, 0.08) 55%, transparent 78%);"
+            data-bh-aura
+          ></div>
+
+          <!-- 3D Gyroscopic Orbital Assembly -->
+          <div class="bh-3d-rig relative h-full w-full" data-bh-rig>
+            <!-- Concentric tilted 3D stage rings (deep -> near) -->
+            <div class="bh-ring-plane pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div
+                class="bh-ring bh-ring-outer h-[84%] w-[84%] rounded-full border border-paper/12"
+                data-bh-ring="outer"
+              ></div>
+              <div
+                class="bh-ring bh-ring-mid absolute h-[62%] w-[62%] rounded-full border border-stage/35"
+                data-bh-ring="mid"
+              ></div>
+              <div
+                class="bh-ring bh-ring-inner absolute h-[38%] w-[38%] rounded-full border border-dashed border-stage-glow/45"
+                data-bh-ring="inner"
+              ></div>
+            </div>
+
+            <!-- SVG directional signal trajectories from speaker core to organizer nodes -->
+            <svg
+              class="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+              viewBox="0 0 560 440"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="bh-beam-red" x1="280" y1="220" x2="455" y2="115" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF4D47" stop-opacity="0.95" />
+                  <stop offset="100%" stop-color="#E50C13" stop-opacity="0.18" />
+                </linearGradient>
+                <linearGradient id="bh-beam-soft" x1="280" y1="220" x2="105" y2="120" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.45" />
+                  <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06" />
+                </linearGradient>
+              </defs>
+
+              <!-- 4 direct pitch beams -->
+              <path
+                d="M280 220 Q 190 140 105 112"
+                stroke="url(#bh-beam-soft)"
+                stroke-width="1.25"
+                stroke-dasharray="4 6"
+                data-bh-beam
+              />
+              <path
+                d="M280 220 Q 370 132 452 106"
+                stroke="url(#bh-beam-red)"
+                stroke-width="1.5"
+                data-bh-beam
+              />
+              <path
+                d="M280 220 Q 178 292 100 326"
+                stroke="url(#bh-beam-soft)"
+                stroke-width="1.25"
+                stroke-dasharray="4 6"
+                data-bh-beam
+              />
+              <path
+                d="M280 220 Q 378 302 458 332"
+                stroke="url(#bh-beam-red)"
+                stroke-width="1.75"
+                data-bh-beam
+              />
+
+              <!-- Travelling crimson signal packets along beams -->
+              <circle r="3.2" fill="#FF4D47" data-bh-packet="0" />
+              <circle r="3.5" fill="#FF4D47" data-bh-packet="1" />
+              <circle r="3" fill="#FFFFFF" fill-opacity="0.8" data-bh-packet="2" />
+              <circle r="4" fill="#FF4D47" data-bh-packet="3" />
+            </svg>
+
+            <!-- Central 3D Speaker Focal Emitter (open glow core, no opaque disc) -->
+            <div
+              class="bh-core absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2.5"
+              data-bh-core
+            >
+              <div class="relative flex h-14 w-14 items-center justify-center rounded-full bg-stage/25 text-paper ring-1 ring-stage-glow/65 shadow-[0_0_40px_rgba(229,12,19,0.72)] backdrop-blur-xs sm:h-16 sm:w-16">
+                <div class="bh-core-pulse pointer-events-none absolute inset-[-10px] rounded-full border border-stage-glow/45" data-bh-pulse></div>
+                <Mic class="h-6 w-6 text-paper" stroke-width={2} />
+              </div>
+              <span class="rounded-full bg-ink/60 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.14em] text-paper/90 uppercase backdrop-blur-xs">
+                Direct Pitch
+              </span>
+            </div>
+
+            <!-- Node 1: Top-left (Niche Research) -->
+            <div
+              class="bh-node bh-node-tl absolute left-[2%] top-[14%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/85 px-3.5 py-2 backdrop-blur-md sm:left-[4%] sm:top-[16%]"
+              data-bh-node="0"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper/80">
+                <Radio class="h-3.5 w-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Corporate Summits</p>
+                <p class="text-[10px] text-muted-on-ink">Custom pitch</p>
+              </div>
+            </div>
+
+            <!-- Node 2: Top-right (Reel + Press Kit) -->
+            <div
+              class="bh-node bh-node-tr absolute right-[2%] top-[12%] flex items-center gap-2.5 rounded-full border border-stage-glow/30 bg-ink/85 px-3.5 py-2 shadow-[0_12px_28px_-14px_rgba(229,12,19,0.45)] backdrop-blur-md sm:right-[4%] sm:top-[14%]"
+              data-bh-node="1"
+            >
+              <span class="h-2 w-2 shrink-0 rounded-full bg-stage-glow shadow-[0_0_10px_#FF4D47]"></span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Industry Associations</p>
+                <p class="text-[10px] text-stage-glow">Reel &amp; press kit sent</p>
+              </div>
+            </div>
+
+            <!-- Node 3: Bottom-left (Decision Makers) -->
+            <div
+              class="bh-node bh-node-bl absolute bottom-[14%] left-[2%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/85 px-3.5 py-2 backdrop-blur-md sm:bottom-[15%] sm:left-[3%]"
+              data-bh-node="2"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper/80">
+                <Sparkles class="h-3.5 w-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Executive Events</p>
+                <p class="text-[10px] text-muted-on-ink">Committee review</p>
+              </div>
+            </div>
+
+            <!-- Node 4: Bottom-right (Booked Stage · 0% Commission) -->
+            <div
+              class="bh-node bh-node-br absolute bottom-[12%] right-[1%] flex items-center gap-2.5 rounded-full border border-stage-glow/55 bg-stage/18 px-4 py-2.5 shadow-[0_16px_38px_-12px_rgba(229,12,19,0.65)] backdrop-blur-md sm:bottom-[13%] sm:right-[3%]"
+              data-bh-node="3"
+            >
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stage text-paper">
+                <Check class="h-3.5 w-3.5" stroke-width={2.5} />
+              </span>
+              <div class="leading-tight">
+                <p class="text-xs font-bold text-paper">Paid Keynote Stage</p>
+                <p class="text-[10px] font-semibold text-stage-glow">Booked · 0% commission</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bh-perspective {
+    perspective: 1100px;
+  }
+
+  .bh-3d-rig {
+    transform-style: preserve-3d;
+  }
+
+  .bh-ring-plane {
+    transform-style: preserve-3d;
+    transform: rotateX(62deg) rotateZ(-12deg);
+  }
+
+  .bh-ring-outer {
+    transform: translateZ(-28px);
+  }
+
+  .bh-ring-mid {
+    transform: translateZ(0px);
+    box-shadow: inset 0 0 32px rgba(229, 12, 19, 0.14);
+  }
+
+  .bh-ring-inner {
+    transform: translateZ(22px);
+  }
+
+  .bh-core {
+    transform: translateZ(34px);
+  }
+
+  .bh-node-tl {
+    transform: translateZ(18px);
+  }
+
+  .bh-node-tr {
+    transform: translateZ(42px);
+  }
+
+  .bh-node-bl {
+    transform: translateZ(14px);
+  }
+
+  .bh-node-br {
+    transform: translateZ(56px);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  interface SignalParticle {
+    angle: number;
+    radius: number;
+    speed: number;
+    size: number;
+    alpha: number;
+    drift: number;
+    crimson: boolean;
+  }
+
+  let cleanupBookingHero: (() => void) | null = null;
+
+  function initBookingHero() {
+    cleanupBookingHero?.();
+    cleanupBookingHero = null;
+
+    const root = document.querySelector<HTMLElement>("[data-booking-hero]");
+    if (!root) return;
+
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-bh-canvas]");
+    const rig = root.querySelector<HTMLElement>("[data-bh-rig]");
+    const stage = root.querySelector<HTMLElement>("[data-bh-stage]");
+    const aura = root.querySelector<HTMLElement>("[data-bh-aura]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let rafTick: (() => void) | null = null;
+    let ro: ResizeObserver | null = null;
+    let io: IntersectionObserver | null = null;
+    let mm: gsap.MatchMedia | null = null;
+    let removePointer: (() => void) | null = null;
+
+    // 1. GSAP-driven orbital crimson particle universe
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        let w = 0;
+        let h = 0;
+        let dpr = 1;
+        let inView = true;
+        const pointer = { x: -9999, y: -9999 };
+        const particles: SignalParticle[] = [];
+
+        const buildParticles = () => {
+          particles.length = 0;
+          const count = Math.min(82, Math.max(36, Math.round((w * h) / 14500)));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              angle: Math.random() * Math.PI * 2,
+              radius: 0.08 + Math.random() * 0.56,
+              speed: (0.00055 + Math.random() * 0.00125) * (Math.random() > 0.25 ? 1 : -1),
+              size: 1.0 + Math.random() * 1.9,
+              alpha: 0.16 + Math.random() * 0.52,
+              drift: Math.random() * Math.PI * 2,
+              crimson: i % 3 !== 0,
+            });
+          }
+        };
+
+        const resize = () => {
+          const rect = root.getBoundingClientRect();
+          w = rect.width;
+          h = rect.height;
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.max(1, Math.floor(w * dpr));
+          canvas.height = Math.max(1, Math.floor(h * dpr));
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          buildParticles();
+        };
+
+        resize();
+        ro = new ResizeObserver(resize);
+        ro.observe(root);
+
+        const draw = (tSec: number) => {
+          ctx.clearRect(0, 0, w, h);
+          const cx = w >= 1024 ? w * 0.72 : w * 0.5;
+          const cy = w >= 1024 ? h * 0.52 : h * 0.68;
+          const maxSpan = Math.min(w * 0.44, h * 0.62);
+
+          for (const p of particles) {
+            if (!reduce) {
+              p.angle += p.speed;
+            }
+            const wobble = reduce ? 0 : Math.sin(tSec * 0.9 + p.drift) * 6;
+            const rx = maxSpan * p.radius + wobble;
+            const ry = rx * 0.56;
+            let px = cx + Math.cos(p.angle) * rx;
+            let py = cy + Math.sin(p.angle) * ry;
+
+            // Gentle pointer magnetic deflection
+            const dx = px - pointer.x;
+            const dy = py - pointer.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 130 && dist > 0.1) {
+              const push = ((130 - dist) / 130) * 14;
+              px += (dx / dist) * push;
+              py += (dy / dist) * push;
+            }
+
+            const pulse = reduce ? 1 : 0.75 + 0.25 * Math.sin(tSec * 1.6 + p.drift);
+            const alpha = p.alpha * pulse;
+
+            ctx.beginPath();
+            ctx.arc(px, py, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.crimson
+              ? `rgba(255, 77, 71, ${alpha.toFixed(3)})`
+              : `rgba(255, 255, 255, ${(alpha * 0.52).toFixed(3)})`;
+            ctx.fill();
+          }
+        };
+
+        draw(0);
+
+        if (!reduce) {
+          const tick = () => {
+            if (!inView) return;
+            draw(performance.now() * 0.001);
+          };
+          rafTick = tick;
+          gsap.ticker.add(tick);
+
+          io = new IntersectionObserver(
+            ([entry]) => {
+              inView = Boolean(entry?.isIntersecting);
+            },
+            { threshold: 0.05 },
+          );
+          io.observe(root);
+
+          const onMove = (e: PointerEvent) => {
+            const rect = root.getBoundingClientRect();
+            pointer.x = e.clientX - rect.left;
+            pointer.y = e.clientY - rect.top;
+          };
+          const onLeave = () => {
+            pointer.x = -9999;
+            pointer.y = -9999;
+          };
+          root.addEventListener("pointermove", onMove, { passive: true });
+          root.addEventListener("pointerleave", onLeave, { passive: true });
+          removePointer = () => {
+            root.removeEventListener("pointermove", onMove);
+            root.removeEventListener("pointerleave", onLeave);
+          };
+        }
+      }
+    }
+
+    // 2. Bang Motion entrance, continuous 3D gyro float, packet travel & subtle pointer parallax
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const crumb = root.querySelector("[data-bh-crumb]");
+        const wordEls = root.querySelectorAll("[data-bh-word]");
+        const lead = root.querySelector("[data-bh-lead]");
+        const ctas = root.querySelector("[data-bh-ctas]");
+        const rings = root.querySelectorAll("[data-bh-ring]");
+        const core = root.querySelector("[data-bh-core]");
+        const nodes = root.querySelectorAll("[data-bh-node]");
+        const beams = root.querySelectorAll("[data-bh-beam]");
+        const pulseRing = root.querySelector("[data-bh-pulse]");
+
+        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+        tl.from(crumb, { y: 12, opacity: 0, duration: 0.5, clearProps: "transform,opacity" })
+          .fromTo(
+            wordEls,
+            { yPercent: 112, rotate: 5 },
+            { yPercent: 0, rotate: 0, duration: 0.95, stagger: 0.045, clearProps: "transform" },
+            0.05,
+          )
+          .from(lead, { y: 18, opacity: 0, duration: 0.7, clearProps: "transform,opacity" }, 0.25)
+          .from(ctas, { y: 16, opacity: 0, duration: 0.65, clearProps: "transform,opacity" }, 0.34)
+          .from(
+            rings,
+            { scale: 0.82, opacity: 0, duration: 1.0, stagger: 0.08, ease: "power3.out" },
+            0.12,
+          )
+          .from(core, { scale: 0.8, opacity: 0, duration: 0.85, ease: "expo.out" }, 0.2)
+          .from(beams, { opacity: 0, duration: 0.8, stagger: 0.07 }, 0.3)
+          .from(nodes, { y: 16, scale: 0.92, opacity: 0, duration: 0.75, stagger: 0.08 }, 0.32);
+
+        // Continuous subtle 3D stage breathing & pulse
+        if (pulseRing) {
+          gsap.fromTo(
+            pulseRing,
+            { scale: 0.94, opacity: 0.65 },
+            {
+              scale: 1.55,
+              opacity: 0,
+              duration: 2.6,
+              repeat: -1,
+              ease: "power2.out",
+            },
+          );
+        }
+
+        if (aura) {
+          gsap.to(aura, {
+            scale: 1.12,
+            opacity: 0.92,
+            duration: 3.4,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        nodes.forEach((node, idx) => {
+          gsap.to(node, {
+            y: idx % 2 === 0 ? -6 : 6,
+            duration: 2.8 + idx * 0.45,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        });
+
+        // Animate directional signal packets along quadratic Bezier curves
+        const packetCurves: Array<[number, number, number, number, number, number]> = [
+          [280, 220, 190, 140, 105, 112],
+          [280, 220, 370, 132, 452, 106],
+          [280, 220, 178, 292, 100, 326],
+          [280, 220, 378, 302, 458, 332],
+        ];
+        packetCurves.forEach((pts, idx) => {
+          const el = root.querySelector<SVGCircleElement>(`[data-bh-packet="${idx}"]`);
+          if (!el) return;
+          const [x0, y0, cx, cy, x1, y1] = pts;
+          const proxy = { t: 0 };
+          gsap.set(el, { attr: { cx: x0, cy: y0 }, opacity: 0 });
+          gsap
+            .timeline({ repeat: -1, delay: idx * 0.55, repeatDelay: 0.4 })
+            .to(el, { opacity: 1, duration: 0.15, ease: "none" })
+            .to(
+              proxy,
+              {
+                t: 1,
+                duration: 1.75,
+                ease: "power2.inOut",
+                onUpdate: () => {
+                  const t = proxy.t;
+                  const inv = 1 - t;
+                  const px = inv * inv * x0 + 2 * inv * t * cx + t * t * x1;
+                  const py = inv * inv * y0 + 2 * inv * t * cy + t * t * y1;
+                  el.setAttribute("cx", px.toFixed(1));
+                  el.setAttribute("cy", py.toFixed(1));
+                },
+              },
+              0,
+            )
+            .to(el, { opacity: 0, duration: 0.22, ease: "none" }, "-=0.22");
+        });
+
+        // Subtle gyroscopic mouse tracking across hero (gentle, never jittery)
+        if (rig && stage) {
+          const rxTo = gsap.quickTo(rig, "rotationX", { duration: 0.9, ease: "power3.out" });
+          const ryTo = gsap.quickTo(rig, "rotationY", { duration: 0.9, ease: "power3.out" });
+          const xTo = gsap.quickTo(rig, "x", { duration: 0.9, ease: "power3.out" });
+          const yTo = gsap.quickTo(rig, "y", { duration: 0.9, ease: "power3.out" });
+
+          const onHeroPointer = (e: PointerEvent) => {
+            if (e.pointerType !== "mouse") return;
+            const rect = root.getBoundingClientRect();
+            const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+            const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+            ryTo(nx * 10);
+            rxTo(-ny * 8);
+            xTo(nx * 10);
+            yTo(ny * 8);
+          };
+          const onHeroLeave = () => {
+            rxTo(0);
+            ryTo(0);
+            xTo(0);
+            yTo(0);
+          };
+
+          root.addEventListener("pointermove", onHeroPointer, { passive: true });
+          root.addEventListener("pointerleave", onHeroLeave, { passive: true });
+          return () => {
+            root.removeEventListener("pointermove", onHeroPointer);
+            root.removeEventListener("pointerleave", onHeroLeave);
+          };
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    cleanupBookingHero = () => {
+      if (rafTick) gsap.ticker.remove(rafTick);
+      ro?.disconnect();
+      io?.disconnect();
+      removePointer?.();
+      mm?.revert();
+    };
+  }
+
+  initBookingHero();
+  document.addEventListener("astro:page-load", initBookingHero);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupBookingHero?.();
+    cleanupBookingHero = null;
+  });
+</script>

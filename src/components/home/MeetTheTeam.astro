@@ -1,0 +1,792 @@
+---
+import { Image } from "astro:assets";
+import { type IconNode } from "lucide";
+import MorphIcon from "morphicons/astro";
+import everthPhoto from "../../assets/team/everth-ferrer.webp";
+import jhonPhoto from "../../assets/team/jhon-perozo.webp";
+import mariaPhoto from "../../assets/team/maria-munoz.webp";
+
+interface Props {
+  showStoryLink?: boolean;
+}
+
+const { showStoryLink = false } = Astro.props;
+
+interface TeamMember {
+  name: string;
+  role: string;
+  domain: string;
+  bio: string;
+  linkedin: string;
+  photo: ImageMetadata;
+  offsetClass: string;
+}
+
+const LINKEDIN_ICON: IconNode = [
+  ["path", { d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" }],
+  ["rect", { width: "4", height: "12", x: "2", y: "9" }],
+  ["circle", { cx: "4", cy: "4", r: "2" }],
+];
+
+const team: TeamMember[] = [
+  {
+    name: "Everth Ferrer",
+    role: "CEO & Co-Founder",
+    domain: "Outreach, Social & CRM",
+    bio: "Leads outreach strategy across email and LinkedIn, co-manages the CRM, and brings years of speaker social media and brand direction.",
+    linkedin: "https://www.linkedin.com/in/everth-ferrer/",
+    photo: everthPhoto,
+    offsetClass: "md:mt-0",
+  },
+  {
+    name: "Jhon Perozo",
+    role: "Co-Founder & Head of Web",
+    domain: "Web, Reels & Automation",
+    bio: "Builds speaker websites, branding, and edited video reels—and engineers the automations that find verified niche events for our outreach.",
+    linkedin: "https://www.linkedin.com/in/jhon-perozo/",
+    photo: jhonPhoto,
+    offsetClass: "md:mt-10",
+  },
+  {
+    name: "Maria Muñoz",
+    role: "Head of Customer Success",
+    domain: "Calls, Plans & CRM",
+    bio: "Leads speaker discovery calls, tailors plans and pricing to each speaker's goals, and co-manages the CRM pipeline with Everth.",
+    linkedin: "https://www.linkedin.com/in/mar%C3%ADa-mu%C3%B1oz-49479918b/",
+    photo: mariaPhoto,
+    offsetClass: "md:mt-4",
+  },
+];
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.08em] pb-[0.16em] px-[0.05em] -mt-[0.08em] -mb-[0.16em] -mx-[0.05em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  id="about"
+  class="scroll-mt-24 relative overflow-hidden bg-paper pt-20 pb-28 text-ink sm:pt-24 sm:pb-36"
+  aria-labelledby="team-title"
+  data-team
+>
+  <!-- Antigravity-inspired lightweight particle universe (contained strictly inside #about, GSAP ticker + viewport-gated) -->
+  <canvas
+    class="pointer-events-none absolute inset-0 z-0 size-full [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_94%,transparent_100%)]"
+    aria-hidden="true"
+    data-team-universe
+  ></canvas>
+
+  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+    <!-- Centered Header -->
+    <div class="mx-auto max-w-[44rem] text-center">
+      <h2
+        id="team-title"
+        class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
+        data-team-title
+      >
+        {
+          words("The team working backstage for your stage").map((w, j, a) => (
+            <>
+              <span class={maskClass}>
+                <span class={wordClass} data-team-word>
+                  {w}
+                </span>
+              </span>
+              {j < a.length - 1 && " "}
+            </>
+          ))
+        }
+      </h2>
+      <p
+        class="mx-auto mt-5 max-w-[38rem] text-[clamp(1.0625rem,1rem+0.3vw,1.1875rem)] leading-relaxed text-pretty text-muted"
+        data-team-lead
+      >
+        Keynote speaking is an onstage craft powered by backstage discipline. We handle the outreach, web infrastructure, and day-to-day follow-through so you focus on your talk.
+      </p>
+      {showStoryLink && (
+        <div class="mt-6">
+          <a
+            href="/about/"
+            class="inline-flex min-h-11 items-center gap-2 font-semibold text-stage-text underline decoration-stage-text/35 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+          >
+            Read our mission &amp; how we work
+          </a>
+        </div>
+      )}
+    </div>
+
+    <!-- Staggered Editorial Team Grid -->
+    <div class="mt-28 grid grid-cols-1 items-start gap-x-7 gap-y-24 sm:mt-32 md:grid-cols-3 md:gap-y-0 lg:gap-x-9">
+      {
+        team.map((member) => (
+          <div class:list={["relative isolate pt-16 sm:pt-18", member.offsetClass]} data-team-slot>
+            <div class="relative pb-2 -mb-2" data-team-hit>
+              <article
+                class="relative flex flex-col items-center rounded-[20px] border border-ink bg-ink px-7 pb-8 text-center text-paper shadow-[0_18px_36px_-28px_rgb(10_10_10/0.45)] will-change-transform [--sh:0] after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:opacity-(--sh) after:shadow-[0_28px_52px_-24px_rgb(10_10_10/0.55)] sm:px-8 sm:pb-9"
+                data-team-card
+              >
+              <!-- Overlapping circular portrait: visible ink frame + crisp paper halo -->
+              <div
+                class="-mt-16 mb-6 size-32 shrink-0 overflow-hidden rounded-full border-[5px] border-ink bg-ink shadow-[0_0_0_4px_var(--color-paper),0_18px_36px_-14px_rgb(10_10_10/0.4)] sm:-mt-18 sm:size-36"
+                data-team-avatar
+              >
+                <Image
+                  src={member.photo}
+                  alt={`${member.name}, ${member.role} at Brux`}
+                  widths={[288, 480]}
+                  sizes="(min-width: 768px) 144px, 128px"
+                  class="size-full object-cover will-change-transform"
+                  loading="lazy"
+                  data-team-photo
+                />
+              </div>
+
+              <h3 class="text-[1.375rem] leading-tight font-extrabold tracking-[-0.02em] text-paper" data-team-name>
+                {member.name}
+              </h3>
+              <p class="mt-1.5 text-sm font-bold text-stage-glow" data-team-role>
+                {member.role}
+              </p>
+              <p class="mt-4 max-w-[26rem] text-base leading-relaxed text-pretty text-paper/82" data-team-bio>
+                {member.bio}
+              </p>
+
+              <!-- Card Footer with hover-drawn line -->
+              <div
+                class="relative mt-7 flex w-full items-center justify-between gap-4 border-t border-paper/12 pt-5 text-left"
+                data-team-footer
+              >
+                <span
+                  class="pointer-events-none absolute inset-x-0 -top-px h-px origin-left bg-paper [transform:scaleX(0)]"
+                  aria-hidden="true"
+                  data-team-line
+                />
+                <span
+                  class="text-xs font-semibold tracking-[0.06em] uppercase text-muted-on-ink"
+                  data-team-domain
+                >
+                  {member.domain}
+                </span>
+                <a
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${member.name} on LinkedIn`}
+                  class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-paper/10 px-4 text-sm font-semibold text-paper will-change-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+                  data-team-linkedin
+                >
+                  <MorphIcon
+                    icon={LINKEDIN_ICON}
+                    size={15}
+                    strokeWidth={2}
+                    spring="snappy"
+                    reducedMotion="user"
+                    data-team-linkedin-icon
+                  />
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+              </article>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ArrowUpRight, type IconNode } from "lucide";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
+
+  interface Particle {
+    ox: number;
+    oy: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    len: number;
+    rad: number;
+    angle: number;
+    baseAngle: number;
+    spin: number;
+    phase: number;
+    driftSpeed: number;
+    driftAmp: number;
+    alpha: number;
+    isAccent: boolean;
+    isDot: boolean;
+  }
+
+  const LINKEDIN_ICON: IconNode = [
+    ["path", { d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" }],
+    ["rect", { width: "4", height: "12", x: "2", y: "9" }],
+    ["circle", { cx: "4", cy: "4", r: "2" }],
+  ];
+
+  let mm: gsap.MatchMedia | null = null;
+  let cleanupInteractions: (() => void) | null = null;
+  let cleanupUniverse: (() => void) | null = null;
+
+  function initUniverse(root: HTMLElement) {
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-team-universe]");
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return () => {};
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let particles: Particle[] = [];
+    let isVisible = false;
+    let tickerActive = false;
+    let time = 0;
+
+    // Damped mouse field driven by GSAP quickTo (no jagged jumps when entering/leaving)
+    const pointer = { x: 0, y: 0, strength: 0 };
+    const setPX = gsap.quickTo(pointer, "x", { duration: 0.35, ease: "power3.out" });
+    const setPY = gsap.quickTo(pointer, "y", { duration: 0.35, ease: "power3.out" });
+    const setPS = gsap.quickTo(pointer, "strength", { duration: 0.45, ease: "power2.out" });
+
+    const seedParticles = (w: number, h: number) => {
+      const areaCount = Math.round((w * h) / 7000);
+      const count = gsap.utils.clamp(60, 175, areaCount);
+      const cx = w * 0.5;
+      const cy = h * 0.45;
+      const list: Particle[] = [];
+
+      for (let i = 0; i < count; i++) {
+        // Organic cosmic field extending up into the open top zone and around the cards
+        const theta = gsap.utils.random(0, Math.PI * 2);
+        const ringBias = Math.random() < 0.6 ? gsap.utils.random(0.24, 0.52) : gsap.utils.random(0.06, 0.56);
+        const ox = cx + Math.cos(theta) * w * ringBias + gsap.utils.random(-w * 0.1, w * 0.1);
+        const oy = cy + Math.sin(theta) * h * ringBias + gsap.utils.random(-h * 0.08, h * 0.08);
+        const px = gsap.utils.clamp(14, w - 14, ox);
+        const py = gsap.utils.clamp(14, h - 14, oy);
+        const isAccent = i % 4 === 0;
+        const isDot = i % 3 === 0;
+        const baseAngle = theta + Math.PI * 0.5;
+
+        list.push({
+          ox: px,
+          oy: py,
+          x: px,
+          y: py,
+          vx: 0,
+          vy: 0,
+          len: gsap.utils.random(5, 11),
+          rad: isDot ? gsap.utils.random(1.3, 2.3) : gsap.utils.random(1, 1.5),
+          angle: baseAngle,
+          baseAngle,
+          spin: gsap.utils.random(-0.25, 0.25),
+          phase: gsap.utils.random(0, Math.PI * 2),
+          driftSpeed: gsap.utils.random(0.35, 0.75),
+          driftAmp: gsap.utils.random(6, 16),
+          alpha: isAccent ? gsap.utils.random(0.24, 0.44) : gsap.utils.random(0.11, 0.24),
+          isAccent,
+          isDot,
+        });
+      }
+      particles = list;
+    };
+
+    const drawParticles = (dt: number) => {
+      if (!width || !height) return;
+      time += dt;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const radius = Math.min(200, Math.max(130, width * 0.16));
+      const radiusSq = radius * radius;
+      const activeForce = pointer.strength;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Gentle antigravity orbital float around origin
+        const floatX = p.ox + Math.cos(time * p.driftSpeed + p.phase) * p.driftAmp;
+        const floatY = p.oy + Math.sin(time * p.driftSpeed * 0.85 + p.phase) * (p.driftAmp * 0.8);
+
+        let boost = 0;
+
+        if (activeForce > 0.01) {
+          const dx = p.x - pointer.x;
+          const dy = p.y - pointer.y;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < radiusSq && distSq > 0.001) {
+            const dist = Math.sqrt(distSq);
+            const falloff = 1 - dist / radius;
+            const push = falloff * falloff * 1.45 * activeForce;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            // Outward antigravity ripple + subtle tangential orbital swirl
+            p.vx += (nx * push - ny * push * 0.42);
+            p.vy += (ny * push + nx * push * 0.42);
+            boost = falloff * activeForce;
+
+            // Capsules softly orient along the radial wave (shortest-angle delta)
+            const targetAngle = Math.atan2(ny, nx);
+            const delta = Math.atan2(Math.sin(targetAngle - p.angle), Math.cos(targetAngle - p.angle));
+            p.angle += delta * 0.12;
+          }
+        }
+
+        // Soft spring back to weightless drift position
+        p.vx += (floatX - p.x) * 0.045;
+        p.vy += (floatY - p.y) * 0.045;
+        p.vx *= 0.88;
+        p.vy *= 0.88;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (boost < 0.05) {
+          const restAngle = p.baseAngle + Math.sin(time * 0.4 + p.phase) * 0.35 + time * p.spin * 0.25;
+          const restDelta = Math.atan2(Math.sin(restAngle - p.angle), Math.cos(restAngle - p.angle));
+          p.angle += restDelta * 0.04;
+        }
+
+        const alpha = gsap.utils.clamp(0.08, 0.85, p.alpha + boost * 0.42);
+        const scale = 1 + boost * 0.35;
+        ctx.fillStyle = p.isAccent ? `rgba(229, 12, 19, ${alpha})` : `rgba(10, 10, 10, ${alpha})`;
+
+        if (p.isDot) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.rad * scale, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          const w = p.len * scale;
+          const h = p.rad * 1.8 * scale;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(-w * 0.5, -h * 0.5, w, h, h * 0.5);
+          } else {
+            ctx.rect(-w * 0.5, -h * 0.5, w, h);
+          }
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    };
+
+    const tick = (_time: number, deltaTime: number) => {
+      if (!isVisible || document.hidden || reduce.matches) return;
+      const dt = Math.min(deltaTime, 50) / 1000;
+      drawParticles(dt);
+    };
+
+    const syncTicker = () => {
+      const shouldRun = isVisible && !reduce.matches;
+      if (shouldRun && !tickerActive) {
+        gsap.ticker.add(tick);
+        tickerActive = true;
+      } else if (!shouldRun && tickerActive) {
+        gsap.ticker.remove(tick);
+        tickerActive = false;
+      }
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, Math.round(rect.width));
+      height = Math.max(1, Math.round(rect.height));
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      seedParticles(width, height);
+      drawParticles(0);
+    };
+
+    let resizeRaf = 0;
+    const ro = new ResizeObserver(() => {
+      cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(resize);
+    });
+    ro.observe(canvas);
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        isVisible = Boolean(entries[0]?.isIntersecting);
+        syncTicker();
+      },
+      { rootMargin: "160px 0px" },
+    );
+    io.observe(canvas);
+
+    root.addEventListener(
+      "pointermove",
+      (e) => {
+        if (reduce.matches || !finePointer.matches) return;
+        const rect = canvas.getBoundingClientRect();
+        setPX(e.clientX - rect.left);
+        setPY(e.clientY - rect.top);
+        if (pointer.strength < 0.99) setPS(1);
+      },
+      { passive: true, signal },
+    );
+
+    root.addEventListener(
+      "pointerleave",
+      () => {
+        setPS(0);
+      },
+      { passive: true, signal },
+    );
+
+    reduce.addEventListener("change", () => {
+      syncTicker();
+      if (reduce.matches) drawParticles(0);
+    }, { signal });
+
+    resize();
+    syncTicker();
+
+    return () => {
+      cancelAnimationFrame(resizeRaf);
+      ro.disconnect();
+      io.disconnect();
+      controller.abort();
+      if (tickerActive) {
+        gsap.ticker.remove(tick);
+        tickerActive = false;
+      }
+    };
+  }
+
+  function initTeam() {
+    mm?.revert();
+    mm = null;
+    cleanupInteractions?.();
+    cleanupInteractions = null;
+    cleanupUniverse?.();
+    cleanupUniverse = null;
+
+    const root = document.querySelector<HTMLElement>("[data-team]");
+    if (!root) return;
+
+    cleanupUniverse = initUniverse(root);
+
+    const styles = getComputedStyle(document.documentElement);
+    const tokInk = styles.getPropertyValue("--color-ink").trim() || "#0A0A0A";
+    const tokPaper = styles.getPropertyValue("--color-paper").trim() || "#FFFFFF";
+    const tokStageText = styles.getPropertyValue("--color-stage-text").trim() || "#C20A18";
+    const tokStageGlow = styles.getPropertyValue("--color-stage-glow").trim() || "#FF4D47";
+    const tokMutedOnInk = styles.getPropertyValue("--color-muted-on-ink").trim() || "#A8A8A8";
+
+    // 1. Entrance choreography (TasteSkill: masked headline rise, already-visible body/cards, no bounce)
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const words = root.querySelectorAll<HTMLElement>("[data-team-word]");
+        const lead = root.querySelector<HTMLElement>("[data-team-lead]");
+        const slots = root.querySelectorAll<HTMLElement>("[data-team-slot]");
+        const photos = root.querySelectorAll<HTMLElement>("[data-team-photo]");
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root,
+            start: "top 78%",
+            once: true,
+          },
+        });
+
+        if (words.length) {
+          tl.fromTo(
+            words,
+            { yPercent: 105 },
+            { yPercent: 0, duration: 0.85, stagger: 0.04, ease: "expo.out" },
+            0,
+          );
+        }
+
+        if (lead) {
+          tl.from(
+            lead,
+            { y: 12, duration: 0.65, ease: "power3.out", clearProps: "transform" },
+            0.14,
+          );
+        }
+
+        if (slots.length) {
+          tl.from(
+            slots,
+            {
+              y: 18,
+              duration: 0.75,
+              ease: "power3.out",
+              stagger: 0.08,
+              clearProps: "transform",
+            },
+            0.18,
+          );
+        }
+
+        if (photos.length) {
+          tl.from(
+            photos,
+            {
+              scale: 1.06,
+              duration: 1.0,
+              ease: "expo.out",
+              stagger: 0.08,
+              clearProps: "scale",
+            },
+            0.18,
+          );
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    // 2. Smooth GSAP hover & press layer attached to the stationary slot (zero cursor-edge jump!)
+    const controller = new AbortController();
+    const { signal } = controller;
+    const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    root.querySelectorAll<HTMLElement>("[data-team-slot]").forEach((slot) => {
+      const hit = slot.querySelector<HTMLElement>("[data-team-hit]");
+      const card = slot.querySelector<HTMLElement>("[data-team-card]");
+      const avatar = slot.querySelector<HTMLElement>("[data-team-avatar]");
+      const photo = slot.querySelector<HTMLElement>("[data-team-photo]");
+      const role = slot.querySelector<HTMLElement>("[data-team-role]");
+      const bio = slot.querySelector<HTMLElement>("[data-team-bio]");
+      const footer = slot.querySelector<HTMLElement>("[data-team-footer]");
+      const domain = slot.querySelector<HTMLElement>("[data-team-domain]");
+      const line = slot.querySelector<HTMLElement>("[data-team-line]");
+      const btn = slot.querySelector<HTMLElement>("[data-team-linkedin]");
+      const btnIcon = btn?.querySelector<MorphEl>("[data-team-linkedin-icon]");
+      if (!hit || !card) return;
+
+      // Single quickTo per numeric property so enter/leave never overwrite-kill each other
+      const liftTo = gsap.quickTo(card, "y", { duration: 0.55, ease: "power3.out" });
+      const shadowTo = gsap.quickTo(card, "--sh", { duration: 0.55, ease: "power2.out" });
+      const photoScaleTo = photo ? gsap.quickTo(photo, "scale", { duration: 0.65, ease: "power2.out" }) : null;
+
+      let cardActive = false;
+      let btnHovered = false;
+
+      const syncBtnVisual = () => {
+        if (!btn) return;
+        const dur = reduce.matches ? 0 : 0.45;
+        if (btnHovered) {
+          gsap.to(btn, {
+            backgroundColor: tokPaper,
+            color: tokInk,
+            duration: 0.22,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        } else if (cardActive) {
+          gsap.to(btn, {
+            backgroundColor: tokInk,
+            color: tokPaper,
+            duration: dur,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        } else {
+          gsap.to(btn, {
+            backgroundColor: "rgba(255, 255, 255, 0.10)",
+            color: tokPaper,
+            duration: dur,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        }
+      };
+
+      const activateCard = () => {
+        if (cardActive) return;
+        cardActive = true;
+
+        if (!reduce.matches) {
+          liftTo(-5);
+          shadowTo(1);
+          photoScaleTo?.(1.03);
+        }
+
+        const colorDur = reduce.matches ? 0 : 0.72;
+        gsap.to(card, {
+          backgroundColor: tokStageText,
+          borderColor: tokStageText,
+          duration: colorDur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        if (avatar) {
+          gsap.to(avatar, {
+            borderColor: tokStageText,
+            backgroundColor: tokStageText,
+            duration: colorDur,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        }
+        if (role) {
+          gsap.to(role, { color: "rgba(255, 255, 255, 0.92)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (bio) {
+          gsap.to(bio, { color: "rgba(255, 255, 255, 0.94)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (footer) {
+          gsap.to(footer, { borderTopColor: "rgba(255, 255, 255, 0.24)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (domain) {
+          gsap.to(domain, { color: "rgba(255, 255, 255, 0.88)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (line && !reduce.matches) {
+          gsap.set(line, { transformOrigin: "0% 50%" });
+          gsap.to(line, { scaleX: 1, duration: 0.45, ease: "power3.out", overwrite: "auto" });
+        }
+        syncBtnVisual();
+      };
+
+      const deactivateCard = () => {
+        if (!cardActive) return;
+        cardActive = false;
+
+        if (!reduce.matches) {
+          liftTo(0);
+          shadowTo(0);
+          photoScaleTo?.(1);
+        }
+
+        const colorDur = reduce.matches ? 0 : 0.58;
+        gsap.to(card, {
+          backgroundColor: tokInk,
+          borderColor: tokInk,
+          duration: colorDur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        if (avatar) {
+          gsap.to(avatar, {
+            borderColor: tokInk,
+            backgroundColor: tokInk,
+            duration: colorDur,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        }
+        if (role) {
+          gsap.to(role, { color: tokStageGlow, duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (bio) {
+          gsap.to(bio, { color: "rgba(255, 255, 255, 0.82)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (footer) {
+          gsap.to(footer, { borderTopColor: "rgba(255, 255, 255, 0.12)", duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (domain) {
+          gsap.to(domain, { color: tokMutedOnInk, duration: colorDur, ease: "power2.out", overwrite: "auto" });
+        }
+        if (line && !reduce.matches) {
+          gsap.set(line, { transformOrigin: "100% 50%" });
+          gsap.to(line, { scaleX: 0, duration: 0.3, ease: "power2.inOut", overwrite: "auto" });
+        }
+        syncBtnVisual();
+      };
+
+      // Listen on stationary hit wrapper (pb-2 -mb-2 prevents bottom-edge cursor escape when card lifts)
+      hit.addEventListener(
+        "pointerenter",
+        (e) => {
+          if (e.pointerType === "mouse" && finePointer.matches) activateCard();
+        },
+        { signal },
+      );
+      hit.addEventListener(
+        "pointerleave",
+        (e) => {
+          if (e.pointerType === "mouse") deactivateCard();
+        },
+        { signal },
+      );
+      slot.addEventListener("focusin", activateCard, { signal });
+      slot.addEventListener(
+        "focusout",
+        (e) => {
+          if (!slot.contains(e.relatedTarget as Node | null)) deactivateCard();
+        },
+        { signal },
+      );
+
+      if (btn) {
+        const btnY = gsap.quickTo(btn, "y", { duration: 0.2, ease: "power2.out" });
+        const btnScale = gsap.quickTo(btn, "scale", { duration: 0.14, ease: "power2.out" });
+
+        const onBtnEnter = () => {
+          btnHovered = true;
+          btnIcon?.morphTo?.(ArrowUpRight);
+          syncBtnVisual();
+          if (!reduce.matches && finePointer.matches) btnY(-1);
+        };
+
+        const onBtnLeave = () => {
+          btnHovered = false;
+          btnIcon?.morphTo?.(LINKEDIN_ICON);
+          syncBtnVisual();
+          if (!reduce.matches) {
+            btnY(0);
+            btnScale(1);
+          }
+        };
+
+        btn.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onBtnEnter(), { signal });
+        btn.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onBtnLeave(), { signal });
+        btn.addEventListener("focus", onBtnEnter, { signal });
+        btn.addEventListener("blur", onBtnLeave, { signal });
+        btn.addEventListener(
+          "pointerdown",
+          () => {
+            if (!reduce.matches) {
+              btnY(1);
+              btnScale(0.985);
+            }
+          },
+          { signal },
+        );
+        btn.addEventListener(
+          "pointerup",
+          () => {
+            if (!reduce.matches) {
+              btnY(finePointer.matches && btnHovered ? -1 : 0);
+              btnScale(1);
+            }
+          },
+          { signal },
+        );
+      }
+    });
+
+    cleanupInteractions = () => controller.abort();
+  }
+
+  document.addEventListener("astro:page-load", initTeam);
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+    cleanupInteractions?.();
+    cleanupInteractions = null;
+    cleanupUniverse?.();
+    cleanupUniverse = null;
+  });
+</script>

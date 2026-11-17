@@ -1,14 +1,19 @@
 ---
-import { Check as LucideCheck } from "@lucide/astro";
-import { ArrowRight } from "lucide";
+import { ArrowDown as LucideArrowDown } from "@lucide/astro";
+import { ArrowRight, Plus } from "lucide";
 import MorphIcon from "morphicons/astro";
 import { pricingTiers } from "../../data/pricing";
 import { bookingUrl } from "../../data/site";
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.04em] -mt-[0.06em] -mb-[0.14em] -mx-[0.04em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 ---
 
 <section
   id="plans"
-  class="scroll-mt-24 bg-paper py-20 text-ink sm:py-28"
+  class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28"
   aria-labelledby="plans-grid-title"
   data-pricing-plans
 >
@@ -18,30 +23,36 @@ import { bookingUrl } from "../../data/site";
         <h2
           id="plans-grid-title"
           class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
+          data-pp-title
         >
-          Four monthly plans, zero commission
+          {words("Four monthly plans, zero commission").map((w, j, a) => (
+            <>
+              <span class={maskClass}><span class={wordClass} data-pp-title-word>{w}</span></span>
+              {j < a.length - 1 && " "}
+            </>
+          ))}
         </h2>
-        <p class="mt-3 max-w-[38rem] text-base leading-relaxed text-muted">
-          Pick the outreach volume and content support that fits where your speaking business is today.
+        <p class="mt-3 max-w-[38rem] text-base leading-relaxed text-muted" data-pp-lead>
+          Choose the monthly pitch and LinkedIn volume that fits where your speaking career is today.
         </p>
       </div>
       <a
         href="#compare"
         class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:text-stage-text hover:decoration-stage-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
       >
-        <span>Jump to full feature comparison</span>
+        <span>Jump to feature comparison</span>
       </a>
     </div>
 
     <ul
-      class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto] lg:gap-x-5 lg:gap-y-0"
+      class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:gap-x-5 lg:gap-y-0"
       data-pp-grid
     >
       {pricingTiers.map((t) => (
         <li
           id={t.id}
           class:list={[
-            "scroll-mt-28 relative isolate flex lg:row-span-5 lg:grid lg:grid-rows-subgrid",
+            "scroll-mt-28 relative isolate flex lg:row-span-6 lg:grid lg:grid-rows-subgrid",
             "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[20px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
             t.featured
               ? "before:translate-y-1.5 before:bg-stage-text/22 has-[[data-pp-card]:hover]:before:bg-stage-text/32 has-[[data-pp-card]:focus-within]:before:bg-stage-text/32"
@@ -51,7 +62,7 @@ import { bookingUrl } from "../../data/site";
         >
           <article
             class:list={[
-              "group/pp relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper will-change-transform lg:row-span-5 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7",
+              "group/pp relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper will-change-transform lg:row-span-6 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7",
               t.featured ? "border-stage-text bg-stage-text" : "border-ink bg-ink",
             ]}
             data-pp-card
@@ -72,7 +83,7 @@ import { bookingUrl } from "../../data/site";
               </span>
             </div>
 
-            <!-- 2. Precio tabular + condición de compromiso -->
+            <!-- 2. Precio tabular + compromiso -->
             <div class="mt-5">
               <div class="flex items-baseline gap-1.5">
                 <span class="text-[clamp(2.25rem,1.9rem+1.1vw,2.75rem)] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">
@@ -92,7 +103,7 @@ import { bookingUrl } from "../../data/site";
               </p>
             </div>
 
-            <!-- 3. Resumen de una línea -->
+            <!-- 3. Para quién es -->
             <p
               class:list={[
                 "mt-4 text-[0.9375rem] leading-[1.5]",
@@ -102,10 +113,10 @@ import { bookingUrl } from "../../data/site";
               {t.summary}
             </p>
 
-            <!-- 4. Bullets clave con línea animada en hover -->
+            <!-- 4. Cifras de capacidad mensual -->
             <div
               class:list={[
-                "relative mt-5 border-t pt-5",
+                "relative mt-5 grid gap-3 border-t pt-5",
                 t.featured ? "border-paper/20" : "border-paper/12",
               ]}
             >
@@ -117,25 +128,41 @@ import { bookingUrl } from "../../data/site";
                 aria-hidden="true"
                 data-pp-line
               />
-              <ul class="grid gap-2.5">
-                {t.highlights.map((item) => (
-                  <li class="flex items-start gap-2.5 text-[0.875rem] leading-[1.45] text-paper/95">
-                    <LucideCheck
-                      class:list={[
-                        "mt-0.5 size-4 shrink-0",
-                        t.featured ? "text-paper" : "text-stage-glow",
-                      ]}
-                      stroke-width={2.25}
-                      aria-hidden="true"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <div class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr]">
+                <span class="text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums xl:text-[1.875rem]" data-pp-num>
+                  {t.pitches}
+                </span>
+                <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-muted-on-ink"]}>
+                  organizer pitches / mo
+                </span>
+              </div>
+              <div class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr]">
+                <span class="text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums xl:text-[1.875rem]" data-pp-num>
+                  {t.posts}
+                </span>
+                <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-muted-on-ink"]}>
+                  LinkedIn posts / mo
+                </span>
+              </div>
             </div>
 
-            <!-- 5. CTA único por tarjeta -->
-            <div class="mt-auto pt-7 lg:mt-0 lg:self-end">
+            <!-- 5. Diferencial clave -->
+            <div class="mt-5 flex items-start gap-2 text-[0.875rem] font-semibold leading-snug text-paper">
+              <span class:list={["mt-0.5 inline-flex shrink-0", t.featured ? "text-paper" : "text-stage-glow"]}>
+                <MorphIcon
+                  icon={Plus}
+                  size={14}
+                  strokeWidth={2.25}
+                  spring="snappy"
+                  reducedMotion="user"
+                  data-pp-add-icon
+                />
+              </span>
+              <span>{t.adds}</span>
+            </div>
+
+            <!-- 6. CTA único -->
+            <div class="mt-auto flex flex-col gap-3 pt-7 lg:mt-0 lg:self-end">
               <a
                 href={bookingUrl}
                 target="_blank"
@@ -160,27 +187,40 @@ import { bookingUrl } from "../../data/site";
                   />
                 </span>
               </a>
+              <a
+                href="#compare"
+                class:list={[
+                  "inline-flex items-center justify-center gap-1 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+                  t.featured
+                    ? "text-paper/90 hover:text-paper focus-visible:outline-paper"
+                    : "text-muted-on-ink hover:text-paper focus-visible:outline-stage-glow",
+                ]}
+              >
+                <span>See what's included below</span>
+                <LucideArrowDown class="size-3.5" aria-hidden="true" />
+              </a>
             </div>
           </article>
         </li>
       ))}
     </ul>
 
-    <!-- Franja de aclaración (equivalente al callout del PDF, sin border-left grueso) -->
-    <div class="mt-12 grid gap-6 rounded-[20px] border border-ink/10 bg-mist p-6 sm:p-8 lg:grid-cols-2 lg:gap-10">
+    <!-- Aclaración Founder y nicho -->
+    <div
+      class="mt-12 grid gap-6 rounded-[20px] border border-ink/10 bg-paper p-6 sm:p-8 lg:grid-cols-2 lg:gap-10"
+      data-pp-bridge
+    >
       <div>
         <h3 class="text-base font-extrabold tracking-[-0.01em] text-ink">How the Founder rate works</h3>
-        <p class="mt-2 text-[0.9375rem] leading-relaxed text-muted">
-          The Founder plan gives you everything in Foundation for <strong class="font-semibold text-ink">$500/mo</strong> on a
-          month-to-month contract (3-month minimum). You keep that $500/mo rate until we book your first paid stage, then move to
-          Foundation at <strong class="font-semibold text-ink">$1,200/mo</strong>.
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          Includes everything in Foundation for <strong class="font-semibold text-ink">$500/mo</strong> (month-to-month, 3-month minimum).
+          You keep $500/mo until we book your first paid stage, then move to <strong class="font-semibold text-ink">$1,200/mo</strong>.
         </p>
       </div>
       <div class="border-t border-ink/10 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
         <h3 class="text-base font-extrabold tracking-[-0.01em] text-ink">Only events in your niche</h3>
-        <p class="mt-2 text-[0.9375rem] leading-relaxed text-muted">
-          We never blast generic call-for-speaker lists. Every pitch is researched and sent directly to organizers running conferences,
-          summits, and corporate events that match your topics and fee range.
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          We never blast generic speaker listings. Every pitch goes straight to organizers running conferences and corporate events that match your topics.
         </p>
       </div>
     </div>
@@ -189,16 +229,61 @@ import { bookingUrl } from "../../data/site";
 
 <script>
   import { gsap } from "gsap";
-  import { ArrowRight, ArrowUpRight, type IconNode } from "lucide";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ArrowRight, ArrowUpRight, Check, Plus, type IconNode } from "lucide";
+
+  gsap.registerPlugin(ScrollTrigger);
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
+  let mm: gsap.MatchMedia | null = null;
   let cleanup: (() => void) | null = null;
 
   function initPricingPlans() {
     cleanup?.();
+    mm?.revert();
+    mm = null;
+
     const root = document.querySelector<HTMLElement>("[data-pricing-plans]");
     if (!root) return;
+
+    // Animación de entrada de la sección y tarjetas (una sola vez al llegar)
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const titleWords = root.querySelectorAll<HTMLElement>("[data-pp-title-word]");
+        const lead = root.querySelector<HTMLElement>("[data-pp-lead]");
+        const items = root.querySelectorAll<HTMLElement>("[data-pp-item]");
+        const bridge = root.querySelector<HTMLElement>("[data-pp-bridge]");
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 82%", once: true },
+          defaults: { ease: "expo.out" },
+        });
+
+        if (titleWords.length) {
+          tl.fromTo(
+            titleWords,
+            { yPercent: 112, rotate: 5 },
+            { yPercent: 0, rotate: 0, duration: 0.95, stagger: 0.045, clearProps: "transform" },
+            0,
+          );
+        }
+        if (lead) tl.from(lead, { y: 12, autoAlpha: 0, duration: 0.7, clearProps: "transform,opacity,visibility" }, 0.16);
+        if (items.length) {
+          tl.from(
+            items,
+            { y: 36, autoAlpha: 0, duration: 0.85, stagger: 0.06, clearProps: "transform,opacity,visibility" },
+            0.22,
+          );
+        }
+        if (bridge) {
+          tl.from(bridge, { y: 20, autoAlpha: 0, duration: 0.75, clearProps: "transform,opacity,visibility" }, 0.45);
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -207,9 +292,12 @@ import { bookingUrl } from "../../data/site";
     root.querySelectorAll<HTMLElement>("[data-pp-card]").forEach((card) => {
       const line = card.querySelector<HTMLElement>("[data-pp-line]");
       const name = card.querySelector<HTMLElement>("[data-pp-name]");
+      const nums = card.querySelectorAll<HTMLElement>("[data-pp-num]");
+      const addIcon = card.querySelector<MorphEl>("[data-pp-add-icon]");
       const liftY = gsap.quickTo(card, "y", { duration: 0.34, ease: "power3.out" });
 
       const onEnter = () => {
+        addIcon?.morphTo?.(Check);
         if (reduce.matches) return;
         liftY(-5);
         if (line) {
@@ -217,16 +305,23 @@ import { bookingUrl } from "../../data/site";
           gsap.to(line, { scaleX: 1, duration: 0.42, ease: "expo.out", overwrite: "auto" });
         }
         if (name) gsap.to(name, { x: 2, duration: 0.32, ease: "expo.out", overwrite: "auto" });
+        if (nums.length) {
+          gsap.to(nums, { x: 2, scale: 1.03, duration: 0.35, stagger: 0.03, ease: "expo.out", overwrite: "auto" });
+        }
       };
 
       const onLeave = () => {
+        addIcon?.morphTo?.(Plus);
         if (reduce.matches) return;
         liftY(0);
         if (line) {
           gsap.set(line, { transformOrigin: "100% 50%" });
-          gsap.to(line, { scaleX: 0, duration: 0.24, ease: "power2.inOut", overwrite: "auto" });
+          gsap.to(line, { scaleX: 0, duration: 0.22, ease: "power2.inOut", overwrite: "auto" });
         }
         if (name) gsap.to(name, { x: 0, duration: 0.2, ease: "power2.out", overwrite: "auto" });
+        if (nums.length) {
+          gsap.to(nums, { x: 0, scale: 1, duration: 0.2, ease: "power2.out", overwrite: "auto" });
+        }
       };
 
       card.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
@@ -262,6 +357,8 @@ import { bookingUrl } from "../../data/site";
 
   document.addEventListener("astro:page-load", initPricingPlans);
   document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
     cleanup?.();
     cleanup = null;
   });

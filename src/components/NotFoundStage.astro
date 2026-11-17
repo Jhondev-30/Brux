@@ -1,0 +1,687 @@
+---
+import { CalendarCheck, Compass, Mic } from "@lucide/astro";
+import Button from "./ui/Button.astro";
+import CtaButton from "./ui/CtaButton.astro";
+
+const quickRoutes = [
+  { href: "/services/booking/", label: "Speaker Booking" },
+  { href: "/pricing/", label: "Monthly Plans" },
+  { href: "/about/", label: "About Brux" },
+  { href: "/blog/", label: "Blog" },
+];
+
+const words = (s: string) => s.split(" ");
+const maskClass =
+  "inline-block overflow-clip align-top pt-[0.06em] pb-[0.14em] px-[0.04em] -mt-[0.06em] -mb-[0.14em] -mx-[0.04em]";
+const wordClass = "inline-block origin-[0%_100%] will-change-transform";
+---
+
+<section
+  class="relative flex flex-1 flex-col justify-center overflow-hidden bg-ink pt-[max(7.5rem,calc(4.5rem+5svh))] pb-20 text-paper sm:pb-24"
+  aria-labelledby="nf-title"
+  data-nf-hero
+>
+  <!-- Subtle ambient stage dust canvas (viewport-gated, lightweight) -->
+  <canvas
+    class="pointer-events-none absolute inset-0 z-0 size-full"
+    aria-hidden="true"
+    data-nf-canvas
+  ></canvas>
+
+  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-12">
+    <div class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+      <!-- Left column: breadcrumb, clear 404 editorial H1, primary recovery CTAs & quick route links -->
+      <div class="lg:col-span-6">
+        <nav aria-label="Breadcrumb" class="text-sm text-muted-on-ink">
+          <ol class="flex flex-wrap items-center gap-2">
+            <li>
+              <a
+                href="/"
+                class="transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+              >
+                Home
+              </a>
+            </li>
+            <li aria-hidden="true" class="text-paper/30">/</li>
+            <li aria-current="page" class="font-semibold text-stage-glow tabular-nums">404</li>
+          </ol>
+        </nav>
+
+        <h1
+          id="nf-title"
+          class="mt-5 max-w-[36rem] text-[clamp(2.25rem,1.5rem+3vw,4rem)] leading-[1.03] font-extrabold tracking-[-0.025em] text-balance text-paper"
+          data-nf-title
+        >
+          {words("404: This stage isn't on the schedule").map((w, j, a) => (
+            <>
+              <span class={maskClass}><span class={wordClass} data-nf-word>{w}</span></span>
+              {j < a.length - 1 && " "}
+            </>
+          ))}
+        </h1>
+
+        <p
+          class="mt-6 max-w-[36rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-relaxed text-pretty text-paper/86"
+          data-nf-lead
+        >
+          The page you looked for may have moved or the URL was mistyped. Step back onto the main stage to see how Brux pitches keynote speakers directly to event organizers with 0% commission.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6" data-nf-ctas>
+          <CtaButton href="/">Back to homepage</CtaButton>
+          <Button href="/services/" variant="link" class="justify-center sm:justify-start">
+            Explore our services
+          </Button>
+        </div>
+
+        <nav aria-label="Popular pages" class="mt-10 border-t border-paper/12 pt-6" data-nf-links>
+          <p class="text-xs font-semibold tracking-[0.12em] text-muted-on-ink uppercase">
+            Go straight to
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-x-6 gap-y-2.5">
+            {quickRoutes.map((route) => (
+              <li>
+                <a
+                  href={route.href}
+                  class="inline-flex min-h-9 items-center text-sm font-semibold text-paper/90 underline decoration-paper/25 underline-offset-4 transition-colors duration-150 hover:text-stage-glow hover:decoration-stage-glow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+                >
+                  {route.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Right column: 3D Keynote Stage Lectern & Spotlight Rig (CSS preserve-3d + GSAP MotionPath) -->
+      <div class="relative lg:col-span-6" aria-hidden="true" data-nf-visual>
+        <div
+          class="nf-perspective relative mx-auto flex aspect-[4/3] w-full max-w-[36rem] items-center justify-center sm:aspect-[11/9]"
+          data-nf-stage
+        >
+          <!-- Soft radial crimson ambient haze behind the stage -->
+          <div
+            class="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-64 sm:w-64"
+            style="background: radial-gradient(circle, rgba(229, 12, 19, 0.28) 0%, rgba(229, 12, 19, 0.06) 56%, transparent 78%);"
+            data-nf-aura
+          ></div>
+
+          <div class="nf-3d-rig relative size-full" data-nf-rig>
+            <!-- Diagonal stage spotlight cones -->
+            <div class="nf-beam nf-beam-left pointer-events-none absolute left-[18%] top-[4%] h-[78%] w-28 opacity-45"></div>
+            <div class="nf-beam nf-beam-right pointer-events-none absolute right-[18%] top-[4%] h-[78%] w-28 opacity-35"></div>
+
+            <!-- 3D tilted circular stage deck -->
+            <div class="nf-deck pointer-events-none absolute inset-x-0 bottom-[10%] flex h-[38%] items-center justify-center">
+              <div class="nf-ring nf-ring-outer h-56 w-56 rounded-full border border-paper/14 sm:h-64 sm:w-64" data-nf-ring></div>
+              <div class="nf-ring nf-ring-mid absolute h-40 w-40 rounded-full border border-stage-glow/40 sm:h-46 sm:w-46" data-nf-ring></div>
+              <div class="nf-ring nf-ring-inner absolute h-26 w-26 rounded-full border border-stage-glow/70 bg-stage/12 shadow-[0_20px_40px_-14px_rgba(0,0,0,0.85)]" data-nf-ring></div>
+            </div>
+
+            <!-- True CSS preserve-3d Keynote Podium / Lectern + Stage Microphone -->
+            <div
+              class="nf-podium-anchor pointer-events-none absolute left-1/2 top-[52%] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center scale-[0.86] sm:scale-100"
+              data-nf-podium
+            >
+              <div class="nf-podium-iso relative">
+                <!-- Podium base slab (3D box) -->
+                <div class="nf-plinth relative">
+                  <div class="nf-face nf-plinth-front border border-paper/18 bg-[#141418]/96"></div>
+                  <div class="nf-face nf-plinth-right border border-paper/12 bg-[#0d0d11]/96"></div>
+                  <div class="nf-face nf-plinth-left border border-paper/10 bg-[#0b0b0e]/95"></div>
+                  <div class="nf-face nf-plinth-top border border-paper/22 bg-[#1c1c22]/96"></div>
+                </div>
+
+                <!-- Vertical lectern column (3D box) -->
+                <div class="nf-column relative">
+                  <!-- Front face with crisp Brux X crest (no wrapping dark box) -->
+                  <div class="nf-face nf-col-front flex flex-col items-center justify-between border border-paper/20 bg-[#15151a]/96 px-3 py-4 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.88)]">
+                    <span class="h-px w-full bg-paper/16"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 686" class="h-8 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.7)]">
+                      <path
+                        fill="#FFFFFF"
+                        fill-rule="evenodd"
+                        transform="translate(0 686)"
+                        d="M740 -686 L620 -686 L384.8 -425.8 L498.2 -300.3ZM0 0 L310 0 L357 -75 L238.6 -264Z"
+                      />
+                      <path
+                        fill="#E50C13"
+                        fill-rule="evenodd"
+                        transform="translate(0 686)"
+                        d="M0 -686 L120 -686 L740 0 L430 0Z"
+                      />
+                    </svg>
+                    <span class="h-1 w-10 rounded-full bg-stage/65"></span>
+                  </div>
+
+                  <!-- Right column face -->
+                  <div class="nf-face nf-col-right flex flex-col justify-between border border-paper/14 bg-[#0e0e12]/96 p-2">
+                    <span class="h-px w-full bg-paper/10"></span>
+                    <span class="h-px w-full bg-paper/10"></span>
+                  </div>
+
+                  <!-- Left & back column closure -->
+                  <div class="nf-face nf-col-left border border-paper/10 bg-[#0a0a0d]/95"></div>
+                  <div class="nf-face nf-col-back border border-paper/10 bg-[#09090b]/95"></div>
+
+                  <!-- Slanted lectern reading desk on top -->
+                  <div class="nf-face nf-desk-top flex items-center justify-between border border-paper/24 bg-[#1e1e24]/98 px-3 py-2">
+                    <span class="h-1 w-6 rounded-full bg-paper/30"></span>
+                    <span class="size-2 rounded-full bg-stage-glow"></span>
+                  </div>
+                </div>
+
+                <!-- Gooseneck microphone above lectern desk -->
+                <svg
+                  class="nf-mic pointer-events-none absolute left-1/2 top-[-44px] h-14 w-14 -translate-x-1/2 overflow-visible"
+                  viewBox="0 0 60 60"
+                  fill="none"
+                >
+                  <path
+                    d="M36 52 C 38 30, 32 16, 18 14"
+                    stroke="rgba(255,255,255,0.62)"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                  />
+                  <rect x="11" y="10" width="10" height="7" rx="3.5" transform="rotate(-14 16 13.5)" fill="#E50C13" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                  <circle cx="36" cy="52" r="3" fill="#FFFFFF" fill-opacity="0.8" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- SVG orbital return-to-stage paths + MotionPath light packets -->
+            <svg
+              class="pointer-events-none absolute inset-0 size-full overflow-visible"
+              viewBox="0 0 560 440"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="nf-arc-red" x1="280" y1="220" x2="450" y2="120" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF4D47" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#E50C13" stop-opacity="0.2" />
+                </linearGradient>
+                <linearGradient id="nf-arc-soft" x1="280" y1="220" x2="112" y2="128" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.45" />
+                  <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06" />
+                </linearGradient>
+              </defs>
+
+              <path
+                id="nf-path-0"
+                d="M280 220 C 218 162, 166 134, 110 116"
+                stroke="url(#nf-arc-soft)"
+                stroke-width="1.3"
+                stroke-dasharray="4 6"
+              />
+              <path
+                id="nf-path-1"
+                d="M280 220 C 344 156, 396 132, 450 114"
+                stroke="url(#nf-arc-red)"
+                stroke-width="1.6"
+              />
+              <path
+                id="nf-path-2"
+                d="M280 220 C 348 272, 396 296, 446 318"
+                stroke="url(#nf-arc-red)"
+                stroke-width="1.6"
+              />
+
+              <circle r="3.2" fill="#FFFFFF" fill-opacity="0.9" data-nf-packet="0" />
+              <circle r="3.8" fill="#FF4D47" data-nf-packet="1" />
+              <circle r="3.8" fill="#FF4D47" data-nf-packet="2" />
+            </svg>
+
+            <!-- 3 floating Z-depth stage cue pills -->
+            <div
+              class="nf-node nf-node-tl absolute left-[2%] top-[14%] flex items-center gap-2.5 rounded-full border border-paper/14 bg-ink/90 px-3.5 py-2 backdrop-blur-md sm:left-[4%] sm:top-[15%]"
+              data-nf-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-paper/10 text-paper">
+                <Compass class="size-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Off-Script URL</p>
+                <p class="text-[10px] text-muted-on-ink">Route not found</p>
+              </div>
+            </div>
+
+            <div
+              class="nf-node nf-node-tr absolute right-[2%] top-[12%] flex items-center gap-2.5 rounded-full border border-stage-glow/40 bg-ink/92 px-3.5 py-2 shadow-[0_18px_36px_-14px_rgba(0,0,0,0.8)] backdrop-blur-md sm:right-[4%] sm:top-[14%]"
+              data-nf-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-stage/25 text-paper">
+                <Mic class="size-3.5" />
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-semibold text-paper">Main Stage</p>
+                <p class="text-[10px] font-medium text-paper/86">Niche keynote booking</p>
+              </div>
+            </div>
+
+            <div
+              class="nf-node nf-node-br absolute bottom-[15%] right-[2%] flex items-center gap-2.5 rounded-full border border-stage-glow/60 bg-ink-raised/94 px-4 py-2.5 shadow-[0_20px_40px_-14px_rgba(0,0,0,0.85)] backdrop-blur-md sm:bottom-[17%] sm:right-[4%]"
+              data-nf-node
+            >
+              <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-stage text-paper">
+                <CalendarCheck class="size-3.5" stroke-width={2.25} />
+              </span>
+              <div class="leading-tight">
+                <p class="text-xs font-bold text-paper">0% Commission</p>
+                <p class="text-[10px] font-medium text-paper/86">Keep 100% of fees</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nf-perspective {
+    perspective: 1100px;
+  }
+
+  .nf-3d-rig {
+    transform-style: preserve-3d;
+  }
+
+  .nf-beam {
+    clip-path: polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%);
+    transform-origin: 50% 0%;
+  }
+
+  .nf-beam-left {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(229, 12, 19, 0.06) 65%, transparent 100%);
+    transform: rotate(-16deg) translateZ(-24px);
+  }
+
+  .nf-beam-right {
+    background: linear-gradient(180deg, rgba(255, 77, 71, 0.14) 0%, rgba(255, 255, 255, 0.04) 65%, transparent 100%);
+    transform: rotate(16deg) translateZ(-24px);
+  }
+
+  .nf-deck {
+    transform-style: preserve-3d;
+    transform: rotateX(68deg);
+  }
+
+  .nf-ring-outer {
+    transform: translateZ(-12px);
+  }
+
+  .nf-ring-mid {
+    transform: translateZ(2px);
+  }
+
+  .nf-ring-inner {
+    transform: translateZ(16px);
+  }
+
+  .nf-podium-anchor {
+    transform-style: preserve-3d;
+    transform: translateZ(22px);
+  }
+
+  .nf-podium-iso {
+    width: 112px;
+    height: 158px;
+    transform-style: preserve-3d;
+    transform: rotateX(-16deg) rotateY(-26deg);
+  }
+
+  .nf-face {
+    position: absolute;
+    backface-visibility: hidden;
+  }
+
+  /* Base slab at bottom of podium */
+  .nf-plinth {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 112px;
+    height: 22px;
+    transform-style: preserve-3d;
+  }
+
+  .nf-plinth-front {
+    width: 112px;
+    height: 22px;
+    left: 0;
+    top: 0;
+    transform: translateZ(42px);
+  }
+
+  .nf-plinth-right {
+    width: 84px;
+    height: 22px;
+    left: 14px;
+    top: 0;
+    transform: rotateY(90deg) translateZ(56px);
+  }
+
+  .nf-plinth-left {
+    width: 84px;
+    height: 22px;
+    left: 14px;
+    top: 0;
+    transform: rotateY(-90deg) translateZ(56px);
+  }
+
+  .nf-plinth-top {
+    width: 112px;
+    height: 84px;
+    left: 0;
+    top: -31px;
+    transform: rotateX(90deg) translateZ(11px);
+  }
+
+  /* Vertical lectern body */
+  .nf-column {
+    position: absolute;
+    left: 18px;
+    bottom: 22px;
+    width: 76px;
+    height: 122px;
+    transform-style: preserve-3d;
+  }
+
+  .nf-col-front {
+    width: 76px;
+    height: 122px;
+    left: 0;
+    top: 0;
+    transform: translateZ(28px);
+  }
+
+  .nf-col-back {
+    width: 76px;
+    height: 122px;
+    left: 0;
+    top: 0;
+    transform: rotateY(180deg) translateZ(28px);
+  }
+
+  .nf-col-right {
+    width: 56px;
+    height: 122px;
+    left: 10px;
+    top: 0;
+    transform: rotateY(90deg) translateZ(38px);
+  }
+
+  .nf-col-left {
+    width: 56px;
+    height: 122px;
+    left: 10px;
+    top: 0;
+    transform: rotateY(-90deg) translateZ(38px);
+  }
+
+  .nf-desk-top {
+    width: 96px;
+    height: 70px;
+    left: -10px;
+    top: -35px;
+    transform: rotateX(78deg) translateZ(2px);
+  }
+
+  .nf-mic {
+    transform: translateZ(30px);
+  }
+
+  .nf-node-tl {
+    transform: translateZ(32px);
+  }
+
+  .nf-node-tr {
+    transform: translateZ(52px);
+  }
+
+  .nf-node-br {
+    transform: translateZ(66px);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+  gsap.registerPlugin(MotionPathPlugin);
+
+  interface AmbientDot {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    r: number;
+    alpha: number;
+    red: boolean;
+  }
+
+  let cleanupNotFoundHero: (() => void) | null = null;
+
+  function initNotFoundHero() {
+    cleanupNotFoundHero?.();
+    cleanupNotFoundHero = null;
+
+    const root = document.querySelector<HTMLElement>("[data-nf-hero]");
+    if (!root) return;
+
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-nf-canvas]");
+    const rig = root.querySelector<HTMLElement>("[data-nf-rig]");
+    const stage = root.querySelector<HTMLElement>("[data-nf-stage]");
+    const aura = root.querySelector<HTMLElement>("[data-nf-aura]");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    let rafTick: (() => void) | null = null;
+    let ro: ResizeObserver | null = null;
+    let io: IntersectionObserver | null = null;
+    let mm: gsap.MatchMedia | null = null;
+    let removePointer: (() => void) | null = null;
+
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        let w = 0;
+        let h = 0;
+        let dpr = 1;
+        let inView = true;
+        const dots: AmbientDot[] = [];
+
+        const build = () => {
+          dots.length = 0;
+          const count = gsap.utils.clamp(22, 44, Math.round((w * h) / 25000));
+          for (let i = 0; i < count; i++) {
+            dots.push({
+              x: Math.random(),
+              y: Math.random(),
+              vx: (Math.random() - 0.5) * 0.00032,
+              vy: (Math.random() - 0.5) * 0.00032,
+              r: gsap.utils.random(1.1, 2.2),
+              alpha: gsap.utils.random(0.15, 0.4),
+              red: i % 2 === 0,
+            });
+          }
+        };
+
+        const resize = () => {
+          const rect = root.getBoundingClientRect();
+          w = Math.max(1, rect.width);
+          h = Math.max(1, rect.height);
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          build();
+        };
+
+        const draw = () => {
+          ctx.clearRect(0, 0, w, h);
+          for (const d of dots) {
+            if (!reduce.matches) {
+              d.x += d.vx;
+              d.y += d.vy;
+              if (d.x < 0 || d.x > 1) d.vx *= -1;
+              if (d.y < 0 || d.y > 1) d.vy *= -1;
+            }
+            ctx.beginPath();
+            ctx.arc(d.x * w, d.y * h, d.r, 0, Math.PI * 2);
+            ctx.fillStyle = d.red
+              ? `rgba(255, 77, 71, ${d.alpha.toFixed(3)})`
+              : `rgba(255, 255, 255, ${(d.alpha * 0.46).toFixed(3)})`;
+            ctx.fill();
+          }
+        };
+
+        resize();
+        draw();
+
+        ro = new ResizeObserver(() => {
+          resize();
+          draw();
+        });
+        ro.observe(root);
+
+        if (!reduce.matches) {
+          const tick = () => {
+            if (!inView || document.hidden) return;
+            draw();
+          };
+          rafTick = tick;
+          gsap.ticker.add(tick);
+
+          io = new IntersectionObserver(
+            ([entry]) => {
+              inView = Boolean(entry?.isIntersecting);
+            },
+            { threshold: 0.05 },
+          );
+          io.observe(root);
+        }
+      }
+    }
+
+    mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        const words = root.querySelectorAll<HTMLElement>("[data-nf-word]");
+        const lead = root.querySelector<HTMLElement>("[data-nf-lead]");
+        const ctas = root.querySelector<HTMLElement>("[data-nf-ctas]");
+        const links = root.querySelector<HTMLElement>("[data-nf-links]");
+        const rings = root.querySelectorAll<HTMLElement>("[data-nf-ring]");
+        const podium = root.querySelector<HTMLElement>("[data-nf-podium]");
+        const nodes = root.querySelectorAll<HTMLElement>("[data-nf-node]");
+
+        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+        if (words.length) {
+          intro.fromTo(
+            words,
+            { yPercent: 105 },
+            { yPercent: 0, duration: 0.85, stagger: 0.04, clearProps: "transform" },
+            0,
+          );
+        }
+        if (lead) intro.from(lead, { y: 12, duration: 0.65, ease: "power3.out", clearProps: "transform" }, 0.14);
+        if (ctas) intro.from(ctas, { y: 12, duration: 0.65, ease: "power3.out", clearProps: "transform" }, 0.22);
+        if (links) intro.from(links, { y: 10, duration: 0.6, ease: "power3.out", clearProps: "transform" }, 0.28);
+        if (rings.length) intro.from(rings, { scale: 0.85, duration: 0.9, stagger: 0.08, clearProps: "scale" }, 0.12);
+        if (podium) intro.from(podium, { y: 16, scale: 0.9, duration: 0.9, clearProps: "y,scale" }, 0.14);
+        if (nodes.length) intro.from(nodes, { y: 14, duration: 0.75, stagger: 0.08, clearProps: "transform" }, 0.24);
+
+        if (aura) {
+          gsap.to(aura, {
+            scale: 1.1,
+            opacity: 0.88,
+            duration: 3.4,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        nodes.forEach((node, idx) => {
+          gsap.to(node, {
+            y: idx % 2 === 0 ? -5 : 5,
+            duration: 3 + idx * 0.45,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        });
+
+        ["#nf-path-0", "#nf-path-1", "#nf-path-2"].forEach((pathSel, idx) => {
+          const packet = root.querySelector<SVGCircleElement>(`[data-nf-packet="${idx}"]`);
+          const pathEl = root.querySelector<SVGPathElement>(pathSel);
+          if (!packet || !pathEl) return;
+
+          gsap
+            .timeline({ repeat: -1, delay: idx * 0.65, repeatDelay: 0.4 })
+            .fromTo(packet, { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "none" }, 0)
+            .to(
+              packet,
+              {
+                motionPath: {
+                  path: pathEl,
+                  align: pathEl,
+                  alignOrigin: [0.5, 0.5],
+                },
+                duration: 1.9,
+                ease: "power2.inOut",
+              },
+              0,
+            )
+            .to(packet, { opacity: 0, duration: 0.25, ease: "none" }, "-=0.25");
+        });
+
+        if (rig && stage) {
+          const rxTo = gsap.quickTo(rig, "rotationX", { duration: 0.9, ease: "power3.out" });
+          const ryTo = gsap.quickTo(rig, "rotationY", { duration: 0.9, ease: "power3.out" });
+          const xTo = gsap.quickTo(rig, "x", { duration: 0.9, ease: "power3.out" });
+          const yTo = gsap.quickTo(rig, "y", { duration: 0.9, ease: "power3.out" });
+
+          const onPointerMove = (e: PointerEvent) => {
+            if (e.pointerType !== "mouse") return;
+            const r = root.getBoundingClientRect();
+            const nx = (e.clientX - r.left) / Math.max(1, r.width) - 0.5;
+            const ny = (e.clientY - r.top) / Math.max(1, r.height) - 0.5;
+            ryTo(nx * 10);
+            rxTo(-ny * 8);
+            xTo(nx * 10);
+            yTo(ny * 8);
+          };
+          const onPointerLeave = () => {
+            rxTo(0);
+            ryTo(0);
+            xTo(0);
+            yTo(0);
+          };
+
+          root.addEventListener("pointermove", onPointerMove, { passive: true });
+          root.addEventListener("pointerleave", onPointerLeave, { passive: true });
+          removePointer = () => {
+            root.removeEventListener("pointermove", onPointerMove);
+            root.removeEventListener("pointerleave", onPointerLeave);
+          };
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+
+    cleanupNotFoundHero = () => {
+      if (rafTick) gsap.ticker.remove(rafTick);
+      ro?.disconnect();
+      io?.disconnect();
+      removePointer?.();
+      mm?.revert();
+    };
+  }
+
+  document.addEventListener("astro:page-load", initNotFoundHero);
+  document.addEventListener("astro:before-swap", () => {
+    cleanupNotFoundHero?.();
+    cleanupNotFoundHero = null;
+  });
+</script>

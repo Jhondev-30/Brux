@@ -25,7 +25,7 @@ import { navLinks, services } from "../data/site";
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || (href !== "/" && path.startsWith(href));
-const links = [...navLinks, { href: "/contact/", label: "Contact" }];
+const links = [...navLinks, { href: "/about/", label: "About" }];
 
 const serviceIcons: Record<string, IconNode> = {
   "/services/booking/": Mic,
@@ -395,6 +395,11 @@ const dropdownSurface =
     };
 
     menuButton?.addEventListener("click", () => setMenu(menuButton.getAttribute("aria-expanded") !== "true"), { signal });
+
+    // Cerrar el panel móvil al hacer clic en un enlace (p. ej. ancla /#about)
+    menuPanel?.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => setMenu(false, true), { signal });
+    });
 
     document.addEventListener(
       "keydown",

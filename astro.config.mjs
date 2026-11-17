@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
   site:'https://www.brux.site',
   base:'/',
   trailingSlash:'always',
+  integrations: [sitemap()],
   fonts: [{
     provider:fontProviders.local(),
     name:'brux-tittle',

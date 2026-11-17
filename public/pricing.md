@@ -46,4 +46,4 @@
 
 ## Book a Strategy Call
 - Schedule online: https://calendar.app.google/HDfbcei5XRa84yeh7
-- Contact page: https://www.brux.site/contact/
+- Agency & team overview: https://www.brux.site/about/

@@ -56,13 +56,15 @@ const testimonials = (await getCollection("testimonials", ({ data }) => data.pub
 
               <figcaption class="flex flex-wrap items-center justify-between gap-4 border-t border-paper/10 pt-6">
                 <div class="flex items-center gap-3.5">
-                  <Image
-                    src={d.photo}
-                    alt={d.name}
-                    width={96}
-                    height={96}
-                    class="size-12 shrink-0 rounded-full object-cover ring-1 ring-paper/15"
-                  />
+                  {d.photo && (
+                    <Image
+                      src={d.photo}
+                      alt={d.name}
+                      width={96}
+                      height={96}
+                      class="size-12 shrink-0 rounded-full object-cover ring-1 ring-paper/15"
+                    />
+                  )}
                   <div>
                     <p class="text-base font-bold text-paper">{d.name}</p>
                     <p class="text-sm text-muted-on-ink">{d.role}</p>

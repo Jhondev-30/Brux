@@ -98,14 +98,14 @@ import CtaButton from "./ui/CtaButton.astro";
         data-hero-in
         class="text-[min(clamp(2.5rem,1.75rem+3.2vw,4.5rem),11svh)] leading-[1.02] font-extrabold tracking-[-0.02em] text-balance text-paper [:root[data-curtain=on]_&]:invisible"
       >
-        Get booked for the keynotes you want
+        Get booked as a keynote speaker on paid stages
       </h1>
 
       <p
         data-hero-in
         class="mt-6 max-w-[34rem] text-[clamp(1.125rem,1.05rem+0.3vw,1.25rem)] leading-normal text-pretty text-paper/90 [:root[data-curtain=on]_&]:invisible"
       >
-        Speaker booking for keynote speakers: every month we pitch you to the organizers in your niche, and grow
+        The speaker booking agency for keynote speakers: every month we pitch you to the organizers in your niche, and grow
         your LinkedIn so they know your name when they look you up.
       </p>
 
@@ -223,7 +223,7 @@ import CtaButton from "./ui/CtaButton.astro";
       clearTimeout((window as any).__bruxCurtainFailsafe);
       const unlock = () => {
         (window as any).__bruxUnlock?.();
-        window.scrollTo(0, 0);
+        if (!window.location.hash) window.scrollTo(0, 0);
       };
       gsap.set(items, { autoAlpha: 0, y: 28 });
 
