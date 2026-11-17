@@ -3,6 +3,7 @@ import Logo from "../assets/images/brux-logo-sobre-negro.svg";
 import { services, navLinks, bookingUrl } from "../data/site";
 
 const year = new Date().getFullYear();
+const hasAnalytics = Boolean((import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? "").trim());
 ---
 
 <footer id="footer" class="bg-ink pt-20 pb-10 text-paper">
@@ -40,13 +41,15 @@ const year = new Date().getFullYear();
 
     <div class="flex flex-wrap items-center justify-between gap-4 pt-8 text-sm text-muted-on-ink">
       <p>© {year} Brux</p>
-      <button
-        type="button"
-        data-cookie-open
-        class="inline-flex min-h-11 cursor-pointer items-center rounded-[3px] text-sm text-muted-on-ink transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
-      >
-        Cookie settings
-      </button>
+      {hasAnalytics && (
+        <button
+          type="button"
+          data-cookie-open
+          class="inline-flex min-h-11 cursor-pointer items-center rounded-[3px] text-sm text-muted-on-ink transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage"
+        >
+          Cookie settings
+        </button>
+      )}
     </div>
   </div>
 </footer>
