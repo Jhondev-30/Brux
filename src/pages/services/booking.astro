@@ -15,7 +15,7 @@ const pageMeta = {
   title: "Keynote Speaker Booking & Organizer Outreach | Brux",
   description:
     "Targeted keynote speaker outreach pitching you directly to event planners every month. Full CRM visibility, custom pitch angles, and 0% commission.",
-  canonical: "/services/booking/",
+  canonical: "/services/booking",
 };
 
 const breadcrumbSchema = {
@@ -23,15 +23,15 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
-    { "@type": "ListItem", position: 3, name: "Speaker Booking", item: `${siteUrl}/services/booking/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
+    { "@type": "ListItem", position: 3, name: "Speaker Booking", item: `${siteUrl}/services/booking` },
   ],
 };
 
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `${siteUrl}/services/booking/#service`,
+  "@id": `${siteUrl}/services/booking#service`,
   name: "Keynote Speaker Booking & Event Outreach",
   serviceType: "Keynote Speaker Booking Agency",
   provider: {
@@ -40,7 +40,7 @@ const serviceSchema = {
     name: "Brux",
     url: siteUrl,
   },
-  url: `${siteUrl}/services/booking/`,
+  url: `${siteUrl}/services/booking`,
   description:
     "Brux manually researches and pitches keynote speakers directly to event organizers and corporate conference committees with full CRM visibility and 0% commission on speaking fees.",
 };
@@ -48,7 +48,7 @@ const serviceSchema = {
 const faqs = [
   {
     q: "How do you select which events and conferences to pitch?",
-    a: "We research events mapped to your industry, speaking topics, and audience outcomes. Every pitch goes to an industry association, corporate summit, or conference committee that books external speakers — never to generic call-for-speaker directories.",
+    a: "We research events mapped to your industry, speaking topics, and audience outcomes. Every pitch goes to an industry association, corporate summit, or conference committee that books external speakers, never to generic open call directories.",
   },
   {
     q: "Do you take a percentage or commission on the speaking fee?",
@@ -56,7 +56,7 @@ const faqs = [
   },
   {
     q: "How do I track which organizers have been contacted?",
-    a: "Every client gets live access to our CRM. You see the company, event name, organizer contact, pitch date, follow-up stage, and incoming replies in real time.",
+    a: "Every client gets live access to our CRM. You see the company, event name, organizer contact, pitch date, outreach stage, and incoming replies in real time.",
   },
   {
     q: "Who handles contract terms and event dates?",
@@ -83,19 +83,19 @@ const steps = [
   },
   {
     title: "We package your press kit and demo reel",
-    text: "Event committees want to hear how you command a room before they reply. Every pitch carries your press kit and a three-minute demo reel of your best moments on stage.",
+    text: "Event committees want to hear how you command a room before they reply. Every pitch carries your press kit and a three minute demo reel of your best moments on stage.",
     video: "/videos/how/step-2",
     label: "Animation: a press kit opens and Philip Chan's demo reel plays, then lands as an attachment in an email.",
   },
   {
     title: "We pitch organizers directly every month",
-    text: "Our team writes and sends personal pitches directly to the conference chair or event director — by email and direct message — with timed follow-ups on every thread.",
+    text: "Our team writes and sends personal pitches directly to the conference chair or event director, by email and direct message, with timed follow ups on every thread.",
     video: "/videos/how/step-3",
     label: "Animation: a personal note to an event organizer is sent by direct message and email.",
   },
   {
     title: "We track replies in your CRM and keep your calendar",
-    text: "You see every organizer contacted in our shared CRM, plus calendar coordination, post-event follow-up for repeat bookings, and a monthly performance report.",
+    text: "You see every organizer contacted in our shared CRM, plus calendar coordination, ongoing event follow up for repeat bookings, and a monthly performance report.",
     video: "/videos/how/step-4",
     label: "Animation: organizers move through the CRM until keynotes land on the calendar, followed by the monthly report.",
   },
@@ -134,7 +134,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
             How our outreach engine books your calendar
           </h2>
           <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
-            No mass blast lists or unpaid call-for-speakers forms. Every step is built around how conference committees actually select paid keynotes.
+            No mass blast lists or unpaid open call forms. Every step is built around how conference committees actually select paid keynotes.
           </p>
         </div>
 
@@ -196,7 +196,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
             <ul class="mt-6 space-y-3 border-t border-ink/10 pt-6">
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
-                <span>Every conference name, date, and decision-maker logged live</span>
+                <span>Every conference name, date, and decision maker logged live</span>
               </li>
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
@@ -204,7 +204,7 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
               </li>
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/90" data-bp-crm-item>
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
-                <span>Post-event follow-ups to turn one stage into referrals and repeat invitations</span>
+                <span>Follow ups after every stage to turn one keynote into referrals and repeat invitations</span>
               </li>
             </ul>
           </div>
@@ -244,8 +244,8 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-4" data-band-actions>
-            <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
-            <Button href="/blog/why-calls-for-speakers-dont-lead-to-paid-stages/" variant="secondary">Why direct pitches work</Button>
+            <Button href="/pricing" arrow>Compare plans &amp; pricing</Button>
+            <Button href="/blog/why-calls-for-speakers-dont-lead-to-paid-stages" variant="secondary">Why direct pitches work</Button>
           </div>
         </div>
       </div>
@@ -275,14 +275,14 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
               <p class="text-sm font-bold text-paper">Paired with every booking engagement:</p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a
-                  href="/services/linkedin/"
+                  href="/services/linkedin"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">LinkedIn management →</p>
                   <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">So organizers see an active authority profile when they look you up.</p>
                 </a>
                 <a
-                  href="/services/content/"
+                  href="/services/content"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker content &amp; reels →</p>
@@ -319,10 +319,10 @@ const pad = (i: number) => String(i + 1).padStart(2, "0");
     <StageFinalCta
       headingId="booking-cta-title"
       title="Put your talk in front of the organizers who pay"
-      description="Book a 20-minute strategy call. We will review your speaking topics and show you the conferences we would pitch first."
+      description="Book a 20 minute strategy call. We will review your speaking topics and show you the conferences we would pitch first."
       primaryLabel="Book a strategy call"
       secondaryLabel="See pricing"
-      secondaryHref="/pricing/"
+      secondaryHref="/pricing"
     />
   </div>
 </MainLayout>

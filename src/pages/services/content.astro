@@ -15,8 +15,8 @@ const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
 const pageMeta = {
   title: "Speaker Demo Reels, Press Kits & Talk Clips | Brux",
   description:
-    "High-converting speaker demo reels, one-sheet press kits, and vertical keynote video clips that prove stage authority and close event committees.",
-  canonical: "/services/content/",
+    "Booking focused speaker demo reels, press kits, and vertical keynote video clips that prove stage authority and close event committees.",
+  canonical: "/services/content",
 };
 
 const breadcrumbSchema = {
@@ -24,8 +24,8 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
-    { "@type": "ListItem", position: 3, name: "Speaker Content", item: `${siteUrl}/services/content/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
+    { "@type": "ListItem", position: 3, name: "Speaker Content", item: `${siteUrl}/services/content` },
   ],
 };
 
@@ -38,13 +38,13 @@ const videoObjectSchema = {
   thumbnailUrl: `${siteUrl}/videos/work/philip-chan-reel-poster.webp`,
   uploadDate: "2026-11-15T00:00:00Z",
   contentUrl: `${siteUrl}/videos/work/philip-chan-reel.mp4`,
-  embedUrl: `${siteUrl}/services/content/#demo-reel`,
+  embedUrl: `${siteUrl}/services/content#demo-reel`,
 };
 
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `${siteUrl}/services/content/#service`,
+  "@id": `${siteUrl}/services/content#service`,
   name: "Keynote Speaker Content & Demo Reel Production",
   serviceType: "Speaker Video Editing, Demo Reel Production & Media Kits",
   provider: {
@@ -53,23 +53,23 @@ const serviceSchema = {
     name: "Brux",
     url: siteUrl,
   },
-  url: `${siteUrl}/services/content/`,
+  url: `${siteUrl}/services/content`,
   description:
-    "Brux produces conversion-focused speaker demo reels, one-sheet press kits, and edited keynote talk clips that prove stage presence in under three minutes.",
+    "Brux produces effective speaker demo reels, press kits, and edited keynote talk clips that prove stage presence in under three minutes.",
 };
 
 const faqs = [
   {
     q: "Why is a speaker demo reel essential for getting booked?",
-    a: "Event committees review dozens of speaker candidates for each slot. They rarely have time to watch a 60-minute talk, and they won't risk booking a speaker without seeing how they command a room. A three-minute reel proves your delivery and audience reaction immediately.",
+    a: "Event committees review dozens of speaker candidates for each slot. They rarely have time to watch a 60 minute talk, and they won't risk booking a speaker without seeing how they command a room. A three minute reel proves your delivery and audience reaction immediately.",
   },
   {
     q: "What footage do I need to provide for a demo reel?",
     a: "You send us existing video recordings from 1 to 3 past talks, panels, or podcast interviews. We select the strongest hooks, balance the audio, add titles and pacing, and cut it into a tight booking reel.",
   },
   {
-    q: "What is inside the speaker one-sheet press kit?",
-    a: "Your press kit includes your short and long speaker bio, speaking topics, signature talk titles with takeaways, past appearances, high-res headshots, and booking links — formatted so an event planner can forward it straight to their committee.",
+    q: "What is inside the speaker press kit?",
+    a: "Your press kit includes your short and long speaker bio, speaking topics, signature talk titles with takeaways, past appearances, high resolution headshots, and booking links, formatted so an event planner can forward it straight to their committee.",
   },
   {
     q: "Which monthly plans include ongoing talk video clips?",
@@ -119,7 +119,7 @@ const faqSchema = {
             Real speaker reels and stage talk edits
           </h2>
           <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
-            We turn raw stage recordings and interviews into pacing-driven reels and captioned talk clips ready for event committees and LinkedIn.
+            We turn raw stage recordings and interviews into tightly paced reels and captioned talk clips ready for event committees and LinkedIn.
           </p>
         </div>
 
@@ -182,7 +182,7 @@ const faqSchema = {
                 Philip Jayhawk Chan · Dallas TAG Talks
               </h3>
               <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink/80">
-                Tight 42-second keynote excerpt with dynamic kinetic captions and sound leveling — built for LinkedIn feeds and speaker pages.
+                Tight 42 second keynote excerpt with dynamic kinetic captions and sound leveling, built for LinkedIn feeds and speaker pages.
               </p>
             </div>
           </article>
@@ -205,7 +205,7 @@ const faqSchema = {
               id="content-presskit-title"
               class="mt-4 text-[clamp(1.875rem,1.45rem+1.8vw,2.875rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
             >
-              A real speaker one-sheet committees can forward in one click
+              A real speaker press sheet committees can forward in one click
             </h2>
             <p class="mt-4 text-base leading-relaxed text-ink/85 sm:text-lg">
               Before sending a single outreach pitch, we design your speaker press kit so organizers have your bio, signature talks, target audiences, and past appearances in one clean page.
@@ -235,7 +235,7 @@ const faqSchema = {
             <div class="overflow-hidden rounded-[24px] border border-ink/12 bg-paper p-3 shadow-[0_28px_56px_-28px_rgb(10_10_10/0.35)] sm:p-5" data-cp-showcase>
               <Image
                 src={pressKitImg}
-                alt="Philip Jayhawk Chan speaker one-sheet press kit showing bio, speaking topics, signature talks, and featured appearances"
+                alt="Philip Jayhawk Chan speaker press kit showing bio, speaking topics, signature talks, and featured appearances"
                 widths={[640, 935]}
                 sizes="(min-width: 1024px) 52vw, 94vw"
                 class="mx-auto w-full max-w-[34rem] rounded-[12px] border border-ink/10"
@@ -299,7 +299,7 @@ const faqSchema = {
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-4" data-band-actions>
-            <Button href="/pricing/" arrow>Compare plans &amp; pricing</Button>
+            <Button href="/pricing" arrow>Compare plans &amp; pricing</Button>
             <Button href={bookingUrl} variant="secondary">Book a call</Button>
           </div>
         </div>
@@ -330,14 +330,14 @@ const faqSchema = {
               <p class="text-sm font-bold text-paper">Where your reel and press kit go to work:</p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a
-                  href="/services/web-design/"
+                  href="/services/web-design"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker websites →</p>
-                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Embed your reel and one-sheet on a dedicated branded site.</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Embed your reel and press sheet on a dedicated branded site.</p>
                 </a>
                 <a
-                  href="/services/booking/"
+                  href="/services/booking"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
@@ -374,10 +374,10 @@ const faqSchema = {
     <StageFinalCta
       headingId="content-cta-title"
       title="Turn your talk recordings into a reel that books stages"
-      description="Book a 20-minute strategy call. We will review your existing footage and show you how we would cut your reel and press kit."
+      description="Book a 20 minute strategy call. We will review your existing footage and show you how we would cut your reel and press kit."
       primaryLabel="Book a strategy call"
       secondaryLabel="See pricing"
-      secondaryHref="/pricing/"
+      secondaryHref="/pricing"
     />
   </div>
 </MainLayout>

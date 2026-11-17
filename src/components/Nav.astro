@@ -25,21 +25,21 @@ import { navLinks, services } from "../data/site";
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || (href !== "/" && path.startsWith(href));
-const links = [...navLinks, { href: "/about/", label: "About" }];
+const links = [...navLinks, { href: "/about", label: "About" }];
 
 const serviceIcons: Record<string, IconNode> = {
-  "/services/booking/": Mic,
-  "/services/linkedin/": Users,
-  "/services/content/": Video,
-  "/services/web-design/": Globe,
+  "/services/booking": Mic,
+  "/services/linkedin": Users,
+  "/services/content": Video,
+  "/services/web-design": Globe,
 };
 
 /* Una línea corta por servicio para el desplegable */
 const shortText: Record<string, string> = {
-  "/services/booking/": "Pitches to event organizers",
-  "/services/linkedin/": "A profile organizers trust",
-  "/services/content/": "Reel, press kit and clips",
-  "/services/web-design/": "One link for every organizer",
+  "/services/booking": "Pitches to event organizers",
+  "/services/linkedin": "A profile organizers trust",
+  "/services/content": "Reel, press kit and clips",
+  "/services/web-design": "One link for every organizer",
 };
 
 const linkBase =
@@ -70,7 +70,7 @@ const dropdownSurface =
       <li class="relative" data-dropdown>
         <button
           type="button"
-          class:list={[linkBase, "flex items-center gap-1", isCurrent("/services/") && "text-(--nav-fg-strong)!"]}
+          class:list={[linkBase, "flex items-center gap-1", isCurrent("/services") && "text-(--nav-fg-strong)!"]}
           aria-expanded="false"
           aria-controls="nav-services"
           data-dropdown-button
@@ -114,7 +114,7 @@ const dropdownSurface =
             }
           </ul>
           <a
-            href="/services/"
+            href="/services"
             class="group/all mt-1 flex items-center justify-between rounded-[10px] bg-mist px-4 py-3 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-[#e8e8e8]"
             data-nav-all
           >
@@ -221,16 +221,16 @@ const dropdownSurface =
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
   const SERVICE_REST: Record<string, IconNode> = {
-    "/services/booking/": Mic,
-    "/services/linkedin/": Users,
-    "/services/content/": Video,
-    "/services/web-design/": Globe,
+    "/services/booking": Mic,
+    "/services/linkedin": Users,
+    "/services/content": Video,
+    "/services/web-design": Globe,
   };
   const SERVICE_HOVER: Record<string, IconNode> = {
-    "/services/booking/": Flame,
-    "/services/linkedin/": Sparkles,
-    "/services/content/": Clapperboard,
-    "/services/web-design/": LayoutTemplate,
+    "/services/booking": Flame,
+    "/services/linkedin": Sparkles,
+    "/services/content": Clapperboard,
+    "/services/web-design": LayoutTemplate,
   };
 
   let controller: AbortController | null = null;

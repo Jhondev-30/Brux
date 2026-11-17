@@ -25,15 +25,15 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog/` },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog` },
   ],
 };
 
 const blogCollectionSchema = {
   "@context": "https://schema.org",
   "@type": "Blog",
-  "@id": `${siteUrl}/blog/#blog`,
-  url: `${siteUrl}/blog/`,
+  "@id": `${siteUrl}/blog#blog`,
+  url: `${siteUrl}/blog`,
   name: blogTitle,
   description: blogDescription,
   isPartOf: { "@id": `${siteUrl}/#website` },
@@ -48,7 +48,7 @@ const blogCollectionSchema = {
 };
 ---
 
-<MainLayout title={blogTitle} description={blogDescription} canonical="/blog/">
+<MainLayout title={blogTitle} description={blogDescription} canonical="/blog">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(blogCollectionSchema)} />
@@ -151,10 +151,10 @@ const blogCollectionSchema = {
   <StageFinalCta
     headingId="blog-cta-title"
     title="Ready to pitch paid stages directly?"
-    description="Tell us your keynote topics and recent talks on a 20-minute call, and we will map the organizers in your niche."
+    description="Tell us your keynote topics and recent talks on a 20 minute call, and we will map the organizers in your niche."
     primaryLabel="Book a strategy call"
     secondaryLabel="See plans & pricing"
-    secondaryHref="/pricing/"
+    secondaryHref="/pricing"
   />
 </MainLayout>
 

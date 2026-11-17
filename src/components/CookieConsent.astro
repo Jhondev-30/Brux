@@ -207,7 +207,7 @@ const gaId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? "").trim();
             page_path: location.pathname,
             cta_text: (link.textContent ?? "").trim().slice(0, 60),
           });
-        } else if (href === "/pricing/" || href.startsWith("/pricing/#")) {
+        } else if (href === "/pricing" || href.startsWith("/pricing#")) {
           window.gtag("event", "view_pricing_click", {
             page_path: location.pathname,
           });

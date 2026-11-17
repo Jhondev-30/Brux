@@ -18,7 +18,7 @@ const pageMeta = {
   title: "LinkedIn Management for Keynote Speakers | Brux",
   description:
     "Executive LinkedIn management for keynote speakers: profile positioning, 2 to 8 ghostwritten posts monthly, and organizer network growth.",
-  canonical: "/services/linkedin/",
+  canonical: "/services/linkedin",
 };
 
 const breadcrumbSchema = {
@@ -26,15 +26,15 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
-    { "@type": "ListItem", position: 3, name: "LinkedIn Management", item: `${siteUrl}/services/linkedin/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
+    { "@type": "ListItem", position: 3, name: "LinkedIn Management", item: `${siteUrl}/services/linkedin` },
   ],
 };
 
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `${siteUrl}/services/linkedin/#service`,
+  "@id": `${siteUrl}/services/linkedin#service`,
   name: "Keynote Speaker LinkedIn Management & Personal Branding",
   serviceType: "Executive LinkedIn Ghostwriting and Network Expansion",
   provider: {
@@ -43,9 +43,9 @@ const serviceSchema = {
     name: "Brux",
     url: siteUrl,
   },
-  url: `${siteUrl}/services/linkedin/`,
+  url: `${siteUrl}/services/linkedin`,
   description:
-    "Brux optimizes keynote speakers' LinkedIn profiles, ghostwrites thought-leadership content, expands their network with event organizers, and tracks performance monthly.",
+    "Brux optimizes keynote speakers' LinkedIn profiles, ghostwrites authority content, expands their network with event organizers, and tracks performance monthly.",
 };
 
 const linkedinTierDetails: Record<string, { tag: string; detail: string }> = {
@@ -70,14 +70,14 @@ const linkedinTierDetails: Record<string, { tag: string; detail: string }> = {
 const faqs = [
   {
     q: "How does LinkedIn help a keynote speaker get booked for events?",
-    a: "Before replying to a pitch or signing a speaking agreement, event organizers search for the speaker on LinkedIn to check real audience engagement, topic clarity, and stage proof. An active, well-positioned profile turns cold pitches into warm replies.",
+    a: "Before replying to a pitch or signing a speaking agreement, event organizers search for the speaker on LinkedIn to check real audience engagement, topic clarity, and stage proof. An active, clearly positioned profile turns cold pitches into warm replies.",
   },
   {
     q: "How does the ghostwriting process keep my authentic voice?",
     a: "We extract your core stories, frameworks, and talk takeaways during onboarding and from your existing recordings. We never publish generic platitudes, and every post goes through your approval before it goes live.",
   },
   {
-    q: "How do you grow my network with event decision-makers?",
+    q: "How do you grow my network with event decision makers?",
     a: "Every week we identify conference chairs, VPs of Events, and association directors in your niche and send personal connection requests, expanding your direct audience with the people who book stages.",
   },
   {
@@ -127,7 +127,7 @@ const faqSchema = {
             What organizers see when they look up your name
           </h2>
           <p class="lg:col-span-5 text-base leading-relaxed text-muted sm:text-lg">
-            Most speakers have a profile that reads like an old CV or a dormant feed. We turn your LinkedIn into a live speaker one-sheet.
+            Most speakers have a profile that reads like an old CV or a dormant feed. We turn your LinkedIn into a live speaker press sheet.
           </p>
         </div>
 
@@ -190,7 +190,7 @@ const faqSchema = {
               Posts in your voice and measurable follower growth
             </h3>
             <p class="mt-4 text-base leading-relaxed text-ink/85">
-              We write 2, 4, or 8 posts a month drawn from your talks, frameworks, and stories — paired with edited talk clips on Growth and Complete — and track every impression and profile view in your monthly report.
+              We write 2, 4, or 8 posts a month drawn from your talks, frameworks, and stories, paired with edited talk clips on Growth and Complete, and track every impression and profile view in your monthly report.
             </p>
             <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
@@ -239,7 +239,7 @@ const faqSchema = {
               Every plan includes profile optimization, weekly organizer connections, and direct booking pitches. Compare pricing on our Pricing page.
             </p>
           </div>
-          <Button href="/pricing/" variant="secondary-light" arrow>See plans &amp; pricing</Button>
+          <Button href="/pricing" variant="secondary-light" arrow>See plans &amp; pricing</Button>
         </div>
 
         <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-lp-tiers>
@@ -248,7 +248,7 @@ const faqSchema = {
             return (
               <li class="flex" data-lp-tier-card>
                 <a
-                  href={`/pricing/#${t.id}`}
+                  href={`/pricing#${t.id}`}
                   class:list={[
                     "group flex flex-1 flex-col justify-between rounded-[20px] bg-paper p-7 text-ink shadow-[0_14px_32px_-24px_rgb(10_10_10/0.25)] transition-transform duration-200 hover:-translate-y-1",
                     t.featured
@@ -382,14 +382,14 @@ const faqSchema = {
               <p class="text-sm font-bold text-paper">Paired with LinkedIn in every plan:</p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a
-                  href="/services/booking/"
+                  href="/services/booking"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
                   <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Direct monthly outreach to event organizers in your niche.</p>
                 </a>
                 <a
-                  href="/services/content/"
+                  href="/services/content"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker content &amp; clips →</p>
@@ -426,10 +426,10 @@ const faqSchema = {
     <StageFinalCta
       headingId="li-cta-title"
       title="Make your LinkedIn close the stage"
-      description="Book a 20-minute call. We will review your current profile and show you how we would position your topics for event organizers."
+      description="Book a 20 minute call. We will review your current profile and show you how we would position your topics for event organizers."
       primaryLabel="Book a strategy call"
       secondaryLabel="See pricing"
-      secondaryHref="/pricing/"
+      secondaryHref="/pricing"
     />
   </div>
 </MainLayout>

@@ -33,7 +33,7 @@ const hasAnalytics = Boolean((import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? "").tr
           {navLinks.map((l) => (
             <li><a href={l.href} class="inline-block py-1.5 text-paper/90 transition-colors hover:text-paper">{l.label}</a></li>
           ))}
-          <li><a href="/about/" class="inline-block py-1.5 text-paper/90 transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage">About</a></li>
+          <li><a href="/about" class="inline-block py-1.5 text-paper/90 transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stage">About</a></li>
           <li><a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="inline-block py-1.5 text-paper/90 transition-colors hover:text-paper">Contact</a></li>
         </ul>
       </nav>

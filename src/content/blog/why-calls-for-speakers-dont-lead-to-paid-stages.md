@@ -24,6 +24,6 @@ The third is the one I care about most. Organizers rarely run just one event. Ma
 
 ## If you want to try it
 
-Start with organizers in your niche whose audience matches your talk. Keep the first email short, say which talk fits their people and add a link to your demo reel. And don’t stop after one message, because a lot of replies come after the follow-up.
+Start with organizers in your niche whose audience matches your talk. Keep the first email short, say which talk fits their people and add a link to your demo reel. And don’t stop after one message, because a lot of replies come after a polite follow up.
 
 Have you ever landed a paid keynote through a call for speakers? I’d like to hear how it went.

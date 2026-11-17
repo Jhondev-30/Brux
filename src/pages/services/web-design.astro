@@ -16,7 +16,7 @@ const pageMeta = {
   title: "Speaker Website Design & Brand Direction | Brux",
   description:
     "Custom speaker websites scoped by complexity with full brand direction included: palette, typography, logos, demo reel, and direct booking inquiry.",
-  canonical: "/services/web-design/",
+  canonical: "/services/web-design",
 };
 
 const breadcrumbSchema = {
@@ -24,15 +24,15 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
-    { "@type": "ListItem", position: 3, name: "Speaker Websites", item: `${siteUrl}/services/web-design/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
+    { "@type": "ListItem", position: 3, name: "Speaker Websites", item: `${siteUrl}/services/web-design` },
   ],
 };
 
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `${siteUrl}/services/web-design/#service`,
+  "@id": `${siteUrl}/services/web-design#service`,
   name: "Keynote Speaker Website Design & Brand Direction",
   serviceType: "Speaker Website Design",
   provider: {
@@ -41,7 +41,7 @@ const serviceSchema = {
     name: "Brux",
     url: siteUrl,
   },
-  url: `${siteUrl}/services/web-design/`,
+  url: `${siteUrl}/services/web-design`,
   description:
     "Brux designs and develops custom speaker websites scoped to project complexity, always including full brand direction (color palette, typography, logo refinement, and visual assets).",
   offers: {
@@ -49,7 +49,7 @@ const serviceSchema = {
     price: "1100",
     priceCurrency: "USD",
     availability: "https://schema.org/InStock",
-    url: `${siteUrl}/services/web-design/`,
+    url: `${siteUrl}/services/web-design`,
   },
 };
 
@@ -60,11 +60,11 @@ const faqs = [
   },
   {
     q: "How do you decide the timeline and scope of a speaker website?",
-    a: "After a short discovery call, we prepare a written build plan tailored to your site's complexity. A focused single-page speaker site starts from $1,100 one-time and typically launches in 14 days, while multi-page platforms for books, workshops, or bilingual media are scoped with a matching timeline.",
+    a: "After a short discovery call, we prepare a written build plan tailored to your site's complexity. A focused single page speaker site starts from $1,100 flat fee and typically launches in 14 days, while multi page platforms for books, workshops, or bilingual media are scoped with a matching timeline.",
   },
   {
     q: "Does every website project include branding?",
-    a: "Yes. Every website plan includes visual brand direction: selecting your color palette, pairing your typography, refining your logo or wordmark, and preparing custom visual assets so your website, one-sheet, and LinkedIn look unmistakably yours.",
+    a: "Yes. Every website plan includes visual brand direction: selecting your color palette, pairing your typography, refining your logo or wordmark, and preparing custom visual assets so your website, press sheet, and LinkedIn look unmistakably yours.",
   },
   {
     q: "Can the site connect directly to my booking calendar?",
@@ -89,15 +89,15 @@ const siteRows = [
   },
   {
     title: "Embedded speaker demo reel and stage clips",
-    detail: "Fast-loading video player near the top of the page so event committees hear your stage presence without leaving your site.",
+    detail: "Fast loading video player near the top of the page so event committees hear your stage presence without leaving your site.",
   },
   {
     title: "Past events, podcasts, and organizer quotes",
-    detail: "Stage photos, conference names, and client testimonials arranged so decision-makers see immediate social proof.",
+    detail: "Stage photos, conference names, and client testimonials arranged so decision makers see immediate social proof.",
   },
   {
-    title: "Downloadable PDF speaker one-sheet",
-    detail: "One-click download for event planners who need to share your bio, topics, and stage requirements with their selection board.",
+    title: "Downloadable PDF speaker press sheet",
+    detail: "Instant download for event planners who need to share your bio, topics, and stage requirements with their selection board.",
   },
   {
     title: "Direct inquiry form and calendar booking",
@@ -108,11 +108,11 @@ const siteRows = [
 const buildPlanIncludes = [
   {
     title: "Custom scope & timeline plan",
-    detail: "Delivered as a clear roadmap before build starts — timeline adapts to single-page vs multi-page complexity.",
+    detail: "Delivered as a clear roadmap before build starts, where timeline adapts to focused vs multi page complexity.",
   },
   {
     title: "Color palette & visual direction",
-    detail: "Intentional contrast, surface hierarchy, and stage-ready palette built around your positioning.",
+    detail: "Intentional contrast, surface hierarchy, and palette built around your positioning.",
   },
   {
     title: "Typography & editorial hierarchy",
@@ -120,7 +120,7 @@ const buildPlanIncludes = [
   },
   {
     title: "Logo, wordmark & custom assets",
-    detail: "Clean logo or wordmark treatment, favicon, reel framing, and visual assets aligned with your one-sheet.",
+    detail: "Clean logo or wordmark treatment, favicon, reel framing, and visual assets aligned with your press kit.",
   },
 ];
 
@@ -311,10 +311,10 @@ const buildPlanIncludes = [
               id="web-plan-title"
               class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
             >
-              A custom build plan scaled to your site complexity — branding always included
+              A custom build plan scaled to your site complexity, with branding always included
             </h2>
             <p class="mt-4 max-w-[40rem] text-base leading-relaxed text-muted sm:text-lg">
-              Before writing a line of code, we deliver a tailored project plan defining timeline and milestones based on complexity: a focused single-page speaker site (from $1,100, typically 14 days) or a multi-page platform for books, workshops, and media.
+              Before writing a line of code, we deliver a tailored project plan defining timeline and milestones based on complexity: a focused single page speaker site (from $1,100, typically 14 days) or a multi page platform for books, workshops, and media.
             </p>
 
             <div class="mt-8 grid gap-5 sm:grid-cols-2">
@@ -342,13 +342,13 @@ const buildPlanIncludes = [
                 From $1,100
               </p>
               <p class="mt-2 text-sm text-muted-on-ink">
-                One-time build · Timeline scoped to complexity · Full brand direction included
+                Single flat fee · Timeline scoped to complexity · Full brand direction included
               </p>
             </div>
 
             <div class="mt-8 flex flex-col gap-3">
               <Button href={bookingUrl} arrow>Book a call for your build plan</Button>
-              <Button href="/pricing/" variant="secondary" arrow>Compare monthly retainers</Button>
+              <Button href="/pricing" variant="secondary" arrow>Compare monthly retainers</Button>
             </div>
           </div>
         </div>
@@ -379,14 +379,14 @@ const buildPlanIncludes = [
               <p class="text-sm font-bold text-paper">Put your new website to work:</p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a
-                  href="/services/content/"
+                  href="/services/content"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker demo reels →</p>
-                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Cut a three-minute stage reel and press kit to feature on your site.</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted-on-ink">Cut a three minute stage reel and press kit to feature on your site.</p>
                 </a>
                 <a
-                  href="/services/booking/"
+                  href="/services/booking"
                   class="group rounded-[14px] border border-paper/12 bg-ink-raised p-4 transition-colors hover:border-paper/30"
                 >
                   <p class="font-bold text-paper group-hover:text-stage-glow">Speaker booking →</p>
@@ -423,10 +423,10 @@ const buildPlanIncludes = [
     <StageFinalCta
       headingId="web-cta-title"
       title="Give event organizers one link that closes the stage"
-      description="Book a 20-minute call. We will review your current bio and talk footage and prepare a tailored website & brand plan."
+      description="Book a 20 minute call. We will review your current bio and talk footage and prepare a tailored website & brand plan."
       primaryLabel="Request a website plan"
       secondaryLabel="See pricing"
-      secondaryHref="/pricing/"
+      secondaryHref="/pricing"
     />
   </div>
 </MainLayout>

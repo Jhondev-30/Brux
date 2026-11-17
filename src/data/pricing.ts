@@ -1,5 +1,5 @@
 /**
- * Fuente de verdad tipada para /pricing/ y los schemas JSON-LD de precios.
+ * Fuente de verdad tipada para /pricing y los schemas JSON-LD de precios.
  * Datos vigentes: PDF de planes del 1 de noviembre de 2026 y servicios/web-design.astro.
  */
 
@@ -58,14 +58,14 @@ export const pricingMeta = {
   title: "Speaker Booking & LinkedIn Plans & Pricing | Brux",
   description:
     "Compare Brux speaker booking and LinkedIn plans from $500 to $2,500/mo. 60 to 160+ organizer pitches monthly, 0% commission on your speaking fees.",
-  canonical: "/pricing/",
+  canonical: "/pricing",
 };
 
 export const everyPlanIncludes = [
   "0% commission on your speaking fees",
-  "Niche-only event targeting (no generic listings)",
+  "Targeted niche events only (no generic listings)",
   "Speaker press kit and demo reel",
-  "Full CRM access, post-event follow-up, and monthly report",
+  "Full CRM access, ongoing event follow up, and monthly report",
   "LinkedIn profile optimization and active network growth",
 ];
 
@@ -78,7 +78,7 @@ export const pricingTiers: PricingTier[] = [
     priceLabel: "$500",
     pitches: "60",
     posts: "2",
-    commitment: "3-month minimum · moves to $1,200/mo after 1st paid stage",
+    commitment: "3 month minimum · moves to $1,200/mo after 1st paid stage",
     summary: "Foundation at a founder rate until we book your first paid stage.",
     adds: "Keeps $500/mo until your first paid keynote",
     highlights: [
@@ -97,8 +97,8 @@ export const pricingTiers: PricingTier[] = [
     pitches: "60",
     posts: "2",
     commitment: "No minimum commitment",
-    summary: "A speaker-ready profile and niche events pitched every month.",
-    adds: "Month-to-month flexibility from day one",
+    summary: "A profile ready for organizers and niche events pitched every month.",
+    adds: "Flexible monthly terms from day one",
     highlights: [
       "60 pitches to event organizers / mo",
       "2 LinkedIn posts / mo",
@@ -155,7 +155,7 @@ export const comparisonCategories: ComparisonCategory[] = [
         values: { founder: "60", foundation: "60", growth: "110", complete: "160+" },
       },
       {
-        label: "Niche-only event targeting",
+        label: "Targeted niche events",
         note: "No generic speaker directories or mass lists",
         values: { founder: true, foundation: true, growth: true, complete: true },
       },
@@ -172,7 +172,7 @@ export const comparisonCategories: ComparisonCategory[] = [
         values: { founder: true, foundation: true, growth: true, complete: true },
       },
       {
-        label: "Post-event follow-up & calendar management",
+        label: "Event follow up & calendar management",
         values: { founder: true, foundation: true, growth: true, complete: true },
       },
     ],
@@ -240,12 +240,12 @@ export const deliverableExplainers: DeliverableExplainer[] = [
     availability: "All plans (60 to 160+/mo)",
     availabilityTone: "all",
     description:
-      "Every month our team manually researches conferences, corporate summits, and associations in your niche, then sends tailored pitches straight to the organizers who decide the lineup — never to generic call-for-speaker directories or mass lists.",
+      "Every month our team manually researches conferences, corporate summits, and associations in your niche, then sends tailored pitches straight to the organizers who decide the lineup, never to generic open call directories or mass lists.",
     details: [
       "60 pitches/mo on Founder & Foundation, 110 on Growth, 160+ on Complete",
       "You approve the target event categories and topics before outreach begins",
     ],
-    linkHref: "/services/booking/",
+    linkHref: "/services/booking",
     linkLabel: "Explore speaker booking",
     visual: "pitch",
   },
@@ -270,12 +270,12 @@ export const deliverableExplainers: DeliverableExplainer[] = [
     availability: "All plans",
     availabilityTone: "all",
     description:
-      "Before event organizers book you, they look up your LinkedIn. We rewrite your positioning and profile, publish 2 to 8 posts a month in your voice, and expand your network weekly with decision-makers in your industry.",
+      "Before event organizers book you, they look up your LinkedIn. We rewrite your positioning and profile, publish 2 to 8 posts a month in your voice, and expand your network weekly with decision makers in your industry.",
     details: [
       "Profile headline, about section, and featured proof aligned with your topics",
       "Consistent weekly connection requests to event organizers in your niche",
     ],
-    linkHref: "/services/linkedin/",
+    linkHref: "/services/linkedin",
     linkLabel: "Explore LinkedIn management",
   },
   {
@@ -284,10 +284,10 @@ export const deliverableExplainers: DeliverableExplainer[] = [
     availability: "All plans",
     availabilityTone: "all",
     description:
-      "You never have to guess who we contacted. Every plan gives you live CRM visibility of each organizer pitched, replies, calendar holds, post-event follow-ups, and a monthly performance report tracking bookings and LinkedIn growth.",
+      "You never have to guess who we contacted. Every plan gives you live CRM visibility of each organizer pitched, replies, calendar holds, event follow ups, and a monthly performance report tracking bookings and LinkedIn growth.",
     details: [
       "Live tracker of every organizer, event date, and outreach status",
-      "Post-event follow-up so one keynote turns into repeat bookings and referrals",
+      "Follow up after every stage so one keynote turns into repeat bookings and referrals",
     ],
     visual: "report",
   },
@@ -297,12 +297,12 @@ export const deliverableExplainers: DeliverableExplainer[] = [
     availability: "Growth & Complete",
     availabilityTone: "growth",
     description:
-      "We turn long recordings of your keynotes, workshops, and podcast interviews into tight, captioned vertical video clips built for LinkedIn — giving organizers immediate proof of your stage presence as they browse your feed.",
+      "We turn long recordings of your keynotes, workshops, and podcast interviews into tight, captioned vertical video clips built for LinkedIn, giving organizers immediate proof of your stage presence as they browse your feed.",
     details: [
-      "Subtitled, paced for silent-autoplay feeds, and formatted to match your brand",
+      "Subtitled, paced for silent autoplay feeds, and formatted to match your brand",
       "Paired with your 4 or 8 monthly LinkedIn posts",
     ],
-    linkHref: "/services/content/",
+    linkHref: "/services/content",
     linkLabel: "Explore speaker content",
   },
   {
@@ -314,7 +314,7 @@ export const deliverableExplainers: DeliverableExplainer[] = [
       "Designed for speakers going after flagship stages. Alongside 160+ pitches and 8 posts a month, our team leaves thoughtful comments on relevant industry accounts and sends direct organizer outreach in your name to maximize reply rates.",
     details: [
       "Strategic comments on posts from conference chairs and industry leaders",
-      "High-touch direct outreach sent under your own identity",
+      "Personal direct outreach sent under your own identity",
     ],
   },
 ];
@@ -323,14 +323,14 @@ export const websiteAddon = {
   title: "Don't have a speaker website yet?",
   name: "Speaker Website Design",
   price: "From $1,100",
-  billing: "One-time · quoted after a short call",
+  billing: "Single payment · quoted after a short call",
   description:
-    "When an organizer considers booking you, they want one clear link that answers their questions fast. We design and build conversion-ready speaker websites you can drop into every pitch, LinkedIn profile, and email signature.",
+    "When an organizer considers booking you, they want one clear link that answers their questions fast. We design and build speaker websites made to convert so you can drop your link into every pitch, LinkedIn profile, and email signature.",
   includes: [
     "Your bio and speaking topics, clearly structured",
     "Your best stage clips and embedded demo reel",
     "Past events, podcasts, and social proof",
-    "A downloadable speaker one-sheet or press kit",
+    "A downloadable speaker one sheet or press kit",
     "Direct booking inquiry form for organizers",
   ],
 };
@@ -342,7 +342,7 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "How does the $500/mo Founder plan transition to Foundation?",
-    a: "Founder includes everything in Foundation for $500/mo on a month-to-month contract with a 3-month minimum. You keep the $500/mo rate until we book your first paid stage; once your first paid event is booked, your plan moves to Foundation at $1,200/mo.",
+    a: "Founder includes everything in Foundation for $500/mo on a monthly contract with a 3 month minimum. You keep the $500/mo rate until we book your first paid stage; once your first paid event is booked, your plan moves to Foundation at $1,200/mo.",
   },
   {
     q: "Can I upgrade or switch plans month to month?",
@@ -350,7 +350,7 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "What happens if I already have a speaker website vs if I need one?",
-    a: "If you already have a website, we link straight to it across your pitches, press kit, and LinkedIn profile. If you don't have one yet — or yours doesn't show your demo reel and topics clearly — we offer Speaker Website Design starting from $1,100 one-time.",
+    a: "If you already have a website, we link straight to it across your pitches, press kit, and LinkedIn profile. If you don't have one yet, or yours doesn't show your demo reel and topics clearly, we offer Speaker Website Design starting from $1,100 as a single payment.",
   },
   {
     q: "How fast do we start after booking a strategy call?",

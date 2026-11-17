@@ -41,7 +41,7 @@ const testimonials = defineCollection({
 
 /**
  * Artículos del blog. Un archivo .md por artículo en src/content/blog/; el nombre del archivo es la URL:
- * why-calls-for-speakers-dont-lead-to-paid-stages.md → /blog/why-calls-for-speakers-dont-lead-to-paid-stages/
+ * why-calls-for-speakers-dont-lead-to-paid-stages.md → /blog/why-calls-for-speakers-dont-lead-to-paid-stages
  */
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/blog" }),

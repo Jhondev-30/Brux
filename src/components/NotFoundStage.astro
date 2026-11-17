@@ -4,10 +4,10 @@ import Button from "./ui/Button.astro";
 import CtaButton from "./ui/CtaButton.astro";
 
 const quickRoutes = [
-  { href: "/services/booking/", label: "Speaker Booking" },
-  { href: "/pricing/", label: "Monthly Plans" },
-  { href: "/about/", label: "About Brux" },
-  { href: "/blog/", label: "Blog" },
+  { href: "/services/booking", label: "Speaker Booking" },
+  { href: "/pricing", label: "Monthly Plans" },
+  { href: "/about", label: "About Brux" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const words = (s: string) => s.split(" ");
@@ -69,7 +69,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6" data-nf-ctas>
           <CtaButton href="/">Back to homepage</CtaButton>
-          <Button href="/services/" variant="link" class="justify-center sm:justify-start">
+          <Button href="/services" variant="link" class="justify-center sm:justify-start">
             Explore our services
           </Button>
         </div>
@@ -240,7 +240,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
                 <Compass class="size-3.5" />
               </span>
               <div class="leading-tight">
-                <p class="text-[11px] font-semibold text-paper">Off-Script URL</p>
+                <p class="text-[11px] font-semibold text-paper">Off Script URL</p>
                 <p class="text-[10px] text-muted-on-ink">Route not found</p>
               </div>
             </div>

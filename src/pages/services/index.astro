@@ -15,8 +15,8 @@ const siteUrl = Astro.site ? Astro.site.origin : "https://www.brux.site";
 const pageMeta = {
   title: "Services for Keynote & Professional Speakers | Brux",
   description:
-    "Full-service keynote speaker representation: direct organizer booking, LinkedIn positioning, demo reels, press kits, and custom speaker websites.",
-  canonical: "/services/",
+    "End to end keynote speaker representation: direct organizer booking, LinkedIn positioning, demo reels, press kits, and custom speaker websites.",
+  canonical: "/services",
 };
 
 const breadcrumbSchema = {
@@ -24,14 +24,14 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services/` },
+    { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
   ],
 };
 
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `${siteUrl}/services/#service`,
+  "@id": `${siteUrl}/services#service`,
   name: "Keynote Speaker Representation and Agency Services",
   serviceType: "Keynote Speaker Booking, LinkedIn Management & Media Production",
   provider: {
@@ -40,7 +40,7 @@ const serviceSchema = {
     name: "Brux",
     url: siteUrl,
   },
-  url: `${siteUrl}/services/`,
+  url: `${siteUrl}/services`,
   description:
     "Brux provides four integrated services for keynote speakers: direct outreach to event organizers, LinkedIn management, demo reels and press kits, and speaker website design.",
   hasOfferCatalog: {
@@ -52,7 +52,7 @@ const serviceSchema = {
         itemOffered: {
           "@type": "Service",
           name: "Speaker Booking",
-          url: `${siteUrl}/services/booking/`,
+          url: `${siteUrl}/services/booking`,
           description: "Direct outreach to conference organizers and corporate event planners in your verified niche.",
         },
       },
@@ -61,8 +61,8 @@ const serviceSchema = {
         itemOffered: {
           "@type": "Service",
           name: "LinkedIn Management",
-          url: `${siteUrl}/services/linkedin/`,
-          description: "Profile positioning, thought-leadership ghostwriting, and organizer network growth.",
+          url: `${siteUrl}/services/linkedin`,
+          description: "Profile positioning, executive ghostwriting, and organizer network growth.",
         },
       },
       {
@@ -70,8 +70,8 @@ const serviceSchema = {
         itemOffered: {
           "@type": "Service",
           name: "Speaker Content",
-          url: `${siteUrl}/services/content/`,
-          description: "Speaker demo reels, keynote video clips, and one-sheet press kits.",
+          url: `${siteUrl}/services/content`,
+          description: "Speaker demo reels, keynote video clips, and one sheet press kits.",
         },
       },
       {
@@ -79,7 +79,7 @@ const serviceSchema = {
         itemOffered: {
           "@type": "Service",
           name: "Speaker Website Design",
-          url: `${siteUrl}/services/web-design/`,
+          url: `${siteUrl}/services/web-design`,
           description: "Custom speaker websites with full brand direction built to close event organizers.",
         },
       },
@@ -90,7 +90,7 @@ const serviceSchema = {
 const faqs = [
   {
     q: "Why does Brux combine speaker booking and LinkedIn management?",
-    a: "When an event organizer receives a pitch for a keynote speaker, their first move is checking the speaker's LinkedIn profile. Pairing direct outreach with an active, stage-ready LinkedIn ensures committees see proof of authority before replying.",
+    a: "When an event organizer receives a pitch for a keynote speaker, their first move is checking the speaker's LinkedIn profile. Pairing direct outreach with an active LinkedIn profile ready for organizers ensures committees see proof of authority before replying.",
   },
   {
     q: "Do you take any commission on speaking fees?",
@@ -120,16 +120,16 @@ const serviceChapters = [
   {
     id: "booking",
     title: "Speaker booking",
-    href: "/services/booking/",
+    href: "/services/booking",
     cta: "Explore speaker booking",
     tag: "Direct organizer outreach",
     summary:
-      "We research conferences, corporate summits, and industry associations in your niche, then pitch the decision-makers directly. No generic speaker directories and 0% commission on your fee.",
+      "We research conferences, corporate summits, and industry associations in your niche, then pitch the decision makers directly. No generic speaker directories and 0% commission on your fee.",
     bullets: [
       "Tailored pitches mapped to your keynote topics and audience outcomes",
       "Your press kit and demo reel attached to every outreach thread",
       "Live CRM access showing every organizer contacted, status, and replies",
-      "Post-event follow-up and calendar coordination",
+      "Ongoing event follow up and calendar coordination",
     ],
     kind: "video" as const,
     videoBase: "/videos/how/step-3",
@@ -138,16 +138,16 @@ const serviceChapters = [
   {
     id: "linkedin",
     title: "LinkedIn management",
-    href: "/services/linkedin/",
+    href: "/services/linkedin",
     cta: "Explore LinkedIn management",
     tag: "Positioning & network growth",
     summary:
-      "Before organizers reply to a pitch, they check your LinkedIn. We rewrite your headline and bio for event buyers, publish posts in your voice, and connect you weekly with decision-makers.",
+      "Before organizers reply to a pitch, they check your LinkedIn. We rewrite your headline and bio for event buyers, publish posts in your voice, and connect you weekly with decision makers.",
     bullets: [
       "Profile positioning built so organizers see your topics in five seconds",
       "Consistent monthly posts written from your talks and frameworks",
       "Weekly connection requests to event planners and conference chairs",
-      "Strategic comments and outreach in your name on top-tier plans",
+      "Strategic comments and outreach in your name on higher tier plans",
     ],
     kind: "video" as const,
     videoBase: "/videos/services/linkedin-strategy",
@@ -156,33 +156,33 @@ const serviceChapters = [
   {
     id: "content",
     title: "Speaker content",
-    href: "/services/content/",
+    href: "/services/content",
     cta: "See reels & press kits",
     tag: "Demo reels, press kits & clips",
     summary:
-      "Selection committees won't book a speaker they haven't heard on stage. We cut your talks and interviews into a sharp demo reel, design a clean one-sheet press kit, and edit vertical clips for LinkedIn.",
+      "Selection committees won't book a speaker they haven't heard on stage. We cut your talks and interviews into a sharp demo reel, design a clean press kit, and edit vertical clips for LinkedIn.",
     bullets: [
-      "Three-minute speaker demo reel edited from your best stage moments",
-      "Custom speaker one-sheet press kit with bio, topics, and past stages",
-      "Short captioned talk clips formatted for silent-autoplay feeds",
+      "Three minute speaker demo reel edited from your best stage moments",
+      "Custom speaker press kit with bio, topics, and past stages",
+      "Short captioned talk clips formatted for silent autoplay feeds",
       "Ready to attach to every pitch and embed on your speaker site",
     ],
     kind: "unboxed-presskit" as const,
     img: pressKitImg,
-    alt: "Philip Jayhawk Chan speaker one-sheet press kit designed for event organizers",
+    alt: "Philip Jayhawk Chan speaker press kit designed for event organizers",
   },
   {
     id: "web-design",
     title: "Speaker websites",
-    href: "/services/web-design/",
+    href: "/services/web-design",
     cta: "Explore speaker websites",
     tag: "Custom scope & branding included",
     summary:
-      "When an organizer considers booking you, they want one clear link that answers every question: your bio, keynote topics, demo reel, past events, and inquiry form — paired with custom brand direction.",
+      "When an organizer considers booking you, they want one clear link that answers every question: your bio, keynote topics, demo reel, past events, and inquiry form, paired with custom brand direction.",
     bullets: [
       "Custom build plan scoped to your page complexity and timeline",
       "Full brand direction included: palette, typography, logos, and assets",
-      "Embedded stage reel, keynote takeaways, and downloadable one-sheet",
+      "Embedded stage reel, keynote takeaways, and downloadable press sheet",
       "Direct inquiry form and booking calendar integration",
     ],
     kind: "image" as const,
@@ -197,28 +197,28 @@ const conversionChain = [
     moment: "Organizer receives your pitch",
     role: "Direct outreach lands in the conference director's inbox with clear topic fit.",
     service: "Speaker booking",
-    href: "/services/booking/",
+    href: "/services/booking",
   },
   {
     step: "02",
     moment: "They search your name on LinkedIn",
     role: "An active feed, speaker headline, and pinned reel confirm your stage credibility in five seconds.",
     service: "LinkedIn management",
-    href: "/services/linkedin/",
+    href: "/services/linkedin",
   },
   {
     step: "03",
     moment: "Committee reviews your stage proof",
-    role: "Your three-minute demo reel and one-sheet give decision-makers everything they need to forward.",
+    role: "Your three minute demo reel and press kit give decision makers everything they need to forward.",
     service: "Speaker content",
-    href: "/services/content/",
+    href: "/services/content",
   },
   {
     step: "04",
     moment: "They check dates on your site",
     role: "One branded speaker site answers remaining questions and routes the inquiry straight to your calendar.",
     service: "Speaker websites",
-    href: "/services/web-design/",
+    href: "/services/web-design",
   },
 ];
 ---
@@ -400,7 +400,7 @@ const conversionChain = [
                 <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper" data-diagram-node>2</span>
                 <div class="flex items-center justify-between border-b border-ink/10 pb-2.5" data-diagram-row>
                   <span class="text-sm font-extrabold text-ink">LinkedIn Verification</span>
-                  <span class="text-xs font-semibold text-muted">5-sec check</span>
+                  <span class="text-xs font-semibold text-muted">5 sec check</span>
                 </div>
 
                 <span class="mx-auto h-5 w-px origin-top bg-ink/20" aria-hidden="true" data-diagram-link></span>
@@ -408,7 +408,7 @@ const conversionChain = [
 
                 <span class="grid size-8 place-items-center rounded-full bg-ink text-xs font-extrabold text-paper" data-diagram-node>3</span>
                 <div class="flex items-center justify-between border-b border-ink/10 pb-2.5" data-diagram-row>
-                  <span class="text-sm font-extrabold text-ink">Demo Reel &amp; One-Sheet</span>
+                  <span class="text-sm font-extrabold text-ink">Demo Reel &amp; One Sheet</span>
                   <span class="text-xs font-semibold text-muted">Committee proof</span>
                 </div>
 
@@ -505,10 +505,10 @@ const conversionChain = [
     <StageFinalCta
       headingId="hub-cta-title"
       title="Ready for your next paid stage?"
-      description="Tell us your niche and recent talks on a 20-minute call, and we will show you the events we would pitch first."
+      description="Tell us your niche and recent talks on a 20 minute call, and we will show you the events we would pitch first."
       primaryLabel="Book a strategy call"
       secondaryLabel="See pricing"
-      secondaryHref="/pricing/"
+      secondaryHref="/pricing"
     />
   </div>
 </MainLayout>

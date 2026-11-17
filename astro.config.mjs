@@ -10,7 +10,10 @@ export default defineConfig({
   },
   site:'https://www.brux.site',
   base:'/',
-  trailingSlash:'always',
+  trailingSlash:'never',
+  build: {
+    format: 'file',
+  },
   integrations: [sitemap()],
   fonts: [{
     provider:fontProviders.local(),

@@ -20,7 +20,7 @@ import Button from "../ui/Button.astro";
 const everyPlan = [
   "Press kit and demo reel",
   "CRM access",
-  "Post-event follow-up",
+  "Follow up after every event",
   "LinkedIn profile optimization",
   "Network growth on LinkedIn",
   "Monthly report",
@@ -31,7 +31,7 @@ const tiers = [
     id: "founder",
     badge: "Founder rate",
     name: "Founder",
-    for: "Foundation at a founder rate. Month to month, 3-month minimum.",
+    for: "Foundation at a founder rate. Month to month, 3 month minimum.",
     pitches: "60",
     posts: "2",
     adds: "Keeps the founder rate until we book your first paid stage",
@@ -39,7 +39,7 @@ const tiers = [
   {
     id: "foundation",
     name: "Foundation",
-    for: "A speaker-ready profile and niche events every month.",
+    for: "A profile ready for organizers and niche events every month.",
     pitches: "60",
     posts: "2",
     adds: "No minimum commitment",
@@ -107,7 +107,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
         </ul>
 
         <div class="mt-10" data-plans-cta>
-          <Button href="/pricing/" arrow>Compare plans</Button>
+          <Button href="/pricing" arrow>Compare plans</Button>
         </div>
       </div>
 
@@ -146,7 +146,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
             data-plans-item
           >
             <a
-              href={`/pricing/#${t.id}`}
+              href={`/pricing#${t.id}`}
               class:list={[
                 "group/plan relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper transition-shadow duration-300 ease-out will-change-transform lg:row-span-5 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stage focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
                 t.featured
