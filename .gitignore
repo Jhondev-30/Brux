@@ -1,5 +1,7 @@
 # build output
 dist/
+.wrangler/
+
 # generated types
 .astro/
 
@@ -7,22 +9,26 @@ dist/
 node_modules/
 
 # logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
 # environment variables
 .env
-.env.production
+.env.*
+!.env.example
 
-# macOS-specific files
+# OS-specific files
 .DS_Store
+Thumbs.db
 
-# jetbrains setting folder
+# IDE / editor
 .idea/
 
-# estado local de las skills de diseño (perfil de Chrome, historial del gate, caché)
+# AI agent skills, lockfiles, and local tool caches
+.claude/
+.impeccable/
 .taste-skill/
-.impeccable/hook.cache.json
+skills-lock.json
