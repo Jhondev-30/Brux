@@ -31,3 +31,26 @@
     color: var(--color-paper);
   }
 }
+
+@keyframes founder-price-sweep {
+  0% {
+    opacity: 0.25;
+    filter: blur(6px);
+    transform: translateY(11px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.founder-price-sweep {
+  animation: founder-price-sweep 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .founder-price-sweep {
+    animation: none;
+  }
+}

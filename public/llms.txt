@@ -5,11 +5,11 @@
 ## Core Pages
 - [Home](https://www.brux.site/): Overview of Brux's speaker booking process, client proof, plans, and backstage team.
 - [Services Overview](https://www.brux.site/services): Integrated keynote booking, LinkedIn management, demo reels, press kits, and custom websites.
-- [Speaker Booking](https://www.brux.site/services/booking): Direct monthly outreach (60 to 160+ pitches/month) to conference organizers in your verified niche.
+- [Speaker Booking](https://www.brux.site/services/booking): Direct monthly outreach (60 to 110+ pitches/month) to conference organizers in your verified niche.
 - [LinkedIn Management](https://www.brux.site/services/linkedin): Executive LinkedIn positioning, ghostwritten authority posts, and organizer network expansion.
 - [Speaker Content](https://www.brux.site/services/content): Demo reels, one sheet press kits, and edited keynote talk clips.
 - [Speaker Website Design](https://www.brux.site/services/web-design): Custom speaker websites with full brand direction from $1,100 flat fee.
-- [Pricing & Plans](https://www.brux.site/pricing): Transparent breakdown of Founder ($500/mo), Foundation ($1,200/mo), Growth ($1,800/mo), and Complete ($2,500/mo).
+- [Pricing & Plans](https://www.brux.site/pricing): Transparent breakdown of Founder ($500/mo), Foundation ($1,200/mo), and Custom (110+ pitches/mo, 4+ posts/mo, custom price discussed on a strategy call).
 - [Pricing Markdown](https://www.brux.site/pricing.md): Clean machine-readable pricing breakdown and plan rules.
 - [About Brux](https://www.brux.site/about): Mission, vision, why legacy speaker booking models fail, and leadership team.
 - [Blog](https://www.brux.site/blog): Field notes on what event organizers ask for and how paid keynotes get booked.

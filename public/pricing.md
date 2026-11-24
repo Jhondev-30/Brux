@@ -6,7 +6,7 @@
 
 ## Monthly Plans
 
-### 1. Founder: $500 / month
+### 1. Founder (Featured Offer): $500 / month
 - **Pitches to event organizers:** 60 / month
 - **LinkedIn posts:** 2 / month
 - **Minimum commitment:** 3 month minimum (paid monthly)
@@ -18,17 +18,11 @@
 - **Minimum commitment:** None (monthly)
 - **Best for:** A profile ready for organizers and niche events pitched every month.
 
-### 3. Growth (Recommended): $1,800 / month
-- **Pitches to event organizers:** 110 / month
-- **LinkedIn posts:** 4 / month
+### 3. Custom: Custom price (discussed on a strategy call)
+- **Pitches to event organizers:** 110+ / month (scaled to your target volume)
+- **LinkedIn posts:** 4+ / month
 - **Minimum commitment:** None (monthly)
-- **Added deliverables:** Video editing of your talks (vertical clips for LinkedIn).
-
-### 4. Complete: $2,500 / month
-- **Pitches to event organizers:** 160+ / month
-- **LinkedIn posts:** 8 / month
-- **Minimum commitment:** None (monthly)
-- **Added deliverables:** Video editing of your talks, comments on relevant industry posts & accounts, and direct outreach to organizers in your name.
+- **Added deliverables:** Video editing of your talks (vertical clips for LinkedIn), strategic comments on relevant industry posts & accounts, and direct outreach to organizers in your name.
 
 ## Included in Every Plan
 - **0% commission** on your speaking fees

@@ -4,18 +4,12 @@ import { Check as LucideCheck } from "@lucide/astro";
 import { ArrowRight, Plus } from "lucide";
 import MorphIcon from "morphicons/astro";
 import report from "../../assets/plans/monthly-report.webp";
+import { pricingTiers } from "../../data/pricing";
 import Button from "../ui/Button.astro";
 
 /*
-  Planes en la portada: sin precios a propósito. Cada tarjeta presenta el plan, para quién es,
-  lo que la distingue primero y su capacidad mensual (pitches y posts) en lectura tabular;
-  el precio y la lista completa están en /pricing/.
-  Datos del PDF de planes del 1 de noviembre de 2026.
-  Diseño (Backstage editorial):
-  - Tres tarjetas en negro (bg-ink) y solo la recomendada (Growth) en rojo (bg-stage-text).
-  - Silueta ::before con fondo sutil en el contenedor de cada tarjeta: al elevarse en hover/focus (-5px),
-    queda visible su silueta detrás; en Growth asoma levemente desde el reposo.
-  - Subgrid en escritorio (lg) para alinear nombre, descripción, diferenciador, cifras y enlace.
+  Planes en la portada: sin precios a propósito (los precios y el control interactivo están en /pricing).
+  Diseño replicado de BRUX_founder_interactive: Founder más ancha y en rojo, resto en grafito oscuro.
 */
 const everyPlan = [
   "Press kit and demo reel",
@@ -26,43 +20,26 @@ const everyPlan = [
   "Monthly report",
 ];
 
-const tiers = [
-  {
-    id: "founder",
-    badge: "Founder rate",
-    name: "Founder",
-    for: "Foundation at a founder rate. Month to month, 3 month minimum.",
-    pitches: "60",
-    posts: "2",
-    adds: "Keeps the founder rate until we book your first paid stage",
+const teaserCopy: Record<
+  (typeof pricingTiers)[number]["id"],
+  { summary: string; state: string; cta: string }
+> = {
+  founder: {
+    summary: "Everything in Foundation at a special Founder rate until we book your first paid speaking event.",
+    state: "3-month minimum · moves to Foundation after 1st paid stage",
+    cta: "See Founder rate & plan",
   },
-  {
-    id: "foundation",
-    name: "Foundation",
-    for: "A profile ready for organizers and niche events every month.",
-    pitches: "60",
-    posts: "2",
-    adds: "No minimum commitment",
+  foundation: {
+    summary: "A profile ready for organizers and niche events pitched every month.",
+    state: "No minimum commitment",
+    cta: "See price & full plan",
   },
-  {
-    id: "growth",
-    name: "Growth",
-    for: "More pitches, plus content that keeps your name visible.",
-    pitches: "110",
-    posts: "4",
-    adds: "Video editing of your talks",
-    badge: "Recommended",
-    featured: true,
+  custom: {
+    summary: "Scale from 110+ organizer pitches and 4+ LinkedIn posts a month, plus talk clips and outreach in your name.",
+    state: "No minimum commitment · scaled to your goals",
+    cta: "Explore Custom plan",
   },
-  {
-    id: "complete",
-    name: "Complete",
-    for: "Full outreach in your name and the most stages we can go after.",
-    pitches: "160+",
-    posts: "8",
-    adds: "Outreach to organizers in your name",
-  },
-];
+};
 
 const words = (s: string) => s.split(" ");
 const maskClass =
@@ -80,7 +57,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
           class="text-[clamp(1.875rem,1.45rem+1.8vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-balance"
           data-plans-title
         >
-          {words("Four plans for keynote speakers").map((w, j, a) => (
+          {words("Three plans for keynote speakers").map((w, j, a) => (
             <>
               <span class={maskClass}><span class={wordClass} data-plans-title-word>{w}</span></span>
               {j < a.length - 1 && " "}
@@ -128,172 +105,201 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
       </div>
     </div>
 
-    <!-- Las cuatro tarjetas: 3 en bg-ink y solo la recomendada (Growth) en bg-stage-text, silueta ::before con bg y subgrid -->
+    <!-- Las tres tarjetas (sin precios en portada): Founder más ancha y en rojo; resto en grafito oscuro -->
     <ul
-      class="mt-14 grid gap-4 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto] lg:gap-x-5 lg:gap-y-0"
+      class="mt-14 grid gap-5 md:grid-cols-2 lg:mt-20 lg:grid-cols-[1.35fr_1fr_1fr] lg:items-stretch"
       data-plans-grid
     >
       {
-        tiers.map((t) => (
-          <li
-            class:list={[
-              "relative isolate flex lg:row-span-5 lg:grid lg:grid-rows-subgrid",
-              "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[20px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
-              t.featured
-                ? "before:translate-y-1.5 before:bg-stage-text/22 has-[a:hover]:before:bg-stage-text/32 has-[a:focus-visible]:before:bg-stage-text/32"
-                : "before:bg-ink/12 has-[a:hover]:before:bg-ink/20 has-[a:focus-visible]:before:bg-ink/20",
-            ]}
-            data-plans-item
-          >
-            <a
-              href={`/pricing#${t.id}`}
+        pricingTiers.map((t) => {
+          const copy = teaserCopy[t.id];
+          return (
+            <li
               class:list={[
-                "group/plan relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper transition-shadow duration-300 ease-out will-change-transform lg:row-span-5 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stage focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
+                "relative isolate flex",
+                "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[23px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
                 t.featured
-                  ? "border-stage-text bg-stage-text"
-                  : "border-ink bg-ink",
+                  ? "before:translate-y-2 before:bg-stage-text/30 has-[[data-plan]:hover]:before:bg-stage-text/40 has-[[data-plan]:focus-within]:before:bg-stage-text/40"
+                  : "before:bg-ink/12 has-[[data-plan]:hover]:before:bg-ink/20 has-[[data-plan]:focus-within]:before:bg-ink/20",
               ]}
-              data-plan
-              data-plan-id={t.id}
-              data-plan-featured={t.featured ? "true" : undefined}
-              aria-describedby={`plan-${t.id}-more`}
+              data-plans-item
             >
-              <!-- 1. Nombre y badge en la misma línea (sin huecos vacíos en las tarjetas sin badge) -->
-              <span class="flex flex-wrap items-baseline justify-between gap-x-2.5 gap-y-1.5" data-plan-top>
+              <article
+                class:list={[
+                  "group/plan relative flex flex-1 flex-col overflow-hidden rounded-[23px] border p-6 text-paper transition-shadow duration-300 ease-out will-change-transform sm:p-7",
+                  t.featured
+                    ? "border-paper/25 bg-[linear-gradient(155deg,#E50C13_0%,#C20A18_48%,#7E0611_100%)] shadow-[0_28px_68px_-18px_rgba(194,10,24,0.52),inset_0_1px_0_rgba(255,255,255,0.22)]"
+                    : "border-[#333338] bg-[linear-gradient(155deg,#161618,#080809_52%)] shadow-[0_24px_64px_-20px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.05)]",
+                ]}
+                data-plan
+                data-plan-id={t.id}
+                data-plan-featured={t.featured ? "true" : undefined}
+              >
+                <!-- Ambient glow -->
                 <span
-                  class="text-[1.375rem] font-extrabold leading-[1.15] tracking-[-0.02em] text-paper"
-                  data-plan-name
-                >
-                  {t.name}
-                </span>
-                {t.badge && (
+                  aria-hidden="true"
+                  class:list={[
+                    "pointer-events-none absolute -left-20 rounded-full",
+                    t.featured
+                      ? "top-6 h-64 w-80 bg-[radial-gradient(ellipse,rgba(255,255,255,0.22)_0%,transparent_68%)]"
+                      : "top-10 h-56 w-72 bg-[radial-gradient(ellipse,rgba(220,23,56,0.14)_0%,transparent_68%)]",
+                  ]}
+                />
+
+                <!-- 1. Nombre y badge -->
+                <div class="relative flex flex-wrap items-center justify-between gap-2.5" data-plan-top>
+                  <h3
+                    class:list={[
+                      "font-extrabold leading-[1.1] tracking-[-0.04em] text-paper",
+                      t.featured ? "text-[1.75rem]" : "text-[1.45rem]",
+                    ]}
+                    data-plan-name
+                  >
+                    {t.name}
+                  </h3>
                   <span
                     class:list={[
-                      "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[0.75rem] font-bold tracking-[0.01em] whitespace-nowrap text-paper",
-                      t.featured ? "bg-ink" : "bg-paper/10",
+                      "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[0.75rem] font-bold tracking-[0.01em] whitespace-nowrap",
+                      t.featured
+                        ? "bg-paper text-stage-text shadow-xs"
+                        : "bg-[#2b2b2f] text-[#e6e6e6]",
                     ]}
                     data-plan-badge
                   >
+                    {t.featured && <span class="size-1.5 rounded-full bg-stage" aria-hidden="true" />}
                     {t.badge}
                   </span>
-                )}
-              </span>
+                </div>
 
-              <!-- 2. Para quién es -->
-              <span
-                class:list={[
-                  "mt-2.5 text-[0.9375rem] leading-[1.5]",
-                  t.featured ? "text-paper/90" : "text-muted-on-ink",
-                ]}
-                data-plan-for
-              >
-                {t.for}
-              </span>
+                <!-- 2. Descripción y condición (sin precios) -->
+                <div class="relative mt-5">
+                  <p
+                    class:list={[
+                      "text-[0.9375rem] leading-[1.55]",
+                      t.featured ? "text-paper/95" : "text-[#e5e5e8]",
+                    ]}
+                    data-plan-for
+                  >
+                    {copy.summary}
+                  </p>
+                  <div
+                    class:list={[
+                      "mt-3.5 flex items-center gap-2 text-xs font-medium",
+                      t.featured ? "text-paper/90" : "text-[#bfc0c5]",
+                    ]}
+                  >
+                    <span
+                      class:list={[
+                        "size-1.5 shrink-0 rounded-full",
+                        t.featured
+                          ? "bg-paper shadow-[0_0_0_3px_rgba(255,255,255,0.28)]"
+                          : "bg-[#c21b37] shadow-[0_0_0_3px_rgba(194,27,55,0.22)]",
+                      ]}
+                      aria-hidden="true"
+                    />
+                    <span>{copy.state}</span>
+                  </div>
+                </div>
 
-              <!-- 3. Lo que distingue al plan antes de las cifras (evita que Founder y Foundation parezcan iguales) -->
-              <span
-                class="mt-4 flex items-start gap-2 text-[0.9375rem] font-semibold leading-[1.45] text-paper"
-                data-plan-adds
-              >
-                <span
+                <!-- 3. Capacidad mensual -->
+                <div
                   class:list={[
-                    "mt-0.5 inline-flex shrink-0",
-                    t.featured ? "text-paper" : "text-stage-glow",
+                    "relative mt-6 grid gap-3 border-t pt-5",
+                    t.featured ? "border-paper/25" : "border-[#323236]",
                   ]}
+                  data-plan-facts
                 >
-                  <MorphIcon
-                    icon={Plus}
-                    size={14}
-                    strokeWidth={2.25}
-                    spring="snappy"
-                    reducedMotion="user"
-                    data-plan-add-icon
-                  />
-                </span>
-                <span>{t.adds}</span>
-              </span>
-
-              <!-- 4. Capacidad mensual en lectura tabular compacta -->
-              <span
-                class:list={[
-                  "relative mt-5 grid gap-3.5 border-t pt-5",
-                  t.featured ? "border-paper/20" : "border-paper/12",
-                ]}
-                data-plan-facts
-              >
-                <!-- Línea de luz que se dibuja de izquierda a derecha al hacer hover -->
-                <span
-                  class:list={[
-                    "pointer-events-none absolute inset-x-0 -top-px h-px origin-left [transform:scaleX(0)]",
-                    t.featured ? "bg-paper" : "bg-stage-glow",
-                  ]}
-                  aria-hidden="true"
-                  data-plan-line
-                />
-
-                <span class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr] xl:gap-x-3" data-plan-fact>
-                  <span
-                    class="origin-left text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform xl:text-[1.875rem]"
-                    data-plan-num
-                  >
-                    {t.pitches}
-                  </span>
                   <span
                     class:list={[
-                      "text-[0.875rem] leading-[1.35]",
-                      t.featured ? "text-paper/90" : "text-muted-on-ink",
+                      "pointer-events-none absolute inset-x-0 -top-px h-px origin-left [transform:scaleX(0)]",
+                      t.featured ? "bg-paper" : "bg-stage-glow",
                     ]}
-                  >
-                    pitches to event organizers a month
-                  </span>
-                </span>
-
-                <span class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr] xl:gap-x-3" data-plan-fact>
-                  <span
-                    class="origin-left text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform xl:text-[1.875rem]"
-                    data-plan-num
-                  >
-                    {t.posts}
-                  </span>
-                  <span
-                    class:list={[
-                      "text-[0.875rem] leading-[1.35]",
-                      t.featured ? "text-paper/90" : "text-muted-on-ink",
-                    ]}
-                  >
-                    LinkedIn posts a month
-                  </span>
-                </span>
-              </span>
-
-              <!-- 5. Acción -->
-              <span
-                class="mt-auto inline-flex items-center gap-1.5 pt-6 text-[0.9375rem] font-semibold text-paper lg:mt-0 lg:self-end"
-                id={`plan-${t.id}-more`}
-                data-plan-more
-              >
-                <span class="relative text-paper">
-                  See the price and full plan
-                  <span
-                    class="pointer-events-none absolute inset-x-0 -bottom-0.5 h-px origin-left bg-paper [transform:scaleX(0)]"
                     aria-hidden="true"
-                    data-plan-underline
+                    data-plan-line
                   />
-                </span>
-                <span class="inline-flex shrink-0 text-paper will-change-transform" data-plan-arrow-wrap>
-                  <MorphIcon
-                    icon={ArrowRight}
-                    size={16}
-                    strokeWidth={2}
-                    spring="snappy"
-                    reducedMotion="user"
-                    data-plan-arrow
-                  />
-                </span>
-              </span>
-            </a>
-          </li>
-        ))
+
+                  <div class="flex items-baseline gap-3" data-plan-fact>
+                    <span
+                      class="min-w-[3.5rem] origin-left text-[1.875rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform"
+                      data-plan-num
+                    >
+                      {t.pitches}
+                    </span>
+                    <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-[#b3b3b9]"]}>
+                      organizer pitches / mo
+                    </span>
+                  </div>
+
+                  <div class="flex items-baseline gap-3" data-plan-fact>
+                    <span
+                      class="min-w-[3.5rem] origin-left text-[1.875rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums will-change-transform"
+                      data-plan-num
+                    >
+                      {t.posts}
+                    </span>
+                    <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-[#b3b3b9]"]}>
+                      LinkedIn posts / mo
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 4. Diferencial clave -->
+                <div
+                  class="relative mt-5 flex items-start gap-2.5 text-[0.875rem] font-bold leading-snug text-paper"
+                  data-plan-adds
+                >
+                  <span class:list={["mt-0.5 inline-flex shrink-0", t.featured ? "text-paper" : "text-[#ed2443]"]}>
+                    <MorphIcon
+                      icon={Plus}
+                      size={15}
+                      strokeWidth={2.5}
+                      spring="snappy"
+                      reducedMotion="user"
+                      data-plan-add-icon
+                    />
+                  </span>
+                  <span>{t.adds}</span>
+                </div>
+
+                <!-- 5. CTA + pie sutil -->
+                <div class="relative mt-auto flex flex-col gap-3 pt-7" data-plan-more>
+                  <a
+                    href={`/pricing#${t.id}`}
+                    class:list={[
+                      "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-[0.9375rem] font-bold transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2",
+                      t.featured
+                        ? "bg-paper text-ink shadow-[0_10px_24px_-10px_rgba(0,0,0,0.45)] hover:bg-mist focus-visible:outline-paper"
+                        : "border border-paper/20 bg-paper/[0.08] text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-paper hover:bg-paper hover:text-ink focus-visible:outline-stage-glow",
+                    ]}
+                    data-plan-cta
+                  >
+                    <span>{copy.cta}</span>
+                    <span class="inline-flex shrink-0 will-change-transform" data-plan-arrow-wrap>
+                      <MorphIcon
+                        icon={ArrowRight}
+                        size={16}
+                        strokeWidth={2.2}
+                        spring="snappy"
+                        reducedMotion="user"
+                        data-plan-arrow
+                      />
+                    </span>
+                  </a>
+                  {t.footerNote && (
+                    <p
+                      class:list={[
+                        "text-center text-xs font-medium",
+                        t.featured ? "text-paper/80" : "text-[#8f9098]",
+                      ]}
+                    >
+                      {t.footerNote}
+                    </p>
+                  )}
+                </div>
+              </article>
+            </li>
+          );
+        })
       }
     </ul>
   </div>
@@ -310,19 +316,6 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
 
   type MorphEl = HTMLElement & { morphTo?: (icon: IconNode | string) => void };
 
-  /*
-    Criterios de Bang Motion / Brand Motion + GSAP:
-    1. Jerarquía de entrada («primero la frase, luego el objeto, al final el detalle»):
-       - El titular se despliega palabra a palabra desde su máscara con leve inclinación (expo.out).
-       - El subtítulo, la lista «In every plan» y el botón entran en cascada ordenada.
-       - El cuadro del reporte mensual se descubre con cortinilla lateral (power4.inOut) y retroceso de cámara (scale 1.12 → 1).
-       - Las cuatro tarjetas entran escalonadas una sola vez al llegar a la sección.
-    2. Animación de hover:
-       - La tarjeta sube 5px (power3.out) dejando visible la silueta ::before debajo, la línea divisoria interior
-         se dibuja de izquierda a derecha (scaleX 0 → 1), las dos cifras ganan relieve con un pulso escalonado,
-         el enlace dibuja su subrayado y los MorphIcons transforman su trazo (Plus → Check y ArrowRight → ArrowUpRight).
-       - La salida es un ~40 % más rápida que la entrada (asimetría Bang Motion).
-  */
   const EASE_ENTER = "expo.out";
 
   let mm: gsap.MatchMedia | null = null;
@@ -334,9 +327,9 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     if (!root) return;
 
     const grid = root.querySelector<HTMLElement>("[data-plans-grid]");
-    const cards = grid ? [...grid.querySelectorAll<HTMLAnchorElement>("[data-plan]")] : [];
+    const cards = grid ? [...grid.querySelectorAll<HTMLElement>("[data-plan]")] : [];
 
-    // ---------- 1. Animaciones de entrada con ScrollTrigger + SplitText (solo sin reduced-motion) ----------
+    // ---------- 1. Animaciones de entrada con ScrollTrigger ----------
     mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const ctx = gsap.context(() => {
@@ -394,7 +387,6 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
           tl.from(img, { scale: 1.12, duration: 1.4, ease: EASE_ENTER, clearProps: "scale" }, 0.18);
         }
 
-        // Entrada escalonada de las 4 tarjetas siguiendo jerarquía frase → cifra → acción
         if (grid && cards.length) {
           const items = root.querySelectorAll<HTMLElement>("[data-plans-item]");
           const cardsTl = gsap.timeline({
@@ -426,7 +418,6 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
           });
         }
 
-        // Zoom suave en la imagen del reporte al pasar el ratón
         if (visual && img) {
           const zoomImg = gsap.quickTo(img, "scale", { duration: 0.6, ease: "power3.out" });
           visual.addEventListener("pointerenter", () => zoomImg(1.025));
@@ -437,37 +428,29 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
       return () => ctx.revert();
     });
 
-    // ---------- 2. Animación de hover por tarjeta (Elevación + trazo divisor + relieve + MorphIcons) ----------
     if (!grid) return;
 
     const controller = new AbortController();
     const { signal } = controller;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
 
+    // ---------- 2. Hover por tarjeta y CTA ----------
     for (const card of cards) {
       const line = card.querySelector<HTMLElement>("[data-plan-line]");
-      const underline = card.querySelector<HTMLElement>("[data-plan-underline]");
       const nums = card.querySelectorAll<HTMLElement>("[data-plan-num]");
       const name = card.querySelector<HTMLElement>("[data-plan-name]");
       const addIcon = card.querySelector<MorphEl>("[data-plan-add-icon]");
-      const arrowIcon = card.querySelector<MorphEl>("[data-plan-arrow]");
-      const arrowWrap = card.querySelector<HTMLElement>("[data-plan-arrow-wrap]");
 
       const liftY = gsap.quickTo(card, "y", { duration: 0.36, ease: "power3.out" });
 
       const onActivate = () => {
         addIcon?.morphTo?.(Check);
-        arrowIcon?.morphTo?.(ArrowUpRight);
         if (reduce.matches) return;
 
         liftY(-5);
         if (line) {
           gsap.set(line, { transformOrigin: "0% 50%" });
           gsap.to(line, { scaleX: 1, duration: 0.45, ease: "expo.out", overwrite: "auto" });
-        }
-        if (underline) {
-          gsap.set(underline, { transformOrigin: "0% 50%" });
-          gsap.to(underline, { scaleX: 1, duration: 0.38, ease: "expo.out", overwrite: "auto" });
         }
         if (name) gsap.to(name, { x: 2, duration: 0.35, ease: "expo.out", overwrite: "auto" });
         if (nums.length) {
@@ -480,54 +463,54 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
             overwrite: "auto",
           });
         }
-        if (arrowWrap) {
-          gsap.to(arrowWrap, { x: 4, y: -1, duration: 0.3, ease: "expo.out", overwrite: "auto" });
-        }
       };
 
       const onDeactivate = () => {
         addIcon?.morphTo?.(Plus);
-        arrowIcon?.morphTo?.(ArrowRight);
         if (reduce.matches) return;
 
-        // Salida ~40 % más rápida que la entrada (criterio Bang Motion)
         liftY(0);
         if (line) {
           gsap.set(line, { transformOrigin: "100% 50%" });
           gsap.to(line, { scaleX: 0, duration: 0.24, ease: "power2.inOut", overwrite: "auto" });
         }
-        if (underline) {
-          gsap.set(underline, { transformOrigin: "100% 50%" });
-          gsap.to(underline, { scaleX: 0, duration: 0.22, ease: "power2.inOut", overwrite: "auto" });
-        }
         if (name) gsap.to(name, { x: 0, duration: 0.22, ease: "power2.out", overwrite: "auto" });
         if (nums.length) {
           gsap.to(nums, { x: 0, scale: 1, duration: 0.24, ease: "power2.out", overwrite: "auto" });
         }
-        if (arrowWrap) {
-          gsap.to(arrowWrap, { x: 0, y: 0, duration: 0.2, ease: "power2.out", overwrite: "auto" });
-        }
       };
 
+      card.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onActivate(), { signal });
+      card.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onDeactivate(), { signal });
+      card.addEventListener("focusin", onActivate, { signal });
       card.addEventListener(
-        "pointerenter",
+        "focusout",
         (e) => {
-          if (e.pointerType === "mouse") onActivate();
+          if (!card.contains(e.relatedTarget as Node | null)) onDeactivate();
         },
         { signal },
       );
-
-      card.addEventListener(
-        "pointerleave",
-        (e) => {
-          if (e.pointerType === "mouse") onDeactivate();
-        },
-        { signal },
-      );
-
-      card.addEventListener("focus", onActivate, { signal });
-      card.addEventListener("blur", onDeactivate, { signal });
     }
+
+    root.querySelectorAll<HTMLAnchorElement>("[data-plan-cta]").forEach((cta) => {
+      const arrowWrap = cta.querySelector<HTMLElement>("[data-plan-arrow-wrap]");
+      const arrowIcon = cta.querySelector<MorphEl>("[data-plan-arrow]");
+      const nudge = arrowWrap ? gsap.quickTo(arrowWrap, "x", { duration: 0.22, ease: "power3.out" }) : null;
+
+      const onEnter = () => {
+        arrowIcon?.morphTo?.(ArrowUpRight);
+        if (!reduce.matches) nudge?.(3);
+      };
+      const onLeave = () => {
+        arrowIcon?.morphTo?.(ArrowRight);
+        if (!reduce.matches) nudge?.(0);
+      };
+
+      cta.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && onEnter(), { signal });
+      cta.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && onLeave(), { signal });
+      cta.addEventListener("focus", onEnter, { signal });
+      cta.addEventListener("blur", onLeave, { signal });
+    });
 
     cleanupInteractions = () => {
       controller.abort();

@@ -34,20 +34,24 @@ const serviceCatalogSchema = {
         name: `${tier.name} Plan`,
         description: `${tier.summary} Includes ${tier.pitches} organizer pitches/month, ${tier.posts} LinkedIn posts/month, 0% commission. ${tier.commitment}.`,
         url: `${pageUrl}#${tier.id}`,
-        priceCurrency: "USD",
-        price: tier.price.toFixed(2),
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: tier.price.toFixed(2),
-          priceCurrency: "USD",
-          unitText: "MONTH",
-          unitCode: "MON",
-          referenceQuantity: {
-            "@type": "QuantitativeValue",
-            value: 1,
-            unitCode: "MON",
-          },
-        },
+        ...(tier.price !== null
+          ? {
+              priceCurrency: "USD",
+              price: tier.price.toFixed(2),
+              priceSpecification: {
+                "@type": "UnitPriceSpecification",
+                price: tier.price.toFixed(2),
+                priceCurrency: "USD",
+                unitText: "MONTH",
+                unitCode: "MON",
+                referenceQuantity: {
+                  "@type": "QuantitativeValue",
+                  value: 1,
+                  unitCode: "MON",
+                },
+              },
+            }
+          : {}),
       })),
       {
         "@type": "Offer",

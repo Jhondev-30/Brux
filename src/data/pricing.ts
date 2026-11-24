@@ -4,11 +4,15 @@
  */
 
 export interface PricingTier {
-  id: "founder" | "foundation" | "growth" | "complete";
+  id: "founder" | "foundation" | "custom";
   name: string;
   badge: string;
-  price: number;
+  price: number | null;
   priceLabel: string;
+  priceSubLabel?: string;
+  savingsTag?: string;
+  ctaLabel?: string;
+  footerNote?: string;
   pitches: string;
   posts: string;
   commitment: string;
@@ -26,8 +30,7 @@ export interface ComparisonRow {
   values: {
     founder: MatrixCell;
     foundation: MatrixCell;
-    growth: MatrixCell;
-    complete: MatrixCell;
+    custom: MatrixCell;
   };
 }
 
@@ -41,7 +44,7 @@ export interface DeliverableExplainer {
   id: string;
   title: string;
   availability: string;
-  availabilityTone: "all" | "growth" | "complete";
+  availabilityTone: "all" | "custom";
   description: string;
   details: string[];
   linkHref?: string;
@@ -57,7 +60,7 @@ export interface PricingFaq {
 export const pricingMeta = {
   title: "Speaker Booking & LinkedIn Plans & Pricing | Brux",
   description:
-    "Compare Brux speaker booking and LinkedIn plans from $500 to $2,500/mo. 60 to 160+ organizer pitches monthly, 0% commission on your speaking fees.",
+    "Compare Brux's three speaker booking and LinkedIn plans: Founder ($500/mo), Foundation ($1,200/mo), and Custom (110+ pitches/mo, 4+ posts/mo). 0% commission on your speaking fees.",
   canonical: "/pricing",
 };
 
@@ -76,17 +79,22 @@ export const pricingTiers: PricingTier[] = [
     badge: "Founder rate",
     price: 500,
     priceLabel: "$500",
+    priceSubLabel: "/mo",
+    savingsTag: "Save $700/mo until your 1st paid stage",
+    ctaLabel: "Claim Founder rate",
+    footerNote: "Foundation services, Founder rate",
     pitches: "60",
     posts: "2",
-    commitment: "3 month minimum · moves to $1,200/mo after 1st paid stage",
-    summary: "Foundation at a founder rate until we book your first paid stage.",
-    adds: "Keeps $500/mo until your first paid keynote",
+    commitment: "3-month minimum · moves to $1,200/mo after 1st paid event",
+    summary: "Your Founder rate stays at $500/month until we book your first paid speaking event.",
+    adds: "Founder pricing until your first paid speaking event is booked",
     highlights: [
       "60 pitches to event organizers / mo",
       "2 LinkedIn posts / mo",
       "Press kit, demo reel & CRM access",
       "0% commission on speaking fees",
     ],
+    featured: true,
   },
   {
     id: "foundation",
@@ -94,6 +102,9 @@ export const pricingTiers: PricingTier[] = [
     badge: "LinkedIn + Booking",
     price: 1200,
     priceLabel: "$1,200",
+    priceSubLabel: "/mo",
+    ctaLabel: "Book a strategy call",
+    footerNote: "No minimum commitment",
     pitches: "60",
     posts: "2",
     commitment: "No minimum commitment",
@@ -107,40 +118,24 @@ export const pricingTiers: PricingTier[] = [
     ],
   },
   {
-    id: "growth",
-    name: "Growth",
-    badge: "Recommended",
-    price: 1800,
-    priceLabel: "$1,800",
-    pitches: "110",
-    posts: "4",
-    commitment: "No minimum commitment",
-    summary: "More pitches, plus content and edited clips that keep your name visible.",
-    adds: "Video editing of your talks included",
+    id: "custom",
+    name: "Custom",
+    badge: "Tailored volume",
+    price: null,
+    priceLabel: "Custom price",
+    priceSubLabel: "Scoped on a call",
+    ctaLabel: "Book a call for pricing",
+    footerNote: "Tailored to your pitch & content volume",
+    pitches: "110+",
+    posts: "4+",
+    commitment: "No minimum commitment · scaled to your goals",
+    summary: "Scale from 110+ organizer pitches and 4+ LinkedIn posts a month, plus talk clips and outreach in your name.",
+    adds: "Talk video editing, strategic comments & direct outreach in your name",
     highlights: [
-      "110 pitches to event organizers / mo",
-      "4 LinkedIn posts / mo",
-      "Edited vertical clips from your talks",
+      "110+ pitches to event organizers / mo (scaled to your goals)",
+      "4+ LinkedIn posts / mo + edited vertical talk clips",
+      "Strategic comments & direct outreach in your name",
       "0% commission on speaking fees",
-    ],
-    featured: true,
-  },
-  {
-    id: "complete",
-    name: "Complete",
-    badge: "LinkedIn + Booking",
-    price: 2500,
-    priceLabel: "$2,500",
-    pitches: "160+",
-    posts: "8",
-    commitment: "No minimum commitment",
-    summary: "Full outreach in your name and the most stages we can go after.",
-    adds: "Outreach & strategic comments in your name",
-    highlights: [
-      "160+ pitches to event organizers / mo",
-      "8 LinkedIn posts / mo + video editing",
-      "Comments on relevant industry posts",
-      "Direct outreach to organizers in your name",
     ],
   },
 ];
@@ -152,28 +147,28 @@ export const comparisonCategories: ComparisonCategory[] = [
     rows: [
       {
         label: "Pitches to event organizers / month",
-        values: { founder: "60", foundation: "60", growth: "110", complete: "160+" },
+        values: { founder: "60", foundation: "60", custom: "110+" },
       },
       {
         label: "Targeted niche events",
         note: "No generic speaker directories or mass lists",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "Speaker press kit",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "Speaker demo reel",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "CRM access (every organizer contacted)",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "Event follow up & calendar management",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
     ],
   },
@@ -183,27 +178,27 @@ export const comparisonCategories: ComparisonCategory[] = [
     rows: [
       {
         label: "Positioning & profile optimization",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "LinkedIn posts / month",
-        values: { founder: "2", foundation: "2", growth: "4", complete: "8" },
+        values: { founder: "2", foundation: "2", custom: "4+" },
       },
       {
         label: "Active network expansion (organizers in niche)",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "Video editing of your talks",
-        values: { founder: false, foundation: false, growth: true, complete: true },
+        values: { founder: false, foundation: false, custom: true },
       },
       {
         label: "Comments on relevant posts & accounts",
-        values: { founder: false, foundation: false, growth: false, complete: true },
+        values: { founder: false, foundation: false, custom: true },
       },
       {
         label: "Direct outreach to organizers in your name",
-        values: { founder: false, foundation: false, growth: false, complete: true },
+        values: { founder: false, foundation: false, custom: true },
       },
     ],
   },
@@ -213,11 +208,11 @@ export const comparisonCategories: ComparisonCategory[] = [
     rows: [
       {
         label: "Monthly performance report",
-        values: { founder: true, foundation: true, growth: true, complete: true },
+        values: { founder: true, foundation: true, custom: true },
       },
       {
         label: "Commission on your speaking fees",
-        values: { founder: "0%", foundation: "0%", growth: "0%", complete: "0%" },
+        values: { founder: "0%", foundation: "0%", custom: "0%" },
       },
       {
         label: "Minimum commitment",
@@ -225,8 +220,7 @@ export const comparisonCategories: ComparisonCategory[] = [
         values: {
           founder: "3 months",
           foundation: "None",
-          growth: "None",
-          complete: "None",
+          custom: "None",
         },
       },
     ],
@@ -237,12 +231,12 @@ export const deliverableExplainers: DeliverableExplainer[] = [
   {
     id: "direct-pitching",
     title: "Direct Organizer Pitching",
-    availability: "All plans (60 to 160+/mo)",
+    availability: "All plans (60 to 110+/mo)",
     availabilityTone: "all",
     description:
       "Every month our team manually researches conferences, corporate summits, and associations in your niche, then sends tailored pitches straight to the organizers who decide the lineup, never to generic open call directories or mass lists.",
     details: [
-      "60 pitches/mo on Founder & Foundation, 110 on Growth, 160+ on Complete",
+      "60 pitches/mo on Founder & Foundation, and 110+ scaled to your target volume on Custom",
       "You approve the target event categories and topics before outreach begins",
     ],
     linkHref: "/services/booking",
@@ -270,7 +264,7 @@ export const deliverableExplainers: DeliverableExplainer[] = [
     availability: "All plans",
     availabilityTone: "all",
     description:
-      "Before event organizers book you, they look up your LinkedIn. We rewrite your positioning and profile, publish 2 to 8 posts a month in your voice, and expand your network weekly with decision makers in your industry.",
+      "Before event organizers book you, they look up your LinkedIn. We rewrite your positioning and profile, publish 2 to 4+ posts a month in your voice, and expand your network weekly with decision makers in your industry.",
     details: [
       "Profile headline, about section, and featured proof aligned with your topics",
       "Consistent weekly connection requests to event organizers in your niche",
@@ -294,13 +288,13 @@ export const deliverableExplainers: DeliverableExplainer[] = [
   {
     id: "video-editing",
     title: "Talk Video Editing",
-    availability: "Growth & Complete",
-    availabilityTone: "growth",
+    availability: "Custom plan",
+    availabilityTone: "custom",
     description:
       "We turn long recordings of your keynotes, workshops, and podcast interviews into tight, captioned vertical video clips built for LinkedIn, giving organizers immediate proof of your stage presence as they browse your feed.",
     details: [
       "Subtitled, paced for silent autoplay feeds, and formatted to match your brand",
-      "Paired with your 4 or 8 monthly LinkedIn posts",
+      "Paired with your 4+ monthly LinkedIn posts",
     ],
     linkHref: "/services/content",
     linkLabel: "Explore speaker content",
@@ -308,10 +302,10 @@ export const deliverableExplainers: DeliverableExplainer[] = [
   {
     id: "outreach-in-name",
     title: "Outreach & Engagement in Your Name",
-    availability: "Complete only",
-    availabilityTone: "complete",
+    availability: "Custom plan",
+    availabilityTone: "custom",
     description:
-      "Designed for speakers going after flagship stages. Alongside 160+ pitches and 8 posts a month, our team leaves thoughtful comments on relevant industry accounts and sends direct organizer outreach in your name to maximize reply rates.",
+      "Designed for speakers going after flagship stages. Alongside 110+ pitches and 4+ posts a month, our team leaves thoughtful comments on relevant industry accounts and sends direct organizer outreach in your name to maximize reply rates.",
     details: [
       "Strategic comments on posts from conference chairs and industry leaders",
       "Personal direct outreach sent under your own identity",
@@ -346,7 +340,7 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "Can I upgrade or switch plans month to month?",
-    a: "Yes. Foundation ($1,200/mo), Growth ($1,800/mo), and Complete ($2,500/mo) have no minimum commitment, so you can adjust your pitch volume or pause at the end of any billing cycle. If you are on Founder, you can also upgrade to Growth or Complete anytime.",
+    a: "Yes. Foundation ($1,200/mo) and Custom have no minimum commitment, so you can adjust your pitch and content volume or pause at the end of any billing cycle. If you are on Founder, you can also upgrade to a Custom plan anytime—we scope and price it on a quick strategy call.",
   },
   {
     q: "What happens if I already have a speaker website vs if I need one?",
@@ -358,6 +352,6 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "Which plan fits me if I'm just starting vs already speaking regularly?",
-    a: "Founder ($500/mo) and Foundation ($1,200/mo) fit speakers building steady monthly momentum with 60 targeted pitches and 2 LinkedIn posts. Growth ($1,800/mo) is best if you already have talk footage and want 110 pitches plus edited clips. Complete ($2,500/mo) fits established speakers who want maximum pitch volume (160+/mo) and direct outreach in their name.",
+    a: "Founder ($500/mo) is the best entry point—it gives you everything in Foundation ($1,200/mo) with 60 targeted pitches and 2 LinkedIn posts until we book your first paid stage. Our Custom plan fits speakers who want to scale from 110+ pitches and 4+ LinkedIn posts a month, with edited talk clips, strategic comments, and direct outreach in your name scoped on a strategy call.",
   },
 ];

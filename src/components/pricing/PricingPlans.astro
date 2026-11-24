@@ -25,7 +25,7 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
           class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance"
           data-pp-title
         >
-          {words("Four monthly plans, zero commission").map((w, j, a) => (
+          {words("Three monthly plans, zero commission").map((w, j, a) => (
             <>
               <span class={maskClass}><span class={wordClass} data-pp-title-word>{w}</span></span>
               {j < a.length - 1 && " "}
@@ -45,164 +45,264 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     </div>
 
     <ul
-      class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:gap-x-5 lg:gap-y-0"
+      class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr] lg:items-stretch"
       data-pp-grid
     >
-      {pricingTiers.map((t) => (
-        <li
-          id={t.id}
-          class:list={[
-            "scroll-mt-28 relative isolate flex lg:row-span-6 lg:grid lg:grid-rows-subgrid",
-            "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[20px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
-            t.featured
-              ? "before:translate-y-1.5 before:bg-stage-text/22 has-[[data-pp-card]:hover]:before:bg-stage-text/32 has-[[data-pp-card]:focus-within]:before:bg-stage-text/32"
-              : "before:bg-ink/12 has-[[data-pp-card]:hover]:before:bg-ink/20 has-[[data-pp-card]:focus-within]:before:bg-ink/20",
-          ]}
-          data-pp-item
-        >
-          <article
+      {pricingTiers.map((t) => {
+        const isFounder = t.id === "founder";
+        return (
+          <li
+            id={t.id}
             class:list={[
-              "group/pp relative flex flex-1 flex-col rounded-[20px] border p-6 text-paper will-change-transform lg:row-span-6 lg:grid lg:grid-rows-subgrid lg:px-6 lg:pt-7 lg:pb-6 xl:px-7",
-              t.featured ? "border-stage-text bg-stage-text" : "border-ink bg-ink",
+              "scroll-mt-28 relative isolate flex",
+              "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[23px] before:transition-colors before:duration-300 before:ease-out before:content-['']",
+              t.featured
+                ? "before:translate-y-2 before:bg-stage-text/30 has-[[data-pp-card]:hover]:before:bg-stage-text/40 has-[[data-pp-card]:focus-within]:before:bg-stage-text/40"
+                : "before:bg-ink/12 has-[[data-pp-card]:hover]:before:bg-ink/20 has-[[data-pp-card]:focus-within]:before:bg-ink/20",
             ]}
-            data-pp-card
-            data-pp-featured={t.featured ? "true" : undefined}
+            data-pp-item
           >
-            <!-- 1. Nombre y badge inline -->
-            <div class="flex flex-wrap items-baseline justify-between gap-x-2.5 gap-y-1.5">
-              <h3 class="text-[1.375rem] font-extrabold leading-[1.15] tracking-[-0.02em] text-paper" data-pp-name>
-                {t.name}
-              </h3>
-              <span
-                class:list={[
-                  "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[0.75rem] font-bold tracking-[0.01em] whitespace-nowrap text-paper",
-                  t.featured ? "bg-ink" : "bg-paper/12",
-                ]}
-              >
-                {t.badge}
-              </span>
-            </div>
-
-            <!-- 2. Precio tabular + compromiso -->
-            <div class="mt-5">
-              <div class="flex items-baseline gap-1.5">
-                <span class="text-[clamp(2.25rem,1.9rem+1.1vw,2.75rem)] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">
-                  {t.priceLabel}
-                </span>
-                <span class:list={["text-sm font-medium", t.featured ? "text-paper/85" : "text-muted-on-ink"]}>
-                  / mo
-                </span>
-              </div>
-              <p
-                class:list={[
-                  "mt-2 text-[0.8125rem] leading-snug font-medium",
-                  t.featured ? "text-paper/90" : "text-muted-on-ink",
-                ]}
-              >
-                {t.commitment}
-              </p>
-            </div>
-
-            <!-- 3. Para quién es -->
-            <p
+            <article
               class:list={[
-                "mt-4 text-[0.9375rem] leading-[1.5]",
-                t.featured ? "text-paper/95" : "text-paper/85",
+                "group/pp relative flex flex-1 flex-col overflow-hidden rounded-[23px] border p-6 text-paper will-change-transform sm:p-7",
+                t.featured
+                  ? "border-paper/25 bg-[linear-gradient(155deg,#E50C13_0%,#C20A18_48%,#7E0611_100%)] shadow-[0_28px_68px_-18px_rgba(194,10,24,0.52),inset_0_1px_0_rgba(255,255,255,0.22)]"
+                  : "border-[#333338] bg-[linear-gradient(155deg,#161618,#080809_52%)] shadow-[0_24px_64px_-20px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.05)]",
               ]}
+              data-pp-card
+              data-pp-featured={t.featured ? "true" : undefined}
             >
-              {t.summary}
-            </p>
-
-            <!-- 4. Cifras de capacidad mensual -->
-            <div
-              class:list={[
-                "relative mt-5 grid gap-3 border-t pt-5",
-                t.featured ? "border-paper/20" : "border-paper/12",
-              ]}
-            >
+              <!-- Ambient glow replicating BRUX_founder_interactive -->
               <span
-                class:list={[
-                  "pointer-events-none absolute inset-x-0 -top-px h-px origin-left [transform:scaleX(0)]",
-                  t.featured ? "bg-paper" : "bg-stage-glow",
-                ]}
                 aria-hidden="true"
-                data-pp-line
-              />
-              <div class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr]">
-                <span class="text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums xl:text-[1.875rem]" data-pp-num>
-                  {t.pitches}
-                </span>
-                <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-muted-on-ink"]}>
-                  organizer pitches / mo
-                </span>
-              </div>
-              <div class="grid grid-cols-[4rem_1fr] items-baseline gap-x-2.5 xl:grid-cols-[4.5rem_1fr]">
-                <span class="text-[1.625rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums xl:text-[1.875rem]" data-pp-num>
-                  {t.posts}
-                </span>
-                <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-muted-on-ink"]}>
-                  LinkedIn posts / mo
-                </span>
-              </div>
-            </div>
-
-            <!-- 5. Diferencial clave -->
-            <div class="mt-5 flex items-start gap-2 text-[0.875rem] font-semibold leading-snug text-paper">
-              <span class:list={["mt-0.5 inline-flex shrink-0", t.featured ? "text-paper" : "text-stage-glow"]}>
-                <MorphIcon
-                  icon={Plus}
-                  size={14}
-                  strokeWidth={2.25}
-                  spring="snappy"
-                  reducedMotion="user"
-                  data-pp-add-icon
-                />
-              </span>
-              <span>{t.adds}</span>
-            </div>
-
-            <!-- 6. CTA único -->
-            <div class="mt-auto flex flex-col gap-3 pt-7 lg:mt-0 lg:self-end">
-              <a
-                href={bookingUrl}
-                target="_blank"
-                rel="noopener"
                 class:list={[
-                  "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-[6px] px-4 text-[0.9375rem] font-semibold transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2",
+                  "pointer-events-none absolute -left-20 rounded-full",
                   t.featured
-                    ? "bg-ink text-paper hover:bg-ink-raised focus-visible:outline-paper"
-                    : "bg-paper/12 text-paper ring-1 ring-paper/15 ring-inset hover:bg-paper hover:text-ink focus-visible:outline-stage-glow",
+                    ? "top-6 h-64 w-80 bg-[radial-gradient(ellipse,rgba(255,255,255,0.22)_0%,transparent_68%)]"
+                    : "top-10 h-56 w-72 bg-[radial-gradient(ellipse,rgba(220,23,56,0.14)_0%,transparent_68%)]",
                 ]}
-                data-pp-cta
+              />
+
+              <!-- 1. Eyebrow: Plan name + pill badge -->
+              <div class="relative flex flex-wrap items-center justify-between gap-2.5">
+                <h3
+                  class:list={[
+                    "font-extrabold leading-[1.1] tracking-[-0.04em] text-paper",
+                    t.featured ? "text-[1.75rem]" : "text-[1.45rem]",
+                  ]}
+                  data-pp-name
+                >
+                  {t.name}
+                </h3>
+                <span
+                  class:list={[
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[0.75rem] font-bold tracking-[0.01em] whitespace-nowrap",
+                    t.featured
+                      ? "bg-paper text-stage-text shadow-xs"
+                      : "bg-[#2b2b2f] text-[#e6e6e6]",
+                  ]}
+                >
+                  {t.featured && <span class="size-1.5 rounded-full bg-stage" aria-hidden="true" />}
+                  {t.badge}
+                </span>
+              </div>
+
+              <!-- 2. Price area -->
+              <div class="relative mt-5">
+                {t.price !== null ? (
+                  <div class="flex items-baseline gap-2">
+                    <span
+                      class:list={[
+                        "inline-block font-extrabold leading-none tracking-[-0.055em] text-paper tabular-nums",
+                        t.featured
+                          ? "text-[clamp(2.85rem,3.6vw,3.75rem)]"
+                          : "text-[clamp(2.25rem,2.6vw,2.75rem)]",
+                      ]}
+                      data-founder-price={isFounder ? "" : undefined}
+                      aria-live={isFounder ? "polite" : undefined}
+                    >
+                      {t.priceLabel}
+                    </span>
+                    {t.priceSubLabel && (
+                      <span
+                        class:list={[
+                          "font-semibold",
+                          t.featured ? "text-lg text-paper/85" : "text-base text-[#aaaab0]",
+                        ]}
+                      >
+                        {t.priceSubLabel}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <div class="flex flex-col items-start gap-1">
+                    <span class="text-[clamp(1.625rem,1.95vw,2.05rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-paper">
+                      {t.priceLabel}
+                    </span>
+                    {t.priceSubLabel && (
+                      <span class="text-xs font-semibold tracking-[0.02em] text-stage-glow">
+                        {t.priceSubLabel}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <!-- 3. Description, state indicator & interactive Founder stage toggle -->
+              {isFounder ? (
+                <div class="relative mt-4">
+                  <p class="min-h-[3rem] text-[0.9375rem] leading-[1.55] text-paper/95" data-founder-desc>
+                    {t.summary}
+                  </p>
+
+                  <div class="mt-3 flex items-center gap-2.5 text-xs font-medium text-paper/90" data-founder-state>
+                    <span
+                      class="size-2 shrink-0 rounded-full bg-paper shadow-[0_0_0_3px_rgba(255,255,255,0.28)] transition-colors"
+                      data-founder-dot
+                      aria-hidden="true"
+                    />
+                    <span data-founder-state-text>Before your first paid event</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-pressed="false"
+                    class="mt-4 flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-[13px] border border-paper/25 bg-ink/35 px-3.5 py-3 text-left text-[0.8125rem] font-bold text-paper transition-[transform,background-color,border-color] duration-150 ease-out hover:-translate-y-0.5 hover:border-paper/45 hover:bg-ink/50 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-paper"
+                    data-founder-toggle
+                  >
+                    <span class="flex items-center gap-2.5">
+                      <span class="grid size-8 shrink-0 place-items-center rounded-[9px] bg-paper/15" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]">
+                          <path d="M8 3v3M16 3v3M4 10h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+                          <path d="m9 15 2 2 4-4" />
+                        </svg>
+                      </span>
+                      <span class="leading-tight">
+                        <span class="block" data-founder-toggle-text>After 1st paid event is booked</span>
+                        <span class="mt-0.5 block text-[0.6875rem] font-medium text-paper/75" data-founder-helper>
+                          Click to see the regular price
+                        </span>
+                      </span>
+                    </span>
+                    <span class="shrink-0 text-lg leading-none text-paper/80" aria-hidden="true">→</span>
+                  </button>
+
+                  <p class="mt-3 text-xs leading-relaxed text-paper/80" data-founder-detail>
+                    The plan moves to $1,200/month only after the first paid event is booked. 3-month minimum commitment.
+                  </p>
+                </div>
+              ) : (
+                <div class="relative mt-4">
+                  <p class="text-[0.9375rem] leading-[1.55] text-[#e5e5e8]">
+                    {t.summary}
+                  </p>
+                  <div class="mt-3.5 flex items-center gap-2 text-xs font-medium text-[#bfc0c5]">
+                    <span
+                      class="size-1.5 shrink-0 rounded-full bg-[#c21b37] shadow-[0_0_0_3px_rgba(194,27,55,0.22)]"
+                      aria-hidden="true"
+                    />
+                    <span>{t.commitment}</span>
+                  </div>
+                </div>
+              )}
+
+              <!-- 4. Divider + monthly capacity metrics -->
+              <div
+                class:list={[
+                  "relative mt-6 grid gap-3 border-t pt-5",
+                  t.featured ? "border-paper/25" : "border-[#323236]",
+                ]}
               >
-                <span>Book a strategy call</span>
-                <span class="inline-flex shrink-0 will-change-transform" data-pp-arrow-wrap>
+                <span
+                  class:list={[
+                    "pointer-events-none absolute inset-x-0 -top-px h-px origin-left [transform:scaleX(0)]",
+                    t.featured ? "bg-paper" : "bg-stage-glow",
+                  ]}
+                  aria-hidden="true"
+                  data-pp-line
+                />
+                <div class="flex items-baseline gap-3">
+                  <span
+                    class="min-w-[3.5rem] text-[1.875rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums"
+                    data-pp-num
+                  >
+                    {t.pitches}
+                  </span>
+                  <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-[#b3b3b9]"]}>
+                    organizer pitches / mo
+                  </span>
+                </div>
+                <div class="flex items-baseline gap-3">
+                  <span
+                    class="min-w-[3.5rem] text-[1.875rem] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums"
+                    data-pp-num
+                  >
+                    {t.posts}
+                  </span>
+                  <span class:list={["text-sm leading-snug", t.featured ? "text-paper/90" : "text-[#b3b3b9]"]}>
+                    LinkedIn posts / mo
+                  </span>
+                </div>
+              </div>
+
+              <!-- 5. Differential highlight -->
+              <div class="relative mt-5 flex items-start gap-2.5 text-[0.875rem] font-bold leading-snug text-paper">
+                <span class:list={["mt-0.5 inline-flex shrink-0", t.featured ? "text-paper" : "text-[#ed2443]"]}>
                   <MorphIcon
-                    icon={ArrowRight}
-                    size={16}
-                    strokeWidth={2}
+                    icon={Plus}
+                    size={15}
+                    strokeWidth={2.5}
                     spring="snappy"
                     reducedMotion="user"
-                    data-pp-arrow
+                    data-pp-add-icon
                   />
                 </span>
-              </a>
-              <a
-                href="#compare"
-                class:list={[
-                  "inline-flex items-center justify-center gap-1 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
-                  t.featured
-                    ? "text-paper/90 hover:text-paper focus-visible:outline-paper"
-                    : "text-muted-on-ink hover:text-paper focus-visible:outline-stage-glow",
-                ]}
-              >
-                <span>See what's included below</span>
-                <LucideArrowDown class="size-3.5" aria-hidden="true" />
-              </a>
-            </div>
-          </article>
-        </li>
-      ))}
+                <span>{t.adds}</span>
+              </div>
+
+              <!-- 6. CTA + footer note -->
+              <div class="relative mt-auto flex flex-col gap-3 pt-7">
+                <a
+                  href={bookingUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class:list={[
+                    "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-[0.9375rem] font-bold transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2",
+                    t.featured
+                      ? "bg-paper text-ink shadow-[0_10px_24px_-10px_rgba(0,0,0,0.45)] hover:bg-mist focus-visible:outline-paper"
+                      : "border border-paper/20 bg-paper/[0.08] text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-paper hover:bg-paper hover:text-ink focus-visible:outline-stage-glow",
+                  ]}
+                  data-pp-cta
+                >
+                  <span>{t.ctaLabel ?? "Book a strategy call"}</span>
+                  <span class="inline-flex shrink-0 will-change-transform" data-pp-arrow-wrap>
+                    <MorphIcon
+                      icon={ArrowRight}
+                      size={16}
+                      strokeWidth={2.2}
+                      spring="snappy"
+                      reducedMotion="user"
+                      data-pp-arrow
+                    />
+                  </span>
+                </a>
+                <a
+                  href="#compare"
+                  class:list={[
+                    "inline-flex items-center justify-center gap-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+                    t.featured
+                      ? "text-paper/85 hover:text-paper focus-visible:outline-paper"
+                      : "text-[#8f9098] hover:text-paper focus-visible:outline-stage-glow",
+                  ]}
+                >
+                  <span>{t.footerNote ?? "See what's included below"}</span>
+                  <LucideArrowDown class="size-3.5" aria-hidden="true" />
+                </a>
+              </div>
+            </article>
+          </li>
+        );
+      })}
     </ul>
 
     <!-- Aclaración Founder y nicho -->
@@ -288,6 +388,63 @@ const wordClass = "inline-block origin-[0%_100%] will-change-transform";
     const controller = new AbortController();
     const { signal } = controller;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+    // Toggle interactivo de 2 etapas en la tarjeta Founder ($500 ↔ $1,200)
+    const founderToggle = root.querySelector<HTMLButtonElement>("[data-founder-toggle]");
+    if (founderToggle) {
+      const priceEl = root.querySelector<HTMLElement>("[data-founder-price]");
+      const descEl = root.querySelector<HTMLElement>("[data-founder-desc]");
+      const dotEl = root.querySelector<HTMLElement>("[data-founder-dot]");
+      const stateTextEl = root.querySelector<HTMLElement>("[data-founder-state-text]");
+      const toggleTextEl = root.querySelector<HTMLElement>("[data-founder-toggle-text]");
+      const helperEl = root.querySelector<HTMLElement>("[data-founder-helper]");
+      const detailEl = root.querySelector<HTMLElement>("[data-founder-detail]");
+      let postBooking = false;
+
+      founderToggle.addEventListener(
+        "click",
+        () => {
+          postBooking = !postBooking;
+          if (priceEl) {
+            priceEl.classList.remove("founder-price-sweep");
+            void priceEl.offsetWidth;
+            priceEl.textContent = postBooking ? "$1,200" : "$500";
+            priceEl.classList.add("founder-price-sweep");
+          }
+          if (descEl) {
+            descEl.textContent = postBooking
+              ? "Your first paid speaking event has been booked. The regular Foundation rate now applies."
+              : "Your Founder rate stays at $500/month until we book your first paid speaking event.";
+          }
+          if (dotEl) {
+            dotEl.classList.toggle("bg-ink/80", postBooking);
+            dotEl.classList.toggle("bg-paper", !postBooking);
+          }
+          if (stateTextEl) {
+            stateTextEl.textContent = postBooking
+              ? "After your first paid event"
+              : "Before your first paid event";
+          }
+          if (toggleTextEl) {
+            toggleTextEl.textContent = postBooking
+              ? "Before 1st paid event is booked"
+              : "After 1st paid event is booked";
+          }
+          if (helperEl) {
+            helperEl.textContent = postBooking
+              ? "Click to return to the Founder rate"
+              : "Click to see the regular price";
+          }
+          if (detailEl) {
+            detailEl.textContent = postBooking
+              ? "The rate increases to $1,200/month only after we book the first paid event. Founder pricing applies until then."
+              : "The plan moves to $1,200/month only after the first paid event is booked. 3-month minimum commitment.";
+          }
+          founderToggle.setAttribute("aria-pressed", String(postBooking));
+        },
+        { signal },
+      );
+    }
 
     root.querySelectorAll<HTMLElement>("[data-pp-card]").forEach((card) => {
       const line = card.querySelector<HTMLElement>("[data-pp-line]");
