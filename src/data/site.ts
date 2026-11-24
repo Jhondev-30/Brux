@@ -31,8 +31,8 @@ export const services = [
 
 export const plans = [
   { name: "Founder", price: "$500", pitches: "60" },
-  { name: "Foundation", price: "$1,200", pitches: "60" },
-  { name: "Custom", price: "Custom price", pitches: "110+" },
+  { name: "Growth", price: "Custom price", pitches: "110" },
+  { name: "Complete", price: "Custom price", pitches: "160+" },
 ];
 
 export const navLinks = [

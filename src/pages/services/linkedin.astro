@@ -51,15 +51,15 @@ const serviceSchema = {
 const linkedinTierDetails: Record<string, { tag: string; detail: string }> = {
   founder: {
     tag: "Founder rate",
-    detail: "Profile makeover, Featured proof setup, and weekly organizer connections.",
+    detail: "Profile makeover, Featured proof setup, and weekly organizer connections. Transitions to Foundation after your first paid stage.",
   },
-  foundation: {
-    tag: "Core cadence",
-    detail: "Full positioning, organizer network growth, and consistent monthly authority posts.",
+  growth: {
+    tag: "Recommended",
+    detail: "Higher posting cadence plus captioned vertical clips edited from your stage talks.",
   },
-  custom: {
-    tag: "Tailored volume",
-    detail: "4+ monthly posts, captioned vertical clips from your talks, strategic comments, and direct outreach in your name.",
+  complete: {
+    tag: "Full scale",
+    detail: "Maximum post cadence, strategic comments, and direct outreach to organizers in your name.",
   },
 };
 
@@ -77,8 +77,8 @@ const faqs = [
     a: "Every week we identify conference chairs, VPs of Events, and association directors in your niche and send personal connection requests, expanding your direct audience with the people who book stages.",
   },
   {
-    q: "What is added on the Custom plan?",
-    a: "Our Custom plan scales from 4+ LinkedIn posts and 110+ organizer pitches a month, adding edited vertical video clips from your talks, strategic comments on industry accounts, and direct outreach to organizers in your name.",
+    q: "What is added on the Growth and Complete tiers?",
+    a: "Growth raises your cadence to 4 posts a month and adds edited vertical video clips from your talks. Complete includes 8 posts a month, strategic comments on industry accounts, and direct outreach to organizers in your name.",
   },
 ];
 
@@ -186,7 +186,7 @@ const faqSchema = {
               Posts in your voice and measurable follower growth
             </h3>
             <p class="mt-4 text-base leading-relaxed text-ink/85">
-              We write 2 posts a month on Founder and Foundation—or 4+ posts a month on Custom—drawn from your talks, frameworks, and stories, paired with edited talk clips and tracked in your monthly report.
+              We write 2, 4, or 8 posts a month drawn from your talks, frameworks, and stories, paired with edited talk clips on Growth and Complete, and track every impression and profile view in your monthly report.
             </p>
             <ul class="mt-6 space-y-2.5 border-t border-ink/10 pt-5">
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
@@ -195,11 +195,11 @@ const faqSchema = {
               </li>
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
-                <span>Captioned vertical video clips from your talks (Custom plan)</span>
+                <span>Captioned vertical video clips from your talks (Growth &amp; Complete)</span>
               </li>
               <li class="flex items-start gap-2.5 text-[0.9375rem] text-ink/85">
                 <LucideCheck class="mt-0.5 size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
-                <span>Strategic comments and direct outreach in your name (Custom plan)</span>
+                <span>Strategic comments and direct outreach in your name (Complete)</span>
               </li>
             </ul>
           </div>

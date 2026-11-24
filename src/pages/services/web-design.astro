@@ -1,12 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import { Check as LucideCheck } from "@lucide/astro";
 import { Globe, Plus } from "lucide";
 import MorphIcon from "morphicons/astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import WebDesignHeroStage from "../../components/services/WebDesignHeroStage.astro";
 import Button from "../../components/ui/Button.astro";
 import StageFinalCta from "../../components/ui/StageFinalCta.astro";
+import WebsiteOfferCard from "../../components/ui/WebsiteOfferCard.astro";
 import { bookingUrl } from "../../data/site";
 import graceImg from "../../assets/work/grace-after-the-grave.webp";
 
@@ -187,8 +187,24 @@ const buildPlanIncludes = [
           </div>
         </div>
 
+        <!-- Custom Build Plan & Base Price Card (right below the video, above the 5 site essentials) -->
+        <div id="build-plan" class="scroll-mt-24 mt-16 sm:mt-20" data-wp-plan>
+          <WebsiteOfferCard
+            headingId="web-plan-title"
+            title="A custom build plan scaled to your site complexity, with branding always included"
+            description="Before writing a line of code, we deliver a tailored project plan defining timeline and milestones based on complexity: a focused single page speaker site or a multi page platform for books, workshops, and media."
+            items={buildPlanIncludes}
+            price="From $1,100"
+            priceSuffix="flat fee"
+            primaryHref={bookingUrl}
+            primaryLabel="Book a call for your build plan"
+            secondaryHref="/pricing"
+            secondaryLabel="Compare monthly retainers"
+          />
+        </div>
+
         <!-- Connected sequential build cards joined by GSAP scroll-scrubbed spine -->
-        <div class="relative mx-auto mt-16 max-w-4xl" data-wp-track>
+        <div class="relative mx-auto mt-16 max-w-4xl sm:mt-20" data-wp-track>
           <!-- Continuous vertical connector track -->
           <div
             aria-hidden="true"
@@ -297,68 +313,10 @@ const buildPlanIncludes = [
       </div>
     </section>
 
-    <!-- 4. CUSTOM BUILD PLAN BY COMPLEXITY + BRANDING INCLUDED (bg-mist) -->
-    <section
-      id="build-plan"
-      class="scroll-mt-24 bg-mist py-20 text-ink sm:py-28"
-      aria-labelledby="web-plan-title"
-      data-wp-plan
-    >
-      <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-        <div class="grid gap-10 rounded-[26px] border border-ink/10 bg-paper p-7 sm:p-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-14">
-          <div class="lg:col-span-7">
-            <h2
-              id="web-plan-title"
-              class="text-[clamp(1.75rem,1.4rem+1.5vw,2.625rem)] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance text-ink"
-            >
-              A custom build plan scaled to your site complexity, with branding always included
-            </h2>
-            <p class="mt-4 max-w-[40rem] text-base leading-relaxed text-muted sm:text-lg">
-              Before writing a line of code, we deliver a tailored project plan defining timeline and milestones based on complexity: a focused single page speaker site (from $1,100, typically 14 days) or a multi page platform for books, workshops, and media.
-            </p>
-
-            <div class="mt-8 grid gap-5 sm:grid-cols-2">
-              {buildPlanIncludes.map((item) => (
-                <div class="border-t border-ink/12 pt-4" data-wp-plan-item>
-                  <h3 class="flex items-center gap-2 text-base font-extrabold text-ink">
-                    <LucideCheck class="size-4 shrink-0 text-stage-text" stroke-width={2.5} aria-hidden="true" />
-                    <span>{item.title}</span>
-                  </h3>
-                  <p class="mt-1.5 text-sm leading-relaxed text-muted">
-                    {item.detail}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div
-            class="flex flex-col justify-between rounded-[22px] bg-ink p-7 text-paper sm:p-9 lg:col-span-5"
-            data-wp-plan-card
-          >
-            <div>
-              <p class="text-sm font-bold text-stage-glow">Standalone Website Build</p>
-              <p class="mt-2 text-[clamp(2.25rem,1.9rem+1.2vw,3rem)] font-extrabold leading-none tracking-[-0.03em] text-paper tabular-nums">
-                From $1,100
-              </p>
-              <p class="mt-2 text-sm text-muted-on-ink">
-                Single flat fee · Timeline scoped to complexity · Full brand direction included
-              </p>
-            </div>
-
-            <div class="mt-8 flex flex-col gap-3">
-              <Button href={bookingUrl} arrow>Book a call for your build plan</Button>
-              <Button href="/pricing" variant="secondary" arrow>Compare monthly retainers</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. FAQ + SIBLING SERVICES (bg-ink) -->
+    <!-- 4. FAQ + SIBLING SERVICES (bg-ink-raised) -->
     <section
       id="faq"
-      class="scroll-mt-24 bg-ink py-24 text-paper sm:py-32"
+      class="scroll-mt-24 border-t border-paper/10 bg-ink-raised py-24 text-paper sm:py-32"
       aria-labelledby="web-faq-title"
       data-wp-faq
     >
